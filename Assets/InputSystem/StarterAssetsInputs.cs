@@ -80,7 +80,13 @@ namespace StarterAssets
 			SetCursorState(cursorLocked);
 		}
 
-		private void SetCursorState(bool newState)
+        private void LateUpdate()
+        {
+			jump = false;
+			interacting = false;
+        }
+
+        private void SetCursorState(bool newState)
 		{
 			Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
 		}
