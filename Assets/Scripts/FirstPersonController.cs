@@ -20,6 +20,10 @@ namespace StarterAssets
 		public float RotationSpeed = 1.0f;
 		[Tooltip("Acceleration and deceleration")]
 		public float SpeedChangeRate = 10.0f;
+		[Tooltip("How far can the player press E on things?")]
+		public float InteractRange = 8.0f;
+		[Tooltip("What layers can we interact with?")]
+		public LayerMask InteractableLayerMask;
 
 		[Space(10)]
 		[Tooltip("The height the player can jump")]
@@ -115,7 +119,25 @@ namespace StarterAssets
 			JumpAndGravity();
 			GroundedCheck();
 			Move();
+			Interaction();
 		}
+
+		private void Interaction()
+        {
+			RaycastHit hit;
+
+			if (Physics.Raycast(_mainCamera.transform.position, _mainCamera.transform.forward, out hit, InteractRange, InteractableLayerMask, QueryTriggerInteraction.Collide))
+			{
+				//we have an interactable
+				//TODO: stuff
+			}
+
+			if (_input.interacting)
+            {
+				//TODO:
+				//we pressed E
+            }
+        }
 
 		private void LateUpdate()
 		{

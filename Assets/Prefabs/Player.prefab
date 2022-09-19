@@ -202,6 +202,10 @@ MonoBehaviour:
   SprintSpeed: 6
   RotationSpeed: 1
   SpeedChangeRate: 10
+  InteractRange: 8
+  InteractableLayerMask:
+    serializedVersion: 2
+    m_Bits: 1024
   JumpHeight: 1.2
   Gravity: -15
   JumpTimeout: 0.1
@@ -248,6 +252,7 @@ MonoBehaviour:
   look: {x: 0, y: 0}
   jump: 0
   sprint: 0
+  interacting: 0
   analogMovement: 0
   cursorLocked: 1
   cursorInputForLook: 1
