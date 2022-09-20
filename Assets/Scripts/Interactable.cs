@@ -1,14 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using StarterAssets;
 
 public class Interactable : MonoBehaviour
 {
-    //is the player looking at the object
-    public bool LookingAt = false;
+    
+    [HideInInspector] 
+    public bool LookingAt = false; //is the player looking at the object?
 
     //we are pressing e on the object
-    public void Interact()
+    public virtual void Interact(FirstPersonController controller)
     {
 
     }

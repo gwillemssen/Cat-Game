@@ -72,6 +72,9 @@ namespace StarterAssets
         private Interactable interactable = null;
         private Interactable lastInteractable = null;
 
+        //CAT
+        public Transform CatHoldingPosition;
+
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
         private PlayerInput _playerInput;
@@ -142,7 +145,7 @@ namespace StarterAssets
             if (_input.interacting && interactable != null)
             {
                 //we pressed E
-                interactable.Interact();
+                interactable.Interact(this);
             }
 
             if (lastInteractable != interactable && lastInteractable != null)
