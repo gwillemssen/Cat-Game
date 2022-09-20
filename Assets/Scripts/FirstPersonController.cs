@@ -2,6 +2,7 @@
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
 #endif
+using UnityEngine.UI;
 
 namespace StarterAssets
 {
@@ -47,12 +48,14 @@ namespace StarterAssets
         [Tooltip("What layers the character uses as ground")]
         public LayerMask GroundLayers;
 
-        [Header("Cinemachine")]
-        [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
+        //[Header("Cinemachine")]
+        //[Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
         public GameObject CinemachineCameraTarget;
-        [Tooltip("How far in degrees can you move the camera up")]
+        //[Tooltip("How far in degrees can you move the camera up")]
+        [HideInInspector]
         public float TopClamp = 90.0f;
-        [Tooltip("How far in degrees can you move the camera down")]
+        //[Tooltip("How far in degrees can you move the camera down")]
+        [HideInInspector]
         public float BottomClamp = -90.0f;
 
         // cinemachine
@@ -73,14 +76,16 @@ namespace StarterAssets
         private Interactable lastInteractable = null;
 
         //CAT
+        [Header("CAT")]
         public Transform CatHoldingPosition;
+        public Slider PettingMeter;
 
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
         private PlayerInput _playerInput;
 #endif
         private CharacterController _controller;
-        private StarterAssetsInputs _input;
+        public StarterAssetsInputs Input;
         private GameObject _mainCamera;
 
         private const float _threshold = 0.01f;
@@ -109,7 +114,7 @@ namespace StarterAssets
         private void Start()
         {
             _controller = GetComponent<CharacterController>();
-            _input = GetComponent<StarterAssetsInputs>();
+            Input = GetComponent<StarterAssetsInputs>();
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
             _playerInput = GetComponent<PlayerInput>();
 #else
@@ -142,10 +147,12 @@ namespace StarterAssets
             else
             { interactable = null; }
 
-            if (_input.interacting && interactable != null)
+            if (Input.interacting && interactable != null)
             {
-                //we pressed E
+                //we clicked
                 interactable.Interact(this);
+                if (Input.interactedOnce)
+                    interactable.InteractClick(this);
             }
 
             if (lastInteractable != interactable && lastInteractable != null)
@@ -169,13 +176,13 @@ namespace StarterAssets
         private void CameraRotation()
         {
             // if there is an input
-            if (_input.look.sqrMagnitude >= _threshold)
+            if (Input.look.sqrMagnitude >= _threshold)
             {
                 //Don't multiply mouse input by Time.deltaTime
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 
-                _cinemachineTargetPitch += _input.look.y * RotationSpeed * deltaTimeMultiplier;
-                _rotationVelocity = _input.look.x * RotationSpeed * deltaTimeMultiplier;
+                _cinemachineTargetPitch += Input.look.y * RotationSpeed * deltaTimeMultiplier;
+                _rotationVelocity = Input.look.x * RotationSpeed * deltaTimeMultiplier;
 
                 // clamp our pitch rotation
                 _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
@@ -191,19 +198,19 @@ namespace StarterAssets
         private void Move()
         {
             // set target speed based on move speed, sprint speed and if sprint is pressed
-            float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+            float targetSpeed = Input.sprint ? SprintSpeed : MoveSpeed;
 
             // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
             // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
             // if there is no input, set the target speed to 0
-            if (_input.move == Vector2.zero) targetSpeed = 0.0f;
+            if (Input.move == Vector2.zero) targetSpeed = 0.0f;
 
             // a reference to the players current horizontal velocity
             float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
 
             float speedOffset = 0.1f;
-            float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
+            float inputMagnitude = Input.analogMovement ? Input.move.magnitude : 1f;
 
             // accelerate or decelerate to target speed
             if (currentHorizontalSpeed < targetSpeed - speedOffset || currentHorizontalSpeed > targetSpeed + speedOffset)
@@ -221,14 +228,14 @@ namespace StarterAssets
             }
 
             // normalise input direction
-            Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
+            Vector3 inputDirection = new Vector3(Input.move.x, 0.0f, Input.move.y).normalized;
 
             // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
             // if there is a move input rotate player when the player is moving
-            if (_input.move != Vector2.zero)
+            if (Input.move != Vector2.zero)
             {
                 // move
-                inputDirection = transform.right * _input.move.x + transform.forward * _input.move.y;
+                inputDirection = transform.right * Input.move.x + transform.forward * Input.move.y;
             }
 
             // move the player
@@ -249,7 +256,7 @@ namespace StarterAssets
                 }
 
                 // Jump
-                if (_input.jump && _jumpTimeoutDelta <= 0.0f)
+                if (Input.jump && _jumpTimeoutDelta <= 0.0f)
                 {
                     // the square root of H * -2 * G = how much velocity needed to reach desired height
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
@@ -273,7 +280,7 @@ namespace StarterAssets
                 }
 
                 // if we are not grounded, do not jump
-                _input.jump = false;
+                Input.jump = false;
             }
 
             // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)

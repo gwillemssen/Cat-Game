@@ -10,9 +10,11 @@ namespace StarterAssets
 		[Header("Character Input Values")]
 		public Vector2 move;
 		public Vector2 look;
+		public Vector2 mousePosition;
 		public bool jump;
 		public bool sprint;
 		public bool interacting;
+		public bool interactedOnce;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -26,6 +28,11 @@ namespace StarterAssets
 		{
 			MoveInput(value.Get<Vector2>());
 		}
+
+		public void OnMousePosition(InputValue value)
+        {
+			MousePositionInput(value.Get<Vector2>());
+        }
 
 		public void OnLook(InputValue value)
 		{
@@ -54,6 +61,7 @@ namespace StarterAssets
 		public void InteractInput(bool pressed)
         {
 			interacting = pressed;
+			interactedOnce = pressed;
         }
 		public void MoveInput(Vector2 newMoveDirection)
 		{
@@ -64,6 +72,11 @@ namespace StarterAssets
 		{
 			look = newLookDirection;
 		}
+
+		public void MousePositionInput(Vector2 newMousePosition)
+        {
+			mousePosition = newMousePosition;
+        }
 
 		public void JumpInput(bool newJumpState)
 		{
@@ -83,7 +96,7 @@ namespace StarterAssets
         private void LateUpdate()
         {
 			jump = false;
-			interacting = false;
+			interactedOnce = false;
         }
 
         private void SetCursorState(bool newState)
