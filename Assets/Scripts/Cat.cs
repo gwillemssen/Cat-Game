@@ -3,6 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * I am aware this code needs refactoring
+ * its a bit of a mess right now
+ * 
+ * It also needs a way to cancel the minigame.  Maybe right click?
+ * Right click could also be the throw button for props.
+ */
+
 public class Cat : Interactable
 {
     //inspector
