@@ -1,4 +1,3 @@
-using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -139,6 +138,7 @@ public class Cat : Interactable
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         playerController.PettingMeter.gameObject.SetActive(true);
+        playerController.Interaction.HideCrosshair = true;
         pettingAmount = 0f;
         audio.volume = 0f;
         audio.Play();
@@ -152,5 +152,6 @@ public class Cat : Interactable
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         playerController.PettingMeter.gameObject.SetActive(false);
+        playerController.Interaction.HideCrosshair = false;
     }
 }
