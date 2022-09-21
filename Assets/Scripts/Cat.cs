@@ -9,7 +9,7 @@ using UnityEngine;
  * It also needs a way to cancel the minigame.  Maybe right click?
  * Right click could also be the throw button for props.
  */
-
+[RequireComponent(typeof(AudioSource))]
 public class Cat : Interactable
 {
     //inspector
@@ -25,11 +25,13 @@ public class Cat : Interactable
     private CatState state;
     private Animator anim;
     private AudioSource audio;
+    //private ShakePosition shake;
     
     //Minigame
     private Vector3 catOriginalPos;
     private Quaternion catOriginalRot;
-    private Transform catHoldingPosition;
+    private Vector3 catHoldingPos;
+    private Quaternion catHoldingRot;
     private FirstPersonController playerController;
     private float timeStartedMovingCat = -420f;
     private float pettingAmount = 0f;
@@ -42,6 +44,7 @@ public class Cat : Interactable
         state = (CatState)StartState;
         anim = GetComponentInChildren<Animator>();
         audio = GetComponent<AudioSource>();
+        //shake = GetComponent<ShakePosition>();
     }
 
     private void Update()
@@ -50,64 +53,11 @@ public class Cat : Interactable
 
         if (state == CatState.PettingMinigame || state == CatState.DonePetting)
         {
-            float t = Time.time - timeStartedMovingCat;
-            t = Mathf.Clamp01(t);
-            t = t * t * t * (t * (6f * t - 15f) + 10f); //smootherstep
-
-            //move da cat
-            if (state == CatState.PettingMinigame)
-            {
-                transform.position = Vector3.Lerp(catOriginalPos, catHoldingPosition.position, t);
-                transform.rotation = Quaternion.Lerp(catOriginalRot, catHoldingPosition.rotation, t);
-            }
-            else
-            {
-                transform.position = Vector3.Lerp(catHoldingPosition.position, catOriginalPos, t);
-                transform.rotation = Quaternion.Lerp(catHoldingPosition.rotation, catOriginalRot, t);
-
-                if(Vector3.SqrMagnitude(transform.position - catOriginalPos) <= 0.005)
-                {
-                    transform.position = catOriginalPos;
-                    transform.rotation = catOriginalRot;
-                    state = CatState.Pettable;
-                    //maybe this should this change back to the startState?
-                }
-            }
+            MoveCat();
 
             if (state == CatState.PettingMinigame) //PET THE CAT
             {
-                bool decay = Time.time - lastTimePet > PettingDecayDelay;
-
-                if (playerController.Input.interacting)
-                {
-                    mouseDelta = lastMousePosition - playerController.Input.mousePosition;
-                    float mouseSpeed = mouseDelta.magnitude / Time.deltaTime; //speed = distance / time
-
-                    if (mouseSpeed >= PettingSpeedRequired)
-                    {
-                        pettingAmount += mouseSpeed * PettingSpeed * .000001f;
-                        lastTimePet = Time.time;
-                        audio.volume += Time.deltaTime;
-                    }
-                }
-                else if(!decay)
-                {
-                    audio.volume -= Time.deltaTime;
-                }
-
-                if (decay) //cat got bored
-                {
-                    pettingAmount -= Time.deltaTime * PettingDecayRate;
-                    audio.volume -= Time.deltaTime;
-                }
-
-                lastMousePosition = playerController.Input.mousePosition;
-
-                playerController.PettingMeter.value = pettingAmount;
-
-                pettingAmount = Mathf.Clamp01(pettingAmount);
-                if(pettingAmount == 1f)                         //win
-                { EndMinigame(); }
+                UpdateMinigame();
             }
         }
         if(audio.isPlaying && state != CatState.PettingMinigame)
@@ -122,9 +72,54 @@ public class Cat : Interactable
     {
         if(state == CatState.Pettable)
         {
-            catHoldingPosition = controller.CatHoldingPosition;
+            catHoldingPos = controller.CatHoldingPosition.position;
+            catHoldingRot = controller.CatHoldingPosition.rotation;
             playerController = controller;
             StartMinigame();
+        }
+    }
+
+    private void MoveCat()
+    {
+        float t = Time.time - timeStartedMovingCat;
+        t = Mathf.Clamp01(t);
+        t = t * t * t * (t * (6f * t - 15f) + 10f); //smootherstep
+
+        //move da cat
+        Vector3 startPos = catOriginalPos, targetPos = catOriginalPos;
+        Quaternion startRot = catOriginalRot, targetRot = catOriginalRot;
+
+        if (state == CatState.PettingMinigame)
+        {
+            startPos = catOriginalPos;
+            startRot = catOriginalRot;
+            targetPos = catHoldingPos;
+            targetRot = catHoldingRot;
+        }
+        else if (state == CatState.DonePetting)
+        {
+            targetPos = catOriginalPos;
+            targetRot = catOriginalRot;
+            startPos = catHoldingPos;
+            startRot = catHoldingRot;
+        }
+
+        if (transform.position != targetPos)
+        {
+            if (Vector3.SqrMagnitude(transform.position - targetPos) <= 0.005)
+            {
+                transform.position = targetPos;
+                transform.rotation = targetRot;
+
+                if (state == CatState.DonePetting)
+                { state = CatState.Pettable; }
+                //maybe this should this change back to the startState?
+            }
+            else
+            {
+                transform.position = Vector3.Lerp(startPos, targetPos, t);
+                transform.rotation = Quaternion.Lerp(startRot, targetRot, t);
+            }
         }
     }
 
@@ -142,6 +137,43 @@ public class Cat : Interactable
         pettingAmount = 0f;
         audio.volume = 0f;
         audio.Play();
+    }
+
+    private void UpdateMinigame()
+    {
+        //shake.Shake(); //test
+        bool decay = Time.time - lastTimePet > PettingDecayDelay;
+
+        if (playerController.Input.interacting)
+        {
+            mouseDelta = lastMousePosition - playerController.Input.mousePosition;
+            float mouseSpeed = mouseDelta.magnitude / Time.deltaTime; //speed = distance / time
+
+            if (mouseSpeed >= PettingSpeedRequired)
+            {
+                pettingAmount += mouseSpeed * PettingSpeed * .000001f;
+                lastTimePet = Time.time;
+                audio.volume += Time.deltaTime;
+            }
+        }
+        else if (!decay)
+        {
+            audio.volume -= Time.deltaTime;
+        }
+
+        if (decay) //cat got bored
+        {
+            pettingAmount -= Time.deltaTime * PettingDecayRate;
+            audio.volume -= Time.deltaTime;
+        }
+
+        lastMousePosition = playerController.Input.mousePosition;
+
+        playerController.PettingMeter.value = pettingAmount;
+
+        pettingAmount = Mathf.Clamp01(pettingAmount);
+        if (pettingAmount == 1f)                         //win
+        { EndMinigame(); }
     }
 
     private void EndMinigame()
