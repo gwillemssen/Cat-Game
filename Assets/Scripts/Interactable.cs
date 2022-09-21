@@ -5,7 +5,7 @@ using StarterAssets;
 
 public class Interactable : MonoBehaviour
 {
-    
+
     [HideInInspector] 
     public bool LookingAt = false; //is the player looking at the object?
 

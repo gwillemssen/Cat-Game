@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using StarterAssets;
 using UnityEngine;
 using TMPro;
+using Unity.VisualScripting;
 
-public class MicrowaveController : MonoBehaviour
+public class MicrowaveController : Interactable
 {
     public float currentNoiseEmitted;
     private Light light;
@@ -12,21 +14,26 @@ public class MicrowaveController : MonoBehaviour
 
     public bool lightOn;
     private float targetLightVal;
-    private float currentLightVal;
     public float timeLeft;
 
     public bool timerOn = false;
 
-    public TextMeshProUGUI timerText;
-    public GameObject ball;
+    private TextMeshProUGUI timerText;
+
+    private LerpScript LightLerp;
+
+    public float testValue;
 
     // Start is called before the first frame update
     void Start()
     {
-        mat = Instantiate(this.GetComponent<Renderer>().material);
-        this.GetComponent<Renderer>().material = mat;
+        LightLerp = this.AddComponent<LerpScript>();
+        LightLerp.lerpSpeed = 16;
+        mat = Instantiate(transform.GetChild(0).GetComponent<Renderer>().material);
+        transform.GetChild(0).GetComponent<Renderer>().material = mat;
         light = transform.GetChild(2).GetComponent<Light>();
-
+        timerText = transform.GetChild(3).GetChild(0).GetComponent<TextMeshProUGUI>();
+        
         timerOn = true;
     }
 
@@ -41,12 +48,15 @@ public class MicrowaveController : MonoBehaviour
     {
         if (lightOn)
         {
-            targetLightVal = 1;
+            LightLerp.floatTarget = 1;
         }
         else
         {
-            targetLightVal = 0;
+            LightLerp.floatTarget = 0;
         }
+        mat.SetFloat("_LightIntensity",LightLerp.floatVal);
+        light.intensity = 0.09f * LightLerp.floatVal;
+        testValue = LightLerp.floatVal;
     }
 
     void TimerManager()
@@ -64,8 +74,6 @@ public class MicrowaveController : MonoBehaviour
                     Debug.Log("time up");
                     timeLeft = 0;
                     timerOn = false;
-                    timerText.enabled = false;
-                    Instantiate(ball, new Vector3(0, 2.53f, 0), Quaternion.Euler(0, 0, 0));
                 }
             }
         }
@@ -79,6 +87,11 @@ public class MicrowaveController : MonoBehaviour
         float seconds = Mathf.FloorToInt(currentTime % 60);
 
         timerText.text = string.Format("{0:00},{0:00}", seconds, minutes);
+    }
+
+    public override void InteractClick(FirstPersonController controller)
+    {
+        base.InteractClick(controller);
     }
 }
 
