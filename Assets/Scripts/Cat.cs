@@ -15,7 +15,7 @@ public class Cat : Interactable
     //inspector
     public enum CatStartState { Pettable, Unpettable } 
     public CatStartState StartState;
-    public float PettingSpeed = .2f;
+    public float PettingSpeed = 1f;
     public float PettingDecayRate = 0.1f;
     public float PettingDecayDelay = 1f;
     public float PettingSpeedRequired = 1000f;
@@ -58,6 +58,8 @@ public class Cat : Interactable
             if (state == CatState.PettingMinigame) //PET THE CAT
             {
                 UpdateMinigame();
+                if (playerController.Input.throwing)
+                    { EndMinigame(); }
             }
         }
         if(audio.isPlaying && state != CatState.PettingMinigame)

@@ -1,7 +1,4 @@
 using UnityEngine;
-#if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-using UnityEngine.InputSystem;
-#endif
 
 public class FirstPersonInput : MonoBehaviour
 {
@@ -13,6 +10,7 @@ public class FirstPersonInput : MonoBehaviour
     public bool sprint;
     public bool interacting;
     public bool interactedOnce;
+    public bool throwing;
 
     [Header("Movement Settings")]
     public bool analogMovement;
@@ -21,80 +19,23 @@ public class FirstPersonInput : MonoBehaviour
     public bool cursorLocked = true;
     public bool cursorInputForLook = true;
 
-#if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-    public void OnMove(InputValue value)
-    {
-        MoveInput(value.Get<Vector2>());
-    }
-
-    public void OnMousePosition(InputValue value)
-    {
-        MousePositionInput(value.Get<Vector2>());
-    }
-
-    public void OnLook(InputValue value)
-    {
-        if (cursorInputForLook)
-        {
-            LookInput(value.Get<Vector2>());
-        }
-    }
-
-    public void OnJump(InputValue value)
-    {
-        JumpInput(value.isPressed);
-    }
-
-    public void OnSprint(InputValue value)
-    {
-        SprintInput(value.isPressed);
-    }
-
-    public void OnInteract(InputValue value)
-    {
-        InteractInput(value.isPressed);
-    }
-#endif
-
-    public void InteractInput(bool pressed)
-    {
-        interacting = pressed;
-        interactedOnce = pressed;
-    }
-    public void MoveInput(Vector2 newMoveDirection)
-    {
-        move = newMoveDirection;
-    }
-
-    public void LookInput(Vector2 newLookDirection)
-    {
-        look = newLookDirection;
-    }
-
-    public void MousePositionInput(Vector2 newMousePosition)
-    {
-        mousePosition = newMousePosition;
-    }
-
-    public void JumpInput(bool newJumpState)
-    {
-        jump = newJumpState;
-    }
-
-    public void SprintInput(bool newSprintState)
-    {
-        sprint = newSprintState;
-    }
-
     private void OnApplicationFocus(bool hasFocus)
     {
         SetCursorState(cursorLocked);
     }
 
-    private void LateUpdate()
+    private void Update()
     {
-        jump = false;
-        interactedOnce = false;
+        move.x = Input.GetAxis("Horizontal");
+        move.y = Input.GetAxis("Vertical");
+        look.x = Input.GetAxis("Mouse X");
+        look.y = -Input.GetAxis("Mouse Y");
+        jump = Input.GetButtonDown("Jump");
+        sprint = Input.GetButtonDown("Sprint");
+        throwing = Input.GetButtonDown("Throw");
+        interactedOnce = Input.GetButtonDown("Interact");
+        interacting = Input.GetButton("Interact");
+        mousePosition = Input.mousePosition;
     }
 
     private void SetCursorState(bool newState)

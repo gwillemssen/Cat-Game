@@ -1,21 +1,10 @@
 ﻿using UnityEngine;
-#if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-using UnityEngine.InputSystem;
-#endif
 using UnityEngine.UI;
 
-/*
- * 
- * The main player class
- * 
- */
-
 [RequireComponent(typeof(CharacterController))]
-#if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-[RequireComponent(typeof(PlayerInput))]
-#endif
 [RequireComponent(typeof(FirstPersonInput))]
 [RequireComponent(typeof(FirstPersonInteraction))]
+
 public class FirstPersonController : MonoBehaviour
 {
     [Header("Player")]
@@ -79,9 +68,6 @@ public class FirstPersonController : MonoBehaviour
     public Slider PettingMeter;
 
     //component references
-#if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-    private PlayerInput playerInput;
-#endif
     private CharacterController controller;
     [HideInInspector]
     public GameObject MainCamera { get; private set; }
@@ -91,18 +77,7 @@ public class FirstPersonController : MonoBehaviour
     public FirstPersonInteraction Interaction { get; private set; }
 
     private const float _threshold = 0.01f;
-
-    private bool IsCurrentDeviceMouse
-    {
-        get
-        {
-#if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-            return playerInput.currentControlScheme == "KeyboardMouse";
-#else
-				return false;
-#endif
-        }
-    }
+    private const bool isCurrentDeviceMouse = true;
 
     private void Awake()
     {
@@ -119,13 +94,6 @@ public class FirstPersonController : MonoBehaviour
     private void Start()
     {
         controller = GetComponent<CharacterController>();
-        Input = GetComponent<FirstPersonInput>();
-#if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-        playerInput = GetComponent<PlayerInput>();
-#else
-			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
-#endif
-
         // reset our timeouts on start
         jumpTimeoutDelta = JumpTimeout;
         fallTimeoutDelta = FallTimeout;
@@ -157,7 +125,7 @@ public class FirstPersonController : MonoBehaviour
         if (Input.look.sqrMagnitude >= _threshold)
         {
             //Don't multiply mouse input by Time.deltaTime
-            float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+            float deltaTimeMultiplier = isCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 
             _cinemachineTargetPitch += Input.look.y * RotationSpeed * deltaTimeMultiplier;
             rotationVelocity = Input.look.x * RotationSpeed * deltaTimeMultiplier;
