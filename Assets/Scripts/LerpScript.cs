@@ -7,14 +7,20 @@ public class LerpScript : MonoBehaviour
 {
     [HideInInspector]
     public float floatVal;
+    [HideInInspector]
     public Vector3 vecVal;
+    [HideInInspector]
     public Color colorVal;
     
+    [HideInInspector]
     public float floatTarget;
+    [HideInInspector]
     public Vector3 vecTarget;
+    [HideInInspector]
     public Color colorTarget;
     
-    public float lerpSpeed = 2;
+    [HideInInspector]
+    public float lerpSpeed = 1;
 
     public enum LerpTiming
     {
@@ -28,13 +34,16 @@ public class LerpScript : MonoBehaviour
         Vector3 = 1,
         Color = 2
     }
-
+    
+    [HideInInspector]
     public LerpType typeOfLerp;
+    [HideInInspector]
     public LerpTiming whenToLerp;
+
 
     void Update()
     {
-        if (floatVal != floatTarget && whenToLerp == LerpTiming.Update)
+        if (whenToLerp == LerpTiming.Update)
         {
             Count();
         }
@@ -42,7 +51,7 @@ public class LerpScript : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (floatVal != floatTarget && whenToLerp == LerpTiming.LateUpdate)
+        if (whenToLerp == LerpTiming.LateUpdate)
         {
             Count();
         }
@@ -50,7 +59,7 @@ public class LerpScript : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (floatVal != floatTarget && whenToLerp == LerpTiming.FixedUpdate)
+        if (whenToLerp == LerpTiming.FixedUpdate)
         {
             Count();
         }
@@ -58,7 +67,7 @@ public class LerpScript : MonoBehaviour
 
     void Count()
     {
-        if (typeOfLerp == LerpType.Float)
+        if (typeOfLerp == LerpType.Float && floatTarget != floatVal)
         {
             float delta = floatTarget - floatVal;
             delta *= Time.deltaTime * lerpSpeed;
@@ -70,21 +79,14 @@ public class LerpScript : MonoBehaviour
             }
         }
 
-        if (typeOfLerp == LerpType.Vector3)
+        else if (typeOfLerp == LerpType.Vector3 && vecTarget != vecVal)
         {
-            float deltaX = vecTarget.x - vecVal.x;
-            float deltaY = vecTarget.y - vecVal.y;
-            float deltaZ = vecTarget.z - vecVal.z;
+            Vector3 delta = vecTarget - vecVal;
 
-            deltaX *= Time.deltaTime * lerpSpeed;
-            deltaY *= Time.deltaTime * lerpSpeed;
-            deltaZ *= Time.deltaTime * lerpSpeed;
+            delta *= Time.deltaTime * lerpSpeed;
 
-            vecVal.x += deltaX;
-            vecVal.y += deltaY;
-            vecVal.z += deltaZ;
-
-
+            vecVal += delta;
+            
             if (Mathf.Abs(vecTarget.x - vecVal.x) < 0.01f)
             {
                 vecVal.x = vecTarget.x;
@@ -99,7 +101,7 @@ public class LerpScript : MonoBehaviour
             }
         }
         
-        if (typeOfLerp == LerpType.Color)
+        else if (typeOfLerp == LerpType.Color && colorTarget != colorVal)
         {
             float deltaR = colorTarget.r - colorVal.r;
             float deltaG = colorTarget.g - colorVal.g;
