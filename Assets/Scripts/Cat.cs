@@ -135,6 +135,7 @@ public class Cat : Interactable
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         playerController.PettingMeter.gameObject.SetActive(true);
+        playerController.PettingMeter.value = 0f;
         playerController.Interaction.HideCrosshair = true;
         pettingAmount = 0f;
         audio.volume = 0f;
