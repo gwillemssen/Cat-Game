@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Unity.VisualScripting;
+using Random = UnityEngine.Random;
+
 
 public class MicrowaveController : MonoBehaviour
 {
@@ -11,14 +14,16 @@ public class MicrowaveController : MonoBehaviour
     private Material mat;
 
     public bool lightOn;
-    private float targetLightVal;
-    private float currentLightVal;
     public float timeLeft;
 
     public bool timerOn = false;
+    public bool doorOpen;
+    public bool plateSpinning;
 
     public TextMeshProUGUI timerText;
     public GameObject ball;
+    
+    private lerp
 
     // Start is called before the first frame update
     void Start()
@@ -34,6 +39,8 @@ public class MicrowaveController : MonoBehaviour
     void Update()
     {
         LightManager();
+        PlateManager();
+        DoorManager();
         TimerManager();
     }
 
@@ -65,7 +72,6 @@ public class MicrowaveController : MonoBehaviour
                     timeLeft = 0;
                     timerOn = false;
                     timerText.enabled = false;
-                    Instantiate(ball, new Vector3(0, 2.53f, 0), Quaternion.Euler(0, 0, 0));
                 }
             }
         }
@@ -78,7 +84,56 @@ public class MicrowaveController : MonoBehaviour
         float minutes = Mathf.FloorToInt(currentTime / 60);
         float seconds = Mathf.FloorToInt(currentTime % 60);
 
-        timerText.text = string.Format("{0:00},{0:00}", seconds, minutes);
+        timerText.text = string.Format("{0:00} : {1:00}", minutes, seconds);
+    }
+
+    void PlateManager()
+    {
+
+            if (plateSpinning)
+            {
+                plateLerp.floatTarget = 0.15f;
+            }
+            else
+            {
+                plateLerp.floatTarget = 0;
+            }
+
+            if (plateLerp.floatTarget != plateLerp.floatVal)
+            {
+                plate.transform.Rotate(0, 0, plateLerp.floatTarget);
+            }
+    }
+
+    void DoorManager()
+    {
+        if (doorOpen)
+        {
+            doorLerp.vecTarget = new Vector3(0, 0, 100); 
+        }
+        else
+        {
+            doorLerp.vecTarget = new Vector3(0, 0, 0);
+        }
+
+        if (doorLerp.vecVal != doorLerp.vecTarget)
+        {
+            door.transform.localRotation = Quaternion.Euler(doorLerp.vecVal);
+        }
+    }
+
+    public override void InteractClick(FirstPersonController controller)
+    {
+        base.InteractClick(controller);
+        ActivateMicrowave();
+    }
+
+    void ActivateMicrowave()
+    {
+        lightOn = true;
+        plateSpinning = true;
+        timeLeft = Random.Range(60, 120);
+        timerOn = true;
     }
 }
 
