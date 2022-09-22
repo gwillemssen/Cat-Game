@@ -6,32 +6,48 @@ using TMPro;
 using Unity.VisualScripting;
 using Random = UnityEngine.Random;
 
-
-public class MicrowaveController : MonoBehaviour
+public class MicrowaveController : Interactable
 {
     public float currentNoiseEmitted;
     private Light light;
     private Material mat;
+    private GameObject plate;
+    private GameObject door;
 
     public bool lightOn;
+    public bool plateSpinning;
+    public bool doorOpen;
+
+    private float targetLightVal;
     public float timeLeft;
 
     public bool timerOn = false;
-    public bool doorOpen;
-    public bool plateSpinning;
 
-    public TextMeshProUGUI timerText;
-    public GameObject ball;
+    private TextMeshProUGUI timerText;
+
+    private LerpScript LightLerp;
+    private LerpScript plateLerp;
+    private LerpScript doorLerp;
+    public bool allowDeactivate = false;
+    private bool active;
     
-    private lerp
-
     // Start is called before the first frame update
     void Start()
     {
-        mat = Instantiate(this.GetComponent<Renderer>().material);
-        this.GetComponent<Renderer>().material = mat;
+        door = transform.GetChild(1).GetChild(0).gameObject;
+        doorLerp = this.AddComponent<LerpScript>();
+        doorLerp.typeOfLerp = LerpScript.LerpType.Vector3;
+        doorLerp.lerpSpeed = 8;
+        plate = transform.GetChild(1).GetChild(1).gameObject;
+        LightLerp = this.AddComponent<LerpScript>();
+        LightLerp.lerpSpeed = 16;
+        plateLerp = this.AddComponent<LerpScript>();
+        
+        mat = Instantiate(transform.GetChild(0).GetComponent<Renderer>().material);
+        transform.GetChild(0).GetComponent<Renderer>().material = mat;
         light = transform.GetChild(2).GetComponent<Light>();
-
+        timerText = transform.GetChild(3).GetChild(0).GetComponent<TextMeshProUGUI>();
+        
         timerOn = true;
     }
 
@@ -39,20 +55,26 @@ public class MicrowaveController : MonoBehaviour
     void Update()
     {
         LightManager();
+        TimerManager();
         PlateManager();
         DoorManager();
-        TimerManager();
     }
 
     void LightManager()
     {
         if (lightOn)
         {
-            targetLightVal = 1;
+            LightLerp.floatTarget = 1;
         }
         else
         {
-            targetLightVal = 0;
+            LightLerp.floatTarget = 0;
+        }
+
+        if (LightLerp.floatTarget != LightLerp.floatVal)
+        {
+            mat.SetFloat("_LightIntensity",LightLerp.floatVal);
+            light.intensity = 0.09f * LightLerp.floatVal;
         }
     }
 
@@ -71,7 +93,6 @@ public class MicrowaveController : MonoBehaviour
                     Debug.Log("time up");
                     timeLeft = 0;
                     timerOn = false;
-                    timerText.enabled = false;
                 }
             }
         }
@@ -128,12 +149,29 @@ public class MicrowaveController : MonoBehaviour
         ActivateMicrowave();
     }
 
-    void ActivateMicrowave()
+    public void ActivateMicrowave()
     {
-        lightOn = true;
-        plateSpinning = true;
-        timeLeft = Random.Range(60, 120);
-        timerOn = true;
+        if (!active)
+        {
+            //turn on microwave
+            timeLeft = Random.Range(60, 120);
+            timerOn = true;
+            plateSpinning = true;
+            lightOn = true;
+        }
+        else if (active && allowDeactivate)
+        {
+            //turning off microwave if allowed
+            active = false;
+            timerOn = false;
+            plateSpinning = false;
+            doorOpen = false;
+        }
+    }
+
+    private void MicrowaveFinish()
+    {
+        
     }
 }
 
