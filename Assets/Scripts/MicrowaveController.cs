@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Unity.VisualScripting;
+using Random = UnityEngine.Random;
 
 public class MicrowaveController : Interactable
 {
@@ -27,6 +28,8 @@ public class MicrowaveController : Interactable
     private LerpScript LightLerp;
     private LerpScript plateLerp;
     private LerpScript doorLerp;
+    public bool allowDeactivate = false;
+    private bool active;
     
     // Start is called before the first frame update
     void Start()
@@ -52,7 +55,7 @@ public class MicrowaveController : Interactable
     void Update()
     {
         LightManager();
-        // TimerManager();
+        TimerManager();
         PlateManager();
         DoorManager();
     }
@@ -102,7 +105,7 @@ public class MicrowaveController : Interactable
         float minutes = Mathf.FloorToInt(currentTime / 60);
         float seconds = Mathf.FloorToInt(currentTime % 60);
 
-        timerText.text = string.Format("{0:00},{0:00}", seconds, minutes);
+        timerText.text = string.Format("{0:00} : {1:00}", minutes, seconds);
     }
 
     void PlateManager()
@@ -143,6 +146,32 @@ public class MicrowaveController : Interactable
     public override void InteractClick(FirstPersonController controller)
     {
         base.InteractClick(controller);
+        ActivateMicrowave();
+    }
+
+    public void ActivateMicrowave()
+    {
+        if (!active)
+        {
+            //turn on microwave
+            timeLeft = Random.Range(60, 120);
+            timerOn = true;
+            plateSpinning = true;
+            lightOn = true;
+        }
+        else if (active && allowDeactivate)
+        {
+            //turning off microwave if allowed
+            active = false;
+            timerOn = false;
+            plateSpinning = false;
+            doorOpen = false;
+        }
+    }
+
+    private void MicrowaveFinish()
+    {
+        
     }
 }
 
