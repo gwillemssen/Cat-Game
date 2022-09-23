@@ -28,7 +28,7 @@ public class FirstPersonInput : MonoBehaviour
         look.x = Input.GetAxis("Mouse X");
         look.y = -Input.GetAxis("Mouse Y");
         jump = Input.GetButtonDown("Jump");
-        sprint = Input.GetButtonDown("Sprint");
+        sprint = Input.GetButton("Sprint");
         throwing = Input.GetButtonDown("Throw");
         interactedOnce = Input.GetButtonDown("Interact");
         interacting = Input.GetButton("Interact");
