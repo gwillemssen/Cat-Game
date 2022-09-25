@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class FirstPersonController : MonoBehaviour
 {
+    public static FirstPersonController instance; //SINGLETON TIME
+
     [Header("Player")]
     [Tooltip("Move speed of the character in m/s")]
     public float MoveSpeed = 4.0f;
@@ -86,6 +88,15 @@ public class FirstPersonController : MonoBehaviour
 
     private void Awake()
     {
+        if (instance != null)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            instance = this;
+        }
+
         // get a reference to our main camera
         if (MainCamera == null)
         {
