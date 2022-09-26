@@ -1,26 +1,25 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class LerpScript2 : MonoBehaviour
 {
-    [HideInInspector]
-    public float floatVal;
-    [HideInInspector]
-    public Vector3 vecVal;
-    [HideInInspector]
-    public Color colorVal;
+
+    public List<float> floatValues;
+    public List<Vector3> vectorValues;
+    public List<Color> colorValues;
     
-    [HideInInspector]
-    public float floatTarget;
-    [HideInInspector]
-    public Vector3 vecTarget;
-    [HideInInspector]
-    public Color colorTarget;
+
+    public List<float> floatTargets;
+    public List<Vector3> vectorTargets;
+    public List <Color> colorTargets;
     
     [HideInInspector]
     public float lerpSpeed = 1;
+
+    private bool initialized;
 
     public enum LerpTiming
     {
@@ -28,18 +27,14 @@ public class LerpScript2 : MonoBehaviour
         Update = 1,
         LateUpdate = 2
     }
-    public enum LerpType
-    {
-        Float = 0,
-        Vector3 = 1,
-        Color = 2
-    }
+
+    private bool doVectors;
+    private bool doFloats;
+    private bool doColors;
     
-    [HideInInspector]
-    public LerpType typeOfLerp;
+
     [HideInInspector]
     public LerpTiming whenToLerp;
-
 
     void Update()
     {
@@ -67,73 +62,163 @@ public class LerpScript2 : MonoBehaviour
 
     void Count()
     {
-        if (typeOfLerp == LerpType.Float && floatTarget != floatVal)
-        {
-            float delta = floatTarget - floatVal;
-            delta *= Time.deltaTime * lerpSpeed;
-            floatVal += delta;
-
-            if (Mathf.Abs(floatTarget - floatVal) < 0.01f)
+        if (initialized)
+        { 
+            if (doFloats)
             {
-                floatVal = floatTarget;
+                if (floatValues[0] != null && floatTargets[0] != null)
+                {
+                    for (int i = 0; i < floatValues.Count; i++)
+                    {
+                        if (floatValues[i] != floatTargets[i])
+                        {
+                            float delta = floatTargets[i] - floatValues[i];
+                            delta *= Time.deltaTime * lerpSpeed;
+                            floatValues[i] += delta;
+                        }
+                        if (Mathf.Abs(floatTargets[i] - floatValues[i]) < 0.01f)
+                        {
+                            floatValues[i] = floatTargets[i];
+                        }
+                    }
+                }
             }
-        }
 
-        else if (typeOfLerp == LerpType.Vector3 && vecTarget != vecVal)
+            else if (doVectors)
         {
-            Vector3 delta = vecTarget - vecVal;
-
-            delta *= Time.deltaTime * lerpSpeed;
-
-            vecVal += delta;
+            if (vectorValues[0] != null && vectorTargets[0] != null)
+            {
+                for (int i = 0; i < vectorValues.Count; i++)
+                {
+                    Vector3 tempVal = vectorValues[i];
+                    if (vectorValues[i] != vectorTargets[i])
+                    {
+                        Vector3 delta = vectorTargets[i] - vectorValues[i];
+                        delta *= Time.deltaTime * lerpSpeed;
+                        vectorValues[i] += delta;
+                    }
+                    if (Mathf.Abs(vectorTargets[i].x - vectorValues[i].x) < 0.01f)
+                    {
+                        tempVal.x = vectorTargets[i].x;
+                    }
+                    if (Mathf.Abs(vectorTargets[i].y - vectorValues[i].y) < 0.01f)
+                    {
+                        tempVal.y = vectorTargets[i].y;
+                    }
+                    if (Mathf.Abs(vectorTargets[i].z - vectorValues[i].z) < 0.01f)
+                    {
+                        tempVal.z = vectorTargets[i].z;
+                    }
+                    if (vectorValues[i] != tempVal)
+                    {
+                        vectorValues[i] = tempVal;
+                    }
+                }
+            }
+            else
+            {
+                Debug.Log("No vector values found even though that type is set.");
+            }
             
-            if (Mathf.Abs(vecTarget.x - vecVal.x) < 0.01f)
-            {
-                vecVal.x = vecTarget.x;
-            }
-            if (Mathf.Abs(vecTarget.y - vecVal.y) < 0.01f)
-            {
-                vecVal.y = vecTarget.y;
-            }
-            if (Mathf.Abs(vecTarget.z - vecVal.z) < 0.01f)
-            {
-                vecVal.z = vecTarget.z;
-            }
         }
         
-        else if (typeOfLerp == LerpType.Color && colorTarget != colorVal)
+            else if (doColors)
         {
-            float deltaR = colorTarget.r - colorVal.r;
-            float deltaG = colorTarget.g - colorVal.g;
-            float deltaB = colorTarget.b - colorVal.b;
-            float deltaA = colorTarget.a - colorVal.a;
+            if (colorValues[0] != null && colorTargets[0] != null)
+            {
+                for (int i = 0; i < colorValues.Count; i++)
+                {
+                    Vector4 delta = colorTargets[i] - colorValues[i];
 
-            deltaR *= Time.deltaTime * lerpSpeed;
-            deltaG *= Time.deltaTime * lerpSpeed;
-            deltaB *= Time.deltaTime * lerpSpeed;
-            deltaA *= Time.deltaTime * lerpSpeed;
+                    delta *= Time.deltaTime * lerpSpeed;
 
-            colorVal.r += deltaR;
-            colorVal.g += deltaG;
-            colorVal.b += deltaB;
-            colorVal.a += deltaA;
+                    Vector4 tempVal = colorValues[i];
+                    tempVal += delta;
 
-            if (Mathf.Abs(colorTarget.r - colorVal.r) < 0.01f)
-            {
-                colorVal.r = colorTarget.r;
+                    if (Mathf.Abs(colorTargets[i].r - colorValues[i].r) < 0.01f)
+                    {
+                        tempVal.w = colorTargets[i].r;
+                    }
+                    if (Mathf.Abs(colorTargets[i].g - colorValues[i].g) < 0.01f)
+                    {
+                        tempVal.x = colorTargets[i].g;
+                    }
+                    if (Mathf.Abs(colorTargets[i].b - colorValues[i].b) < 0.01f)
+                    {
+                        tempVal.y = colorTargets[i].b;
+                    }
+                    if (Mathf.Abs(colorTargets[i].a - colorValues[i].a) < 0.01f)
+                    {
+                        tempVal.z = colorTargets[i].a;
+                    }
+
+                    Color tempColor = tempVal;
+                    if (tempColor != colorValues[i])
+                    {
+                        colorValues[i] = tempVal;
+                    }
+                }
             }
-            if (Mathf.Abs(colorTarget.g - colorVal.g) < 0.01f)
+            else
             {
-                colorVal.g = colorTarget.g;
-            }
-            if (Mathf.Abs(colorTarget.b - colorVal.b) < 0.01f)
-            {
-                colorVal.b = colorTarget.b;
-            }
-            if (Mathf.Abs(colorTarget.a - colorVal.a) < 0.01f)
-            {
-                colorVal.a = colorTarget.a;
+                Debug.Log("No color values found even though that type is set.");
             }
         }
+        }
     }
+    public void Initialize(Vector3 vector3val, Vector3 vector3tgt)
+    {
+        vectorTargets.Add(vector3tgt);
+        vectorValues.Add(vector3val);
+
+        doVectors = true;
+
+        initialized = true;
+    }
+    public void Initialize(List<Color> colorVals, List<Color> colortgts)
+    {
+        colorValues = colorVals;
+        colorTargets = colortgts;
+        
+        doColors = true;
+
+        initialized = true;
+    }
+    public void Initialize(List<Vector3> vector3vals, List<Vector3> vector3tgts)
+    {
+        vectorTargets = vector3tgts;
+        vectorValues = vector3vals;
+
+        doVectors = true;
+
+        initialized = true;
+    }
+    public void Initialize(List<float> floatVals, List<float> floattgts)
+    {
+        floatValues = floatVals;
+        floatTargets = floattgts;
+        
+        doFloats = true;
+    }
+    public void Initialize(List<float> floatVals, List<float> floattgts, List<Vector3> vector3vals, List<Vector3> vector3tgts, List<Color> color, List<Color> colortgts)
+    {
+        floatValues = floatVals;
+        vectorValues = vector3vals;
+        colorValues = color;
+        floatTargets = floattgts;
+        vectorTargets = vector3tgts;
+        colorTargets = colortgts;
+
+        doVectors = true;
+        doFloats = true;
+        doColors = true;
+
+        initialized = true;
+    }
+
+
+
+
+
+
 }
