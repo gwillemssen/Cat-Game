@@ -7,14 +7,14 @@ public class LerpScript : MonoBehaviour
 {
     [HideInInspector]
     public float floatVal;
-    [HideInInspector]
+
     public Vector3 vecVal;
     [HideInInspector]
     public Color colorVal;
     
     [HideInInspector]
     public float floatTarget;
-    [HideInInspector]
+
     public Vector3 vecTarget;
     [HideInInspector]
     public Color colorTarget;
@@ -40,6 +40,10 @@ public class LerpScript : MonoBehaviour
     [HideInInspector]
     public LerpTiming whenToLerp;
 
+    private void Start()
+    {
+        Debug.Log("PLEASE MAKE SURE TO TELL IT WHAT KIND OF LERP, idiot...");
+    }
 
     void Update()
     {
@@ -67,6 +71,9 @@ public class LerpScript : MonoBehaviour
 
     void Count()
     {
+        if(typeOfLerp == null)
+            Debug.Log("YOU FORGOT TO SET LERP TYPE IDIOT");
+        
         if (typeOfLerp == LerpType.Float && floatTarget != floatVal)
         {
             float delta = floatTarget - floatVal;

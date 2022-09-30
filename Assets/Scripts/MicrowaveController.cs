@@ -18,10 +18,22 @@ public class MicrowaveController : Interactable
     public bool plateSpinning;
     public bool doorOpen;
 
-    private float targetLightVal;
-    public float timeLeft;
+    private AudioClip[] sounds = new AudioClip[6];
+    // SOUND LIST:
+    // 0: beep
+    // 1: start
+    // 2: loop
+    // 3: finish
+    // 4: open
+    // 5: close
 
+    private AudioSource microwavePlayer;
+    public int clipID;
+
+
+    public float timeLeft;
     public bool timerOn = false;
+
 
     private TextMeshProUGUI timerText;
 
@@ -29,26 +41,15 @@ public class MicrowaveController : Interactable
     private LerpScript plateLerp;
     private LerpScript doorLerp;
     public bool allowDeactivate = false;
+    
     private bool active;
+
+    private Animator microwaveAnimator;
     
     // Start is called before the first frame update
     void Start()
     {
-        door = transform.GetChild(1).GetChild(0).gameObject;
-        doorLerp = this.AddComponent<LerpScript>();
-        doorLerp.typeOfLerp = LerpScript.LerpType.Vector3;
-        doorLerp.lerpSpeed = 8;
-        plate = transform.GetChild(1).GetChild(1).gameObject;
-        LightLerp = this.AddComponent<LerpScript>();
-        LightLerp.lerpSpeed = 16;
-        plateLerp = this.AddComponent<LerpScript>();
-        
-        mat = Instantiate(transform.GetChild(0).GetComponent<Renderer>().material);
-        transform.GetChild(0).GetComponent<Renderer>().material = mat;
-        light = transform.GetChild(2).GetComponent<Light>();
-        timerText = transform.GetChild(3).GetChild(0).GetComponent<TextMeshProUGUI>();
-        
-        timerOn = true;
+        MicrowaveLoad();
     }
 
     // Update is called once per frame
@@ -58,6 +59,8 @@ public class MicrowaveController : Interactable
         TimerManager();
         PlateManager();
         DoorManager();
+
+        microwavePlayer.clip = sounds[clipID];
     }
 
     void LightManager()
@@ -82,7 +85,7 @@ public class MicrowaveController : Interactable
     {
         if (timerOn)
         {
-            if (timeLeft >= 0)
+            if (timeLeft > 0)
             {
                 timeLeft -= Time.deltaTime;
                 UpdateTimer(timeLeft);
@@ -90,9 +93,11 @@ public class MicrowaveController : Interactable
             else
             {
                 {
-                    Debug.Log("time up");
                     timeLeft = 0;
+                    Debug.Log("time up");
                     timerOn = false;
+                    microwaveAnimator.SetTrigger("FinishedTrigger");
+                    active = false;
                 }
             }
         }
@@ -145,33 +150,88 @@ public class MicrowaveController : Interactable
 
     public override void InteractClick(FirstPersonController controller)
     {
-        base.InteractClick(controller);
         ActivateMicrowave();
     }
 
-    public void ActivateMicrowave()
+    void ActivateMicrowave()
     {
         if (!active)
         {
-            //turn on microwave
-            timeLeft = Random.Range(60, 120);
-            timerOn = true;
-            plateSpinning = true;
-            lightOn = true;
+            if (doorOpen)
+            {
+                //door open when off stuff
+                microwaveAnimator.SetTrigger("CloseTrigger");
+            }
+            else
+            {
+                //turn on microwave
+                active = true;
+                timerOn = true;
+                timeLeft = Random.Range(5,10);
+                microwaveAnimator.SetTrigger("CookTrigger");
+            }
         }
         else if (active && allowDeactivate)
         {
-            //turning off microwave if allowed
+            //cancel cook of microwave if allowed
+            microwaveAnimator.SetTrigger("CancelTrigger");
             active = false;
-            timerOn = false;
-            plateSpinning = false;
-            doorOpen = false;
+            CancelCook();
         }
     }
 
     private void MicrowaveFinish()
     {
+        microwaveAnimator.SetTrigger("FinishedTrigger");
+    }
+
+    private void MicrowaveLoad()
+    {
+        //sound loading
+        sounds[0] = Resources.Load("Sound/So_MicrowaveBeep") as AudioClip;
+        sounds[1] = Resources.Load("Sound/So_MicrowaveStart") as AudioClip;
+        sounds[2] = Resources.Load("Sound/So_MicrowaveLoop") as AudioClip;
+        sounds[3] = Resources.Load("Sound/So_MicrowaveFinish") as AudioClip;
+        sounds[4] = Resources.Load("Sound/So_MicrowaveOpen") as AudioClip;
+        sounds[5] = Resources.Load("Sound/So_MicrowaveClose") as AudioClip;
+
+        microwaveAnimator = GetComponent<Animator>();
+        microwavePlayer = GetComponent<AudioSource>();
+        door = transform.GetChild(1).GetChild(0).gameObject;
+        doorLerp = this.AddComponent<LerpScript>();
+        doorLerp.typeOfLerp = LerpScript.LerpType.Vector3;
+        doorLerp.lerpSpeed = 8;
+        plate = transform.GetChild(1).GetChild(1).gameObject;
+        LightLerp = this.AddComponent<LerpScript>();
+        LightLerp.lerpSpeed = 16;
+        plateLerp = this.AddComponent<LerpScript>();
         
+        mat = Instantiate(transform.GetChild(0).GetComponent<Renderer>().material);
+        transform.GetChild(0).GetComponent<Renderer>().material = mat;
+        light = transform.GetChild(2).GetComponent<Light>();
+        timerText = transform.GetChild(3).GetChild(0).GetComponent<TextMeshProUGUI>();
+    }
+
+    void PlaySound(AudioClip sound, bool interrupt)
+    {
+        if (interrupt)
+        {
+            microwavePlayer.Stop();
+        }
+        microwavePlayer.clip = sound;
+        microwavePlayer.Play();
+    }
+
+    IEnumerator waiter(float seconds)
+    {
+        bool done = false;
+        yield return new WaitForSeconds(seconds);
+    }
+
+    void CancelCook()
+    {
+        timerOn = false;
+        timeLeft = 0;
     }
 }
 

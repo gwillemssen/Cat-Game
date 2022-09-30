@@ -125,6 +125,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8444169217668667374}
   - component: {fileID: 1403374577511592980}
+  - component: {fileID: 1119337481}
   m_Layer: 0
   m_Name: Door
   m_TagString: Untagged
@@ -202,6 +203,19 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.51595736, y: -3.8598566, z: 2.9804988}
     m_Extent: {x: 5.3222075, y: 0.4870087, z: 3.4182992}
   m_DirtyAABB: 0
+--- !u!65 &1119337481
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 514119855182930891}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 10.644416, y: 6.836599, z: 0.9740223}
+  m_Center: {x: 0.021243095, y: -0.011162758, z: -0.11900926}
 --- !u!1 &2329824335823207637
 GameObject:
   m_ObjectHideFlags: 0
@@ -212,7 +226,12 @@ GameObject:
   m_Component:
   - component: {fileID: 3107169622659245679}
   - component: {fileID: 1435855832}
-  m_Layer: 0
+  - component: {fileID: 1550981938}
+  - component: {fileID: 1550981939}
+  - component: {fileID: 1550981940}
+  - component: {fileID: 1550981941}
+  - component: {fileID: 1550981943}
+  m_Layer: 10
   m_Name: Microwave
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -255,9 +274,165 @@ MonoBehaviour:
   lightOn: 0
   plateSpinning: 0
   doorOpen: 0
+  clipID: 0
   timeLeft: 0
   timerOn: 0
-  testvec: {x: 0, y: 0, z: 0}
+  allowDeactivate: 0
+--- !u!65 &1550981938
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2329824335823207637}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 16.02367, y: 10.258047, z: 13.311502}
+  m_Center: {x: -0.66893727, y: -0.08050107, z: -0.37902212}
+--- !u!65 &1550981939
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2329824335823207637}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 7.7624, y: 4.582469, z: 1.0805135}
+  m_Center: {x: 0.16101211, y: 0.14088537, z: -4.7095256}
+--- !u!65 &1550981940
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2329824335823207637}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 12.685782, y: 7.4001307, z: 7.8831577}
+  m_Center: {x: -0.5295803, y: -0.14087881, z: -0.2213917}
+--- !u!82 &1550981941
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2329824335823207637}
+  m_Enabled: 0
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!95 &1550981943
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2329824335823207637}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 12c2669eca336b449908bc51d676ad60, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &2613688711271622124
 GameObject:
   m_ObjectHideFlags: 0
@@ -476,7 +651,7 @@ GameObject:
   - component: {fileID: 8268500908711697371}
   - component: {fileID: 3097698453079950155}
   - component: {fileID: 2541290853099500193}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: MicrowaveText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -612,7 +787,7 @@ GameObject:
   - component: {fileID: 4881667424261384634}
   - component: {fileID: 2337039703075292535}
   - component: {fileID: 8473817694876538044}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: MicrowaveCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
