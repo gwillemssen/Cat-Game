@@ -176,7 +176,11 @@ public class Cat : Interactable
 
         pettingAmount = Mathf.Clamp01(pettingAmount);
         if (pettingAmount == 1f)                         //win
-        { EndMinigame(); }
+        {
+            EndMinigame();
+            base.CanInteract = false;
+            LevelManager.instance.CatPetted();
+        }
     }
 
     private void EndMinigame()

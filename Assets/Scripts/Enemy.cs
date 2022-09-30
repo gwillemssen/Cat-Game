@@ -28,6 +28,7 @@ public class Enemy : MonoBehaviour
     [Tooltip("How long after losing the target does it take until the enemy goes back into idle")]
     [Range(1f, 10f)]
     public float LostTargetTime = 3f;
+    public float CaughtDistance = 1.25f;
 
     [Header("Misc")]
     public LayerMask EverythingExceptEnemy;
@@ -46,6 +47,7 @@ public class Enemy : MonoBehaviour
     private bool doPatrol = false;
     private float fov;
     private RaycastHit hit;
+    private float sqrCaughtDistance;
 
     void Start()
     {
@@ -55,6 +57,7 @@ public class Enemy : MonoBehaviour
 
         EnemyDebugObject.gameObject.SetActive(DebugMode);
         fov = Mathf.InverseLerp(180, 0, FieldOfView);
+        sqrCaughtDistance = CaughtDistance * CaughtDistance;
 
         if (PatrollingRoute != null)
         {
@@ -95,6 +98,11 @@ public class Enemy : MonoBehaviour
         }
 
         Move();
+
+        if(Vector3.SqrMagnitude(transform.position - target.position) <= sqrCaughtDistance)
+        {
+            GameManager.instance.GameOver();
+        }
     }
 
     void SpotPlayer()
