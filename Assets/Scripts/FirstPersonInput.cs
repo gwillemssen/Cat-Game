@@ -12,9 +12,6 @@ public class FirstPersonInput : MonoBehaviour
     public bool interactedOnce;
     public bool throwing;
 
-    [Header("Movement Settings")]
-    public bool analogMovement;
-
     [Header("Mouse Cursor Settings")]
     public bool cursorLocked = true;
     public bool cursorInputForLook = true;
@@ -26,12 +23,12 @@ public class FirstPersonInput : MonoBehaviour
 
     private void Update()
     {
-        move.x = Input.GetAxis("Horizontal");
-        move.y = Input.GetAxis("Vertical");
+        move.x = Input.GetAxisRaw("Horizontal");
+        move.y = Input.GetAxisRaw("Vertical");
         look.x = Input.GetAxis("Mouse X");
         look.y = -Input.GetAxis("Mouse Y");
         jump = Input.GetButtonDown("Jump");
-        sprint = Input.GetButtonDown("Sprint");
+        sprint = Input.GetButton("Sprint");
         throwing = Input.GetButtonDown("Throw");
         interactedOnce = Input.GetButtonDown("Interact");
         interacting = Input.GetButton("Interact");

@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class FirstPersonController : MonoBehaviour
 {
+    public static FirstPersonController instance; //SINGLETON TIME
+
     [Header("Player")]
     [Tooltip("Move speed of the character in m/s")]
     public float MoveSpeed = 4.0f;
@@ -14,8 +16,8 @@ public class FirstPersonController : MonoBehaviour
     public float SprintSpeed = 6.0f;
     [Tooltip("Rotation speed of the character")]
     public float RotationSpeed = 1.0f;
-    [Tooltip("Acceleration and deceleration")]
-    public float SpeedChangeRate = 10.0f;
+    [Tooltip("higher value = more smooth, lower value = more snappy")]
+    public float Smoothing = .1f;
 
     [Space(10)]
     [Tooltip("The height the player can jump")]
@@ -53,7 +55,11 @@ public class FirstPersonController : MonoBehaviour
     private float _cinemachineTargetPitch;
 
     // player
-    private float speed;
+    private Vector2 wishMove;
+    private Vector3 wishMoveDir;
+    private Vector3 moveDir;
+    private Vector3 moveDamp;
+    private float targetSpeed;
     private float rotationVelocity;
     private float verticalVelocity;
     private float terminalVelocity = 53.0f;
@@ -78,9 +84,19 @@ public class FirstPersonController : MonoBehaviour
 
     private const float _threshold = 0.01f;
     private const bool isCurrentDeviceMouse = true;
+    private const bool useAnalogMovement = false; //enable this if we want to use a controller
 
     private void Awake()
     {
+        if (instance != null)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            instance = this;
+        }
+
         // get a reference to our main camera
         if (MainCamera == null)
         {
@@ -99,16 +115,12 @@ public class FirstPersonController : MonoBehaviour
         fallTimeoutDelta = FallTimeout;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         JumpAndGravity();
         GroundedCheck();
         Move();
         Interaction.UpdateInteraction();
-    }
-
-    private void LateUpdate()
-    {
         CameraRotation();
     }
 
@@ -143,49 +155,19 @@ public class FirstPersonController : MonoBehaviour
 
     private void Move()
     {
-        // set target speed based on move speed, sprint speed and if sprint is pressed
-        float targetSpeed = Input.sprint ? SprintSpeed : MoveSpeed;
+        wishMove = Input.move.normalized;
+        wishMoveDir.x = wishMove.x;
+        wishMoveDir.y = 0f;
+        wishMoveDir.z = wishMove.y;
 
-        // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
+        wishMoveDir = transform.TransformDirection(wishMoveDir);
 
-        // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-        // if there is no input, set the target speed to 0
-        if (Input.move == Vector2.zero) targetSpeed = 0.0f;
+        targetSpeed = Input.sprint ? SprintSpeed : MoveSpeed;
 
-        // a reference to the players current horizontal velocity
-        float currentHorizontalSpeed = new Vector3(controller.velocity.x, 0.0f, controller.velocity.z).magnitude;
+        moveDir = Vector3.SmoothDamp(moveDir, targetSpeed * wishMoveDir, ref moveDamp, Smoothing);
 
-        float speedOffset = 0.1f;
-        float inputMagnitude = Input.analogMovement ? Input.move.magnitude : 1f;
-
-        // accelerate or decelerate to target speed
-        if (currentHorizontalSpeed < targetSpeed - speedOffset || currentHorizontalSpeed > targetSpeed + speedOffset)
-        {
-            // creates curved result rather than a linear one giving a more organic speed change
-            // note T in Lerp is clamped, so we don't need to clamp our speed
-            speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude, Time.deltaTime * SpeedChangeRate);
-
-            // round speed to 3 decimal places
-            speed = Mathf.Round(speed * 1000f) / 1000f;
-        }
-        else
-        {
-            speed = targetSpeed;
-        }
-
-        // normalise input direction
-        Vector3 inputDirection = new Vector3(Input.move.x, 0.0f, Input.move.y).normalized;
-
-        // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-        // if there is a move input rotate player when the player is moving
-        if (Input.move != Vector2.zero)
-        {
-            // move
-            inputDirection = transform.right * Input.move.x + transform.forward * Input.move.y;
-        }
-
-        // move the player
-        controller.Move(inputDirection.normalized * (speed * Time.deltaTime) + new Vector3(0.0f, verticalVelocity, 0.0f) * Time.deltaTime);
+        moveDir.y = verticalVelocity;
+        controller.Move(moveDir * Time.deltaTime);
     }
 
     private void JumpAndGravity()
