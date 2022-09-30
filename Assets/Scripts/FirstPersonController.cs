@@ -71,6 +71,7 @@ public class FirstPersonController : MonoBehaviour
     //CAT
     [Header("CAT")]
     public Transform CatHoldingPosition;
+    [HideInInspector]
     public Slider PettingMeter;
 
     //component references
@@ -109,7 +110,9 @@ public class FirstPersonController : MonoBehaviour
         Interaction = GetComponent<FirstPersonInteraction>();
         Interaction.Init(this);
 
-        canvas = Instantiate<GameObject>(FPSCamPrefab, Vector3.down * 100f, Quaternion.identity).GetComponent<Canvas>();
+        canvas = Instantiate<GameObject>(FPSCamPrefab, Vector3.down * 100f, Quaternion.identity).GetComponentInChildren<Canvas>();
+        PettingMeter = canvas.GetComponentInChildren<Slider>();
+        PettingMeter.gameObject.SetActive(false);
     }
 
     private void Start()
