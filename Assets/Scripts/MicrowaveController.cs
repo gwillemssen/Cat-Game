@@ -180,11 +180,6 @@ public class MicrowaveController : Interactable
         }
     }
 
-    private void MicrowaveFinish()
-    {
-        microwaveAnimator.SetTrigger("FinishedTrigger");
-    }
-
     private void MicrowaveLoad()
     {
         //sound loading
@@ -210,22 +205,6 @@ public class MicrowaveController : Interactable
         transform.GetChild(0).GetComponent<Renderer>().material = mat;
         light = transform.GetChild(2).GetComponent<Light>();
         timerText = transform.GetChild(3).GetChild(0).GetComponent<TextMeshProUGUI>();
-    }
-
-    void PlaySound(AudioClip sound, bool interrupt)
-    {
-        if (interrupt)
-        {
-            microwavePlayer.Stop();
-        }
-        microwavePlayer.clip = sound;
-        microwavePlayer.Play();
-    }
-
-    IEnumerator waiter(float seconds)
-    {
-        bool done = false;
-        yield return new WaitForSeconds(seconds);
     }
 
     void CancelCook()

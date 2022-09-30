@@ -125,7 +125,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8444169217668667374}
   - component: {fileID: 1403374577511592980}
-  - component: {fileID: 1119337481}
   m_Layer: 0
   m_Name: Door
   m_TagString: Untagged
@@ -203,19 +202,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.51595736, y: -3.8598566, z: 2.9804988}
     m_Extent: {x: 5.3222075, y: 0.4870087, z: 3.4182992}
   m_DirtyAABB: 0
---- !u!65 &1119337481
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 514119855182930891}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 10.644416, y: 6.836599, z: 0.9740223}
-  m_Center: {x: 0.021243095, y: -0.011162758, z: -0.11900926}
 --- !u!1 &2329824335823207637
 GameObject:
   m_ObjectHideFlags: 0
@@ -270,14 +256,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LookingAt: 0
+  CanInteract: 1
   currentNoiseEmitted: 0
   lightOn: 0
   plateSpinning: 0
   doorOpen: 0
   clipID: 0
-  timeLeft: 0
+  timeLeft: 5
   timerOn: 0
-  allowDeactivate: 0
+  allowDeactivate: 1
 --- !u!65 &1550981938
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -618,6 +605,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4591135145031871354}
+  - component: {fileID: 1324556656}
   m_Layer: 0
   m_Name: DoorN
   m_TagString: Untagged
@@ -640,6 +628,19 @@ Transform:
   m_Father: {fileID: 1775447387434415725}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1324556656
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2929740914770673467}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 10.635524, y: 0.61421394, z: 6.7352777}
+  m_Center: {x: -5.230894, y: -0.19289303, z: 0.09720839}
 --- !u!1 &5519396444743209739
 GameObject:
   m_ObjectHideFlags: 0
