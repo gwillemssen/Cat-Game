@@ -74,6 +74,9 @@ public class FirstPersonController : MonoBehaviour
     public Slider PettingMeter;
 
     //component references
+    [Header("References")]
+    public GameObject FPSCamPrefab;
+    private Canvas canvas;
     private CharacterController controller;
     [HideInInspector]
     public GameObject MainCamera { get; private set; }
@@ -105,6 +108,8 @@ public class FirstPersonController : MonoBehaviour
         Input = GetComponent<FirstPersonInput>();
         Interaction = GetComponent<FirstPersonInteraction>();
         Interaction.Init(this);
+
+        canvas = Instantiate<GameObject>(FPSCamPrefab, Vector3.down * 100f, Quaternion.identity).GetComponent<Canvas>();
     }
 
     private void Start()
