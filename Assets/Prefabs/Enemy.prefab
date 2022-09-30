@@ -407,7 +407,7 @@ MonoBehaviour:
   radius: 1
   height: 2
   canMove: 1
-  maxSpeed: 3
+  maxSpeed: 1.8
   gravity: {x: NaN, y: NaN, z: NaN}
   groundMask:
     serializedVersion: 2
@@ -445,10 +445,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9414aabddf48aa14ea1ad77e2da5cb37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FieldOfView: 27.7
   PatrollingRoute: []
   eyes: {fileID: 8272336163191410661}
+  FieldOfView: 90
   SightDistance: 12
+  AlertnessRequired: 2
   ChaseTime: 6
   LostTargetTime: 3
   EverythingExceptEnemy:

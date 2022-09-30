@@ -8,13 +8,29 @@ using UnityEditor;
 public class Enemy : MonoBehaviour
 {
     public enum EnemyState { Idle, Patrolling, Chasing, LostTarget }
+
+    [Header("References")]
     [Range(0, 180f)]
-    public float FieldOfView = 90f;
     public List<Transform> PatrollingRoute;
     public Transform eyes;
+
+    [Header("Alertness")]
+    [Range(45f, 270f)]
+    public float FieldOfView = 90f;
     public float SightDistance = 12f;
+    [Tooltip("Higher value = more time / noise is neeeded to alert the enemy")]
+    [Range(0f, 8f)]
+    public float AlertnessRequired = 2f;
+    
+    [Header("Chasing")]
+    [Range(1f, 10f)]
     public float ChaseTime = 6f;
+    [Tooltip("How long after losing the target does it take until the enemy goes back into idle")]
+    [Range(1f, 10f)]
     public float LostTargetTime = 3f;
+    public float CaughtDistance = 1.25f;
+
+    [Header("Misc")]
     public LayerMask EverythingExceptEnemy;
     public bool DebugMode = false;
     public TextMesh EnemyDebugObject;
@@ -22,6 +38,8 @@ public class Enemy : MonoBehaviour
     public EnemyState State { get; private set; }
     public bool InFOV { get; private set; }
     public RaycastHit Hit { get; private set; }
+    public float Alertness { get; private set; }
+
     private IAstarAI ai;
     private Transform target;
     private float lastTimeSighted = -420f;
@@ -29,6 +47,7 @@ public class Enemy : MonoBehaviour
     private bool doPatrol = false;
     private float fov;
     private RaycastHit hit;
+    private float sqrCaughtDistance;
 
     void Start()
     {
@@ -38,6 +57,7 @@ public class Enemy : MonoBehaviour
 
         EnemyDebugObject.gameObject.SetActive(DebugMode);
         fov = Mathf.InverseLerp(180, 0, FieldOfView);
+        sqrCaughtDistance = CaughtDistance * CaughtDistance;
 
         if (PatrollingRoute != null)
         {
@@ -52,10 +72,20 @@ public class Enemy : MonoBehaviour
         {
             if (RaycastToPlayer())
             {
-                lastTimeSighted = Time.time;
-                State = EnemyState.Chasing; //player spotted
+                if (State == EnemyState.LostTarget)  //LostTarget -> Chasing is instant
+                { SpotPlayer(); }
+                else
+                {
+                    IncreaseAlertness();
+                    if (Alertness >= AlertnessRequired)
+                    { SpotPlayer(); }
+                }
             }
+            else if (State == EnemyState.Idle)
+            { DecreaseAlertness(); }
         }
+        else
+        { DecreaseAlertness(); }
 
         if (State == EnemyState.Chasing && Time.time > lastTimeSighted + ChaseTime)
         {
@@ -68,6 +98,28 @@ public class Enemy : MonoBehaviour
         }
 
         Move();
+
+        if(Vector3.SqrMagnitude(transform.position - target.position) <= sqrCaughtDistance)
+        {
+            GameManager.instance.GameOver();
+        }
+    }
+
+    void SpotPlayer()
+    {
+        lastTimeSighted = Time.time;
+        State = EnemyState.Chasing;
+        Alertness = AlertnessRequired;
+    }
+
+    void DecreaseAlertness()
+    {
+        Alertness = Mathf.Clamp(Alertness - Time.deltaTime, 0f, AlertnessRequired);
+    }
+
+    void IncreaseAlertness()
+    {
+        Alertness = Mathf.Clamp(Alertness + Time.deltaTime, 0f, AlertnessRequired);
     }
 
     void Move()

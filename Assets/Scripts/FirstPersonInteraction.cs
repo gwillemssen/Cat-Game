@@ -40,7 +40,12 @@ public class FirstPersonInteraction : MonoBehaviour
         {
             interactable = hit.transform.GetComponent<Interactable>();
             if (interactable != null)
-            { interactable.LookingAt = true; }
+            {
+                if (!interactable.CanInteract)
+                    { interactable = null; }
+                else
+                    { interactable.LookingAt = true; }
+            }
         }
         else
         { interactable = null; }

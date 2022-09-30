@@ -6,6 +6,7 @@ public class Interactable : MonoBehaviour
 {
     [HideInInspector] 
     public bool LookingAt = false; //is the player looking at the object?
+    public bool CanInteract = true;
 
     //we are clicking the object
     public virtual void Interact(FirstPersonController controller)
