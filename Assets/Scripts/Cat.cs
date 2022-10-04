@@ -15,10 +15,10 @@ public class Cat : Interactable
     //inspector
     public enum CatStartState { Pettable, Unpettable } 
     public CatStartState StartState;
-    public float PettingSpeed = 1f;
-    public float PettingDecayRate = 0.1f;
+    public float PettingSpeed = 5f;
+    public float PettingDecayRate = 0.75f;
     public float PettingDecayDelay = 1f;
-    public float PettingSpeedRequired = 1000f;
+    public float PettingSpeedRequired = 150f;
 
     //general
     private enum CatState { Pettable, Unpettable, PettingMinigame, DonePetting };
@@ -40,19 +40,18 @@ public class Cat : Interactable
     private Vector2 mouseDelta = Vector2.zero;
     private float mouseSpeed;
     private float lastTimePet = -420f;
-    private static float petPushCatAmt = 0.002f;
-    private static float petStretchCatAmt = 0.0004f;
+    private static float petPushCatAmt = 0.03f;
+    private static float petStretchCatAmt = 0.007f;
     private static float petPushLerpSmoothing = .5f;
     private static float petStretchLerpSmoothing = 8f;
     private static float petCameraFOVNormal = 90f;
-    private static float petCameraFOVZoomed = 75f;
+    private static float petCameraFOVZoomed = 80f;
 
     private void Start()
     {
         state = (CatState)StartState;
         anim = GetComponentInChildren<Animator>();
         audio = GetComponent<AudioSource>();
-        //shake = GetComponent<ShakePosition>();
     }
 
     private void Update()
@@ -183,7 +182,7 @@ public class Cat : Interactable
 
         if (playerController.Input.interacting)
         {
-            mouseDelta = lastMousePosition - playerController.Input.mousePosition;
+            mouseDelta = playerController.Input.look;
             mouseSpeed = mouseDelta.magnitude / Time.deltaTime; //speed = distance / time
 
             if (mouseSpeed >= PettingSpeedRequired)
@@ -209,8 +208,6 @@ public class Cat : Interactable
             mouseSpeed = 0f;
             mouseDelta = Vector2.zero;
         }
-
-        lastMousePosition = playerController.Input.mousePosition;
 
         playerController.PettingMeter.value = pettingAmount;
 
