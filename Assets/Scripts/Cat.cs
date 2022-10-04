@@ -30,6 +30,7 @@ public class Cat : Interactable
     //Minigame
     private Vector3 catOriginalPos;
     private Quaternion catOriginalRot;
+    private Vector3 catOriginalScale;
     private Vector3 catHoldingPos;
     private Quaternion catHoldingRot;
     private FirstPersonController playerController;
@@ -37,7 +38,14 @@ public class Cat : Interactable
     private float pettingAmount = 0f;
     private Vector2 lastMousePosition = Vector2.zero;
     private Vector2 mouseDelta = Vector2.zero;
+    private float mouseSpeed;
     private float lastTimePet = -420f;
+    private static float petPushCatAmt = 0.002f;
+    private static float petStretchCatAmt = 0.0004f;
+    private static float petPushLerpSmoothing = .5f;
+    private static float petStretchLerpSmoothing = 8f;
+    private static float petCameraFOVNormal = 90f;
+    private static float petCameraFOVZoomed = 75f;
 
     private void Start()
     {
@@ -81,24 +89,45 @@ public class Cat : Interactable
         }
     }
 
+    Vector3 startPos, targetPos, offsetPos, offsetScale;
+    Quaternion startRot, targetRot;
     private void MoveCat()
     {
         float t = Time.time - timeStartedMovingCat;
         t = Mathf.Clamp01(t);
         t = t * t * t * (t * (6f * t - 15f) + 10f); //smootherstep
 
-        //move da cat
-        Vector3 startPos = catOriginalPos, targetPos = catOriginalPos;
-        Quaternion startRot = catOriginalRot, targetRot = catOriginalRot;
+        offsetPos = Vector3.Lerp(offsetPos, Vector3.zero, Time.deltaTime * petPushLerpSmoothing);
+        offsetScale = Vector3.Lerp(offsetScale, Vector3.zero, Time.deltaTime * petStretchLerpSmoothing);
 
+        //move da cat
         if (state == CatState.PettingMinigame)
         {
+            if (playerController.Input.interacting)
+            {
+                //cat gets pushed around by petting
+                offsetPos += transform.right * mouseDelta.x;
+                offsetPos += transform.up * mouseDelta.y;
+                offsetPos *= petPushCatAmt;
+
+                //cat gets stretched by petting
+                //choose greater one
+                if (Mathf.Abs(mouseDelta.x) > Mathf.Abs(mouseDelta.y))
+                { offsetScale.x += Mathf.Abs(mouseDelta.x * petStretchCatAmt); }
+                else
+                { offsetScale.y += Mathf.Abs(mouseDelta.y * petStretchCatAmt); }
+
+            }
+
+            //FOV from petting intensity
+            playerController.TargetFOV = Mathf.Lerp(petCameraFOVNormal, petCameraFOVZoomed, (mouseSpeed / PettingSpeedRequired * 5f));
+
             startPos = catOriginalPos;
             startRot = catOriginalRot;
-            targetPos = catHoldingPos;
+            targetPos = catHoldingPos - offsetPos;
             targetRot = catHoldingRot;
         }
-        else if (state == CatState.DonePetting)
+        else
         {
             targetPos = catOriginalPos;
             targetRot = catOriginalRot;
@@ -108,13 +137,11 @@ public class Cat : Interactable
 
         if (transform.position != targetPos)
         {
-            if (Vector3.SqrMagnitude(transform.position - targetPos) <= 0.005)
+            if (state == CatState.DonePetting && Vector3.SqrMagnitude(transform.position - targetPos) <= 0.005)
             {
                 transform.position = targetPos;
                 transform.rotation = targetRot;
-
-                if (state == CatState.DonePetting)
-                { state = CatState.Pettable; }
+                state = CatState.Pettable;
                 //maybe this should this change back to the startState?
             }
             else
@@ -123,15 +150,19 @@ public class Cat : Interactable
                 transform.rotation = Quaternion.Lerp(startRot, targetRot, t);
             }
         }
+
+        transform.localScale = catOriginalScale + offsetScale;
     }
 
     private void StartMinigame()
     {
+        base.CanInteract = false;
         catOriginalPos = transform.position;
         catOriginalRot = transform.rotation;
+        catOriginalScale = transform.localScale;
         timeStartedMovingCat = Time.time;
         state = CatState.PettingMinigame;
-        playerController.enabled = false;
+        playerController.DisableMovement = true;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         playerController.PettingMeter.gameObject.SetActive(true);
@@ -150,7 +181,7 @@ public class Cat : Interactable
         if (playerController.Input.interacting)
         {
             mouseDelta = lastMousePosition - playerController.Input.mousePosition;
-            float mouseSpeed = mouseDelta.magnitude / Time.deltaTime; //speed = distance / time
+            mouseSpeed = mouseDelta.magnitude / Time.deltaTime; //speed = distance / time
 
             if (mouseSpeed >= PettingSpeedRequired)
             {
@@ -170,6 +201,12 @@ public class Cat : Interactable
             audio.volume -= Time.deltaTime;
         }
 
+        if(!playerController.Input.interacting)
+        {
+            mouseSpeed = 0f;
+            mouseDelta = Vector2.zero;
+        }
+
         lastMousePosition = playerController.Input.mousePosition;
 
         playerController.PettingMeter.value = pettingAmount;
@@ -179,15 +216,23 @@ public class Cat : Interactable
         {
             EndMinigame();
             base.CanInteract = false;
-            LevelManager.instance.CatPetted();
+            if (LevelManager.instance != null)
+            { LevelManager.instance.CatPetted(); }
+            else
+            { 
+                Debug.LogWarning("Levelmanager not in scene.  Resetting cat");
+                base.CanInteract = true; //testing
+            }
         }
     }
 
     private void EndMinigame()
     {
+        playerController.TargetFOV = petCameraFOVNormal;
+        transform.localScale = catOriginalScale;
         state = CatState.DonePetting;
         timeStartedMovingCat = Time.time;
-        playerController.enabled = true;
+        playerController.DisableMovement = false;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         playerController.PettingMeter.gameObject.SetActive(false);

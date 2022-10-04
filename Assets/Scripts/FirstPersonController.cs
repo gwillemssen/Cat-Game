@@ -50,7 +50,6 @@ public class FirstPersonController : MonoBehaviour
     //[Tooltip("How far in degrees can you move the camera down")]
     [HideInInspector]
     public float BottomClamp = -90.0f;
-
     // cinemachine
     private float _cinemachineTargetPitch;
 
@@ -68,11 +67,17 @@ public class FirstPersonController : MonoBehaviour
     private float jumpTimeoutDelta;
     private float fallTimeoutDelta;
 
+    //other
+    [HideInInspector]
+    public bool DisableMovement = false;
+
     //CAT
     [Header("CAT")]
     public Transform CatHoldingPosition;
     [HideInInspector]
     public Slider PettingMeter;
+    [HideInInspector]
+    public float TargetFOV = 90f;
 
     //component references
     [Header("References")]
@@ -80,12 +85,13 @@ public class FirstPersonController : MonoBehaviour
     private Canvas canvas;
     private CharacterController controller;
     [HideInInspector]
-    public GameObject MainCamera { get; private set; }
+    public Camera MainCamera { get; private set; }
     [HideInInspector]
     public FirstPersonInput Input { get; private set; }
     [HideInInspector]
     public FirstPersonInteraction Interaction { get; private set; }
 
+    private static float CameraFOVLerpSpeed = 2f;
     private const float _threshold = 0.01f;
     private const bool isCurrentDeviceMouse = true;
     private const bool useAnalogMovement = false; //enable this if we want to use a controller
@@ -104,7 +110,7 @@ public class FirstPersonController : MonoBehaviour
         // get a reference to our main camera
         if (MainCamera == null)
         {
-            MainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+            MainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         }
         Input = GetComponent<FirstPersonInput>();
         Interaction = GetComponent<FirstPersonInteraction>();
@@ -125,12 +131,22 @@ public class FirstPersonController : MonoBehaviour
 
     private void LateUpdate()
     {
-        JumpAndGravity();
-        GroundedCheck();
-        Move();
+        if (!DisableMovement)
+        {
+            JumpAndGravity();
+            GroundedCheck();
+            Move();
+            CameraRotation();
+        }
         Interaction.UpdateInteraction();
-        CameraRotation();
+        CameraFOVLerp();
     }
+
+    private void CameraFOVLerp()
+    {
+        MainCamera.fieldOfView = Mathf.Lerp(MainCamera.fieldOfView, TargetFOV, Time.deltaTime * CameraFOVLerpSpeed);
+    }
+
 
     private void GroundedCheck()
     {
