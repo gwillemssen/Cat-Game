@@ -67,7 +67,10 @@ public class Cat : Interactable
             {
                 UpdateMinigame();
                 if (playerController.Input.throwing)
-                    { EndMinigame(); }
+                {
+                    EndMinigame();
+                    base.CanInteract = true;    
+                }
             }
         }
         if(audio.isPlaying && state != CatState.PettingMinigame)
