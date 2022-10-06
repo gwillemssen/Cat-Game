@@ -64,6 +64,11 @@ public class Enemy : MonoBehaviour
             if (PatrollingRoute.Count > 0)
             { doPatrol = true; }
         }
+
+        if (LevelManager.instance == null)
+        { Debug.LogError("LEVELMANAGER NOT IN SCENE"); }
+        LevelManager.instance.Enemies.Add(this);
+
     }
 
     void Update()
@@ -103,6 +108,11 @@ public class Enemy : MonoBehaviour
         {
             GameManager.instance.GameOver();
         }
+    }
+
+    public void GoAggro()
+    {
+        SpotPlayer();
     }
 
     void SpotPlayer()

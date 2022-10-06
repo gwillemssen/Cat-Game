@@ -4,6 +4,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(FirstPersonInput))]
 [RequireComponent(typeof(FirstPersonInteraction))]
+[RequireComponent(typeof(PlayerUI))]
 
 public class FirstPersonController : MonoBehaviour
 {
@@ -41,17 +42,25 @@ public class FirstPersonController : MonoBehaviour
     [Tooltip("What layers the character uses as ground")]
     public LayerMask GroundLayers;
 
-    //[Header("Cinemachine")]
-    //[Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
-    public GameObject CinemachineCameraTarget;
-    //[Tooltip("How far in degrees can you move the camera up")]
+    [Tooltip("How far in degrees can you move the camera up")]
     [HideInInspector]
     public float TopClamp = 90.0f;
-    //[Tooltip("How far in degrees can you move the camera down")]
+    [Tooltip("How far in degrees can you move the camera down")]
     [HideInInspector]
     public float BottomClamp = -90.0f;
-    // cinemachine
     private float _cinemachineTargetPitch;
+    public GameObject CinemachineCameraTarget;
+
+    //Public References
+    [HideInInspector]
+    public Camera MainCamera { get; private set; }
+    [HideInInspector]
+    public FirstPersonInput Input { get; private set; }
+    [HideInInspector]
+    public FirstPersonInteraction Interaction { get; private set; }
+    [HideInInspector]
+    public PlayerUI UI { get; private set; }
+
 
     // player
     private Vector2 wishMove;
@@ -62,39 +71,25 @@ public class FirstPersonController : MonoBehaviour
     private float rotationVelocity;
     private float verticalVelocity;
     private float terminalVelocity = 53.0f;
-
-    // timeout deltatime
     private float jumpTimeoutDelta;
     private float fallTimeoutDelta;
 
-    //other
+    [Header("Other")]
+    public float NoiseAmt_Sprinting = 10f;
+    public Transform CatHoldingPosition;
+    [HideInInspector]
+    public float TargetFOV = 90f; //changed by the cat minigame for visual effect
     [HideInInspector]
     public bool DisableMovement = false;
 
-    //CAT
-    [Header("CAT")]
-    public Transform CatHoldingPosition;
-    [HideInInspector]
-    public Slider PettingMeter;
-    [HideInInspector]
-    public float TargetFOV = 90f;
-
-    //component references
-    [Header("References")]
-    public GameObject FPSCamPrefab;
-    private Canvas canvas;
+    //Private References
     private CharacterController controller;
-    [HideInInspector]
-    public Camera MainCamera { get; private set; }
-    [HideInInspector]
-    public FirstPersonInput Input { get; private set; }
-    [HideInInspector]
-    public FirstPersonInteraction Interaction { get; private set; }
-
+    //Constants
     private static float CameraFOVLerpSpeed = 2f;
     private const float _threshold = 0.01f;
     private const bool isCurrentDeviceMouse = true;
     private const bool useAnalogMovement = false; //enable this if we want to use a controller
+
 
     private void Awake()
     {
@@ -107,18 +102,12 @@ public class FirstPersonController : MonoBehaviour
             instance = this;
         }
 
-        // get a reference to our main camera
-        if (MainCamera == null)
-        {
-            MainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-        }
+        MainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         Input = GetComponent<FirstPersonInput>();
         Interaction = GetComponent<FirstPersonInteraction>();
         Interaction.Init(this);
-
-        canvas = Instantiate<GameObject>(FPSCamPrefab, Vector3.down * 100f, Quaternion.identity).GetComponentInChildren<Canvas>();
-        PettingMeter = canvas.GetComponentInChildren<Slider>();
-        PettingMeter.gameObject.SetActive(false);
+        UI = GetComponent<PlayerUI>();
+        UI.Init(this);
     }
 
     private void Start()
@@ -162,16 +151,12 @@ public class FirstPersonController : MonoBehaviour
         {
             //Don't multiply mouse input by Time.deltaTime
             float deltaTimeMultiplier = isCurrentDeviceMouse ? 1.0f : Time.deltaTime;
-
             _cinemachineTargetPitch += Input.look.y * RotationSpeed * deltaTimeMultiplier;
             rotationVelocity = Input.look.x * RotationSpeed * deltaTimeMultiplier;
-
             // clamp our pitch rotation
             _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
-
             // Update Cinemachine camera target pitch
             CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, 0.0f, 0.0f);
-
             // rotate the player left and right
             transform.Rotate(Vector3.up * rotationVelocity);
         }
@@ -189,6 +174,9 @@ public class FirstPersonController : MonoBehaviour
         targetSpeed = Input.sprint ? SprintSpeed : MoveSpeed;
 
         moveDir = Vector3.SmoothDamp(moveDir, targetSpeed * wishMoveDir, ref moveDamp, Smoothing);
+
+        if (controller.velocity.sqrMagnitude > 2 && Input.sprint)
+        { LevelManager.instance.MakeNoise(Time.deltaTime * NoiseAmt_Sprinting); }
 
         moveDir.y = verticalVelocity;
         controller.Move(moveDir * Time.deltaTime);
