@@ -248,6 +248,7 @@ GameObject:
   - component: {fileID: 9150128004149103185}
   - component: {fileID: 8750900405374261521}
   - component: {fileID: 2087134554}
+  - component: {fileID: 1360664030}
   m_Layer: 10
   m_Name: Switch
   m_TagString: Untagged
@@ -387,3 +388,16 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!65 &1360664030
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8480304882326769899}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.06669312, y: 0.05598842, z: 0.095644295}
+  m_Center: {x: -0.0011336679, y: 0.022747122, z: -0.00040915186}

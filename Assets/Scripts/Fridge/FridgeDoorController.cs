@@ -35,6 +35,7 @@ namespace Fridge
         public override void InteractClick(FirstPersonController controller)
         {
             FridgeActivation();
+            Debug.Log("ACTIVATED");
         }
 
         private void DoorHandler()
@@ -67,8 +68,14 @@ namespace Fridge
 
         private void FridgeActivation()
         {
-            open = !open;
-
+            if (ID == 0)
+            {
+                parentScript.bottomDoorOpen = !parentScript.bottomDoorOpen;
+            }
+            else
+            {
+                parentScript.topDoorOpen = !parentScript.topDoorOpen;
+            }
         }
     
     }
