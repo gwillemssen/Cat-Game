@@ -4,21 +4,7 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
-    public static LevelManager instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                Debug.LogError("Drag a LevelManager prefab into the scene!");
-                return null;
-            }
-            else
-            { return instance; }
-        }
-        private set
-        { instance = value; }
-    }
+    public static LevelManager instance { get; private set; }
     public float MaxNoise = 100f;
     public float NoiseDecayRate = 1f;
     public float NoiseDecayDelay = 3f;
