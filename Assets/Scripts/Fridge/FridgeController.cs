@@ -1,77 +1,106 @@
-using System.Collections.Generic;
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
-
-public class FridgeController : Interactable
+namespace Fridge
 {
-    // Start is called before the first frame update
-    private bool initialized = false;
-
-    private LerpScript topDoorLerp;
-    private LerpScript bottomDoorLerp;
-
-    public bool topDoorOpen;
-    public bool bottomDoorOpen;
-
-    private GameObject[] doors = new GameObject[] {null,null};
-
-    private Vector3 position = new Vector3(0,0,-146);
-
-    void Start()
+    public class FridgeController : Interactable
     {
-        Initialize();
-    }
+        private bool initialized;
 
-    // Update is called once per frame
-    void Update()
-    {
-        DoorManager();
-    }
+        public bool topDoorOpen;
+        private bool topDoorOpenTemp;
+        public bool bottomDoorOpen;
+        private bool bottomDoorOpenTemp;
 
-    void Initialize()
-    {
-        doors[0] = transform.GetChild(2).GetChild(0).gameObject;
-        doors[1] = transform.GetChild(2).GetChild(1).gameObject;
-        
-        topDoorLerp = this.AddComponent<LerpScript>();
-        topDoorLerp.typeOfLerp = LerpScript.LerpType.Vector3;
+        private FridgeDoorController[] doorScripts = new FridgeDoorController[] {null,null};
+        private LerpScript lightLerp;
+        private LerpScript lightLerp2;
+        private Light topLight;
+        private Light bottomLight;
 
-        bottomDoorLerp = this.AddComponent<LerpScript>();
-        bottomDoorLerp.typeOfLerp = LerpScript.LerpType.Vector3;
-
-        initialized = true;
-    }
-
-    void DoorManager()
-    {
-        if (initialized)
+        void Start()
         {
-            if (topDoorOpen)
+            Initialize();
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            LightHandler(topLight,"Top",lightLerp);
+            LightHandler(bottomLight,"Bottom",lightLerp2);
+        }
+
+        void Initialize()
+        {
+            doorScripts[0] = transform.GetChild(1).GetChild(0).GetComponent<FridgeDoorController>();
+            doorScripts[1] = transform.GetChild(1).GetChild(1).GetComponent<FridgeDoorController>();
+            topDoorOpen = doorScripts[0].open;
+            bottomDoorOpen = doorScripts[1].open;
+            lightLerp = this.AddComponent<LerpScript>();
+            lightLerp.typeOfLerp = LerpScript.LerpType.Float;
+            lightLerp.lerpSpeed = 2;
+            lightLerp2 = this.AddComponent<LerpScript>();
+            lightLerp2.typeOfLerp = LerpScript.LerpType.Float;
+            lightLerp2.lerpSpeed = 2;
+            topLight = transform.GetChild(3).GetComponent<Light>();
+            bottomLight = transform.GetChild(2).GetComponent<Light>();
+            initialized = true;
+            Debug.Log($"{gameObject.name} initialized.");
+
+        }
+
+        void LightHandler(Light light2, string topOrBottom, LerpScript lerpScript1)
+        {
+            switch (topOrBottom)
             {
-                topDoorLerp.vecTarget = position; 
+                case "Top":
+                {
+                    if (topDoorOpenTemp != topDoorOpen)
+                    {
+                        if (topDoorOpen)
+                        {
+                            lerpScript1.floatTarget = 1;
+                            topDoorOpenTemp = true;
+                        }
+                        else
+                        {
+                            lerpScript1.floatTarget = 0;
+                            topDoorOpenTemp = false;
+                        }
+                    }
+                    break;
+                }
+                case "Bottom":
+                {
+                    if (bottomDoorOpenTemp != bottomDoorOpen)
+                    {
+                        if (bottomDoorOpen)
+                        {
+                            if (!light2.enabled)
+                            {
+                                light2.enabled = true;
+                            }//enables light if off
+                            lerpScript1.floatTarget = 1;
+                            bottomDoorOpenTemp = true;
+                        }
+                        else
+                        {
+                            lerpScript1.floatTarget = 0;
+                            bottomDoorOpenTemp = false;
+                        }
+                    }
+                    break;
+                }
             }
-            else
+            if (Math.Abs(lerpScript1.floatVal - lerpScript1.floatTarget) > 0.01f)//updates the actual value based on the lerp script
             {
-                topDoorLerp.vecTarget = Vector3.zero;
+                light2.intensity = 0.37f * lerpScript1.floatVal;
+                if (light2.intensity < 0.01f)
+                {
+                    light2.intensity = 0;
+                }
             }
-            doors[0].transform.localRotation = Quaternion.Euler(topDoorLerp.vecVal);
-        
-            if (bottomDoorOpen)
-            {
-                bottomDoorLerp.vecTarget = position; 
-            }
-            else
-            {
-                bottomDoorLerp.vecTarget = Vector3.zero;
-            }
-            doors[1].transform.localRotation = Quaternion.Euler(bottomDoorLerp.vecVal);
         }
     }
-    
-    public override void InteractClick(FirstPersonController controller)
-    {
-        
-    }
-
 }

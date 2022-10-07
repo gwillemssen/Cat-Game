@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerUI : MonoBehaviour
 {
-    [Header("References")]
-    public GameObject FPSCamPrefab;
     [HideInInspector]
     public Slider PettingMeter;
     private Slider noiseMeter;
@@ -15,8 +14,11 @@ public class PlayerUI : MonoBehaviour
 
     public void Init(FirstPersonController controller)
     {
-        canvas = Instantiate<GameObject>(FPSCamPrefab, Vector3.down * 100f, Quaternion.identity).GetComponentInChildren<Canvas>();
-        foreach(Slider s in canvas.GetComponentsInChildren<Slider>())
+        GameObject g = Resources.Load("Prefab/FpsCam") as GameObject;
+        g = Instantiate(g);
+        Debug.Log(g.name);
+        if (g != null) canvas = g.GetComponentInChildren<Canvas>();
+        foreach(Slider s in canvas.GameObject().GetComponentsInChildren<Slider>())
         {
             if(s.gameObject.name == "NoiseMeter")
             { noiseMeter = s; }
@@ -24,6 +26,7 @@ public class PlayerUI : MonoBehaviour
             { PettingMeter = s; }
         }
         PettingMeter.gameObject.SetActive(false);
+        Debug.Log("petmeter set to false");
         noiseMeter.gameObject.SetActive(false);
     }
 
