@@ -62,6 +62,21 @@ public class LevelManager : MonoBehaviour
         }
     }
 
+    public void EnemyChangedState(Enemy.EnemyState state)
+    {
+        int highest = (int)state;
+
+        foreach(Enemy e in Enemies)
+        {
+            if((int)e.State > highest)
+            {
+                highest = (int)e.State;
+            }
+        }
+
+        MostAlertEnemyState = (Enemy.EnemyState)highest;
+    }
+
     public void StartGame()
     {
         CatsPetted = 0;

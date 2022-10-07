@@ -50,9 +50,9 @@ public class PlayerUI : MonoBehaviour
         }
 
         debugOutput = "";
-        debugOutput += $"Total Noise : {LevelManager.instance.Noise}";
-        debugOutput += $"Most Alert Enemy State : {LevelManager.instance.MostAlertEnemyState}";
-        debugOutput += $"CATS : {LevelManager.instance.CatsPetted} / {LevelManager.instance.CatsToPet}";
+        debugOutput += $"Noise : {(int)LevelManager.instance.Noise} / {LevelManager.instance.MaxNoise}\n";
+        debugOutput += $"Most Alert Enemy State : {LevelManager.instance.MostAlertEnemyState}\n";
+        debugOutput += $"CATS : {LevelManager.instance.CatsPetted} / {LevelManager.instance.CatsToPet}\n";
         debugText.text = debugOutput;
     }
 }
