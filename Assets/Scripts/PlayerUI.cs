@@ -11,6 +11,8 @@ public class PlayerUI : MonoBehaviour
     public Slider PettingMeter;
     private Slider noiseMeter;
     private Text debugText;
+    public GameObject WinScreen { get; private set; }
+    public GameObject LoseScreen { get; private set; }
 
     private Canvas canvas;
 
@@ -30,10 +32,18 @@ public class PlayerUI : MonoBehaviour
                 case "DebugText":
                     debugText = r.GetComponent<Text>();
                     break;
+                case "WIN":
+                    WinScreen = r.gameObject;
+                    break;
+                case "LOSE":
+                    LoseScreen = r.gameObject;
+                    break;
             }
         }
         PettingMeter.gameObject.SetActive(false);
         noiseMeter.gameObject.SetActive(false);
+        LoseScreen.SetActive(false);
+        WinScreen.SetActive(false);
         //debugText.enabled = false;
         debugText.text = "";
     }
