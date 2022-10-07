@@ -10,31 +10,49 @@ public class PlayerUI : MonoBehaviour
     [HideInInspector]
     public Slider PettingMeter;
     private Slider noiseMeter;
+    private Text debugText;
 
     private Canvas canvas;
 
     public void Init(FirstPersonController controller)
     {
         canvas = Instantiate<GameObject>(FPSCamPrefab, Vector3.down * 100f, Quaternion.identity).GetComponentInChildren<Canvas>();
-        foreach(Slider s in canvas.GetComponentsInChildren<Slider>())
+        foreach(RectTransform r in canvas.GetComponentsInChildren<RectTransform>())
         {
-            if(s.gameObject.name == "NoiseMeter")
-            { noiseMeter = s; }
-            if (s.gameObject.name == "PettingMeter")
-            { PettingMeter = s; }
+            switch(r.gameObject.name)
+            {
+                case "NoiseMeter":
+                    noiseMeter = r.GetComponent<Slider>();
+                    break;
+                case "PettingMeter":
+                    PettingMeter = r.GetComponent<Slider>(); ;
+                    break;
+                case "DebugText":
+                    debugText = r.GetComponent<Text>();
+                    break;
+            }
         }
         PettingMeter.gameObject.SetActive(false);
         noiseMeter.gameObject.SetActive(false);
+        //debugText.enabled = false;
+        debugText.text = "";
     }
 
-    //private void Update()
-    //{
-    //    if(LevelManager.instance.Noise == 0)
-    //    { noiseMeter.gameObject.SetActive(false); }
-    //    else
-    //    {
-    //        noiseMeter.gameObject.SetActive(true);
-    //        noiseMeter.value = LevelManager.instance.Noise / LevelManager.instance.MaxNoise;
-    //    }
-    //}
+    string debugOutput = "";
+    private void Update()
+    {
+        if(LevelManager.instance.Noise == 0)
+        { noiseMeter.gameObject.SetActive(false); }
+        else
+        {
+            noiseMeter.gameObject.SetActive(true);
+            noiseMeter.value = LevelManager.instance.Noise / LevelManager.instance.MaxNoise;
+        }
+
+        debugOutput = "";
+        debugOutput += $"Total Noise : {LevelManager.instance.Noise}";
+        debugOutput += $"Most Alert Enemy State : {LevelManager.instance.MostAlertEnemyState}";
+        debugOutput += $"CATS : {LevelManager.instance.CatsPetted} / {LevelManager.instance.CatsToPet}";
+        debugText.text = debugOutput;
+    }
 }
