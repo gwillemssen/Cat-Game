@@ -257,14 +257,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LookingAt: 0
   CanInteract: 1
-  currentNoiseEmitted: 0
   lightOn: 0
   plateSpinning: 0
   doorOpen: 0
-  clipID: 0
+  allowDeactivate: 1
   timeLeft: 5
   timerOn: 0
-  allowDeactivate: 1
+  clipID: 0
 --- !u!65 &1550981938
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -562,7 +561,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: eb2340c21a0c7e54abc9a58d57b90364, type: 2}
+  - {fileID: 2100000, guid: 410b77bb70ee0b14eb8c1b43bf9f5ee7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

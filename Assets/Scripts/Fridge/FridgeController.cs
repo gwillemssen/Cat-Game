@@ -6,7 +6,6 @@ namespace Fridge
 {
     public class FridgeController : Interactable
     {
-        // Start is called before the first frame update
         private bool initialized;
 
         public bool topDoorOpen;
@@ -15,7 +14,6 @@ namespace Fridge
         private bool bottomDoorOpenTemp;
 
         private FridgeDoorController[] doorScripts = new FridgeDoorController[] {null,null};
-
         private LerpScript lightLerp;
         private LerpScript lightLerp2;
         private Light topLight;
@@ -47,11 +45,12 @@ namespace Fridge
             lightLerp2.lerpSpeed = 2;
             topLight = transform.GetChild(3).GetComponent<Light>();
             bottomLight = transform.GetChild(2).GetComponent<Light>();
-
             initialized = true;
+            Debug.Log($"{gameObject.name} initialized.");
+
         }
 
-        void LightHandler(Light light, string topOrBottom, LerpScript _lerpScript)
+        void LightHandler(Light light2, string topOrBottom, LerpScript lerpScript1)
         {
             switch (topOrBottom)
             {
@@ -61,12 +60,12 @@ namespace Fridge
                     {
                         if (topDoorOpen)
                         {
-                            _lerpScript.floatTarget = 1;
+                            lerpScript1.floatTarget = 1;
                             topDoorOpenTemp = true;
                         }
                         else
                         {
-                            _lerpScript.floatTarget = 0;
+                            lerpScript1.floatTarget = 0;
                             topDoorOpenTemp = false;
                         }
                     }
@@ -78,28 +77,28 @@ namespace Fridge
                     {
                         if (bottomDoorOpen)
                         {
-                            if (!light.enabled)
+                            if (!light2.enabled)
                             {
-                                light.enabled = true;
+                                light2.enabled = true;
                             }//enables light if off
-                            _lerpScript.floatTarget = 1;
+                            lerpScript1.floatTarget = 1;
                             bottomDoorOpenTemp = true;
                         }
                         else
                         {
-                            _lerpScript.floatTarget = 0;
+                            lerpScript1.floatTarget = 0;
                             bottomDoorOpenTemp = false;
                         }
                     }
                     break;
                 }
             }
-            if (_lerpScript.floatVal != _lerpScript.floatTarget)//updates the actual value based on the lerp script
+            if (Math.Abs(lerpScript1.floatVal - lerpScript1.floatTarget) > 0.01f)//updates the actual value based on the lerp script
             {
-                light.intensity = 0.37f * _lerpScript.floatVal;
-                if (light.intensity < 0.01f)
+                light2.intensity = 0.37f * lerpScript1.floatVal;
+                if (light2.intensity < 0.01f)
                 {
-                    light.intensity = 0;
+                    light2.intensity = 0;
                 }
             }
         }
