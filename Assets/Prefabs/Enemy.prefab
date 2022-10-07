@@ -407,7 +407,7 @@ MonoBehaviour:
   radius: 1
   height: 2
   canMove: 1
-  maxSpeed: 1.8
+  maxSpeed: 1.2
   gravity: {x: NaN, y: NaN, z: NaN}
   groundMask:
     serializedVersion: 2
@@ -449,9 +449,10 @@ MonoBehaviour:
   eyes: {fileID: 8272336163191410661}
   FieldOfView: 90
   SightDistance: 12
-  AlertnessRequired: 2
-  ChaseTime: 6
-  LostTargetTime: 3
+  AlertnessRequired: 0.5
+  ChaseTime: 3.21
+  LostTargetTime: 2.35
+  CaughtDistance: 1.25
   EverythingExceptEnemy:
     serializedVersion: 2
     m_Bits: 3895

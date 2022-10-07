@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Unity.VisualScripting;
@@ -5,7 +8,8 @@ using Random = UnityEngine.Random;
 
 public class MicrowaveController : Interactable
 {
-    private Light microwaveLight;
+    public float currentNoiseEmitted;
+    private Light light;
     private Material mat;
     private GameObject plate;
     private GameObject door;
@@ -13,9 +17,6 @@ public class MicrowaveController : Interactable
     public bool lightOn;
     public bool plateSpinning;
     public bool doorOpen;
-    public bool allowDeactivate = false;
-    public float timeLeft;
-    public bool timerOn = false;
 
     private AudioClip[] sounds = new AudioClip[6];
     // SOUND LIST:
@@ -25,16 +26,27 @@ public class MicrowaveController : Interactable
     // 3: finish
     // 4: open
     // 5: close
+
     private AudioSource microwavePlayer;
-    [HideInInspector]
     public int clipID;
+
+
+    public float timeLeft;
+    public bool timerOn = false;
+
+
     private TextMeshProUGUI timerText;
+
     private LerpScript LightLerp;
     private LerpScript plateLerp;
     private LerpScript doorLerp;
+    public bool allowDeactivate = false;
+    
     private bool active;
+
     private Animator microwaveAnimator;
     
+    // Start is called before the first frame update
     void Start()
     {
         MicrowaveLoad();
@@ -65,7 +77,7 @@ public class MicrowaveController : Interactable
         if (LightLerp.floatTarget != LightLerp.floatVal)
         {
             mat.SetFloat("_LightIntensity",LightLerp.floatVal);
-            microwaveLight.intensity = 0.09f * LightLerp.floatVal;
+            light.intensity = 0.09f * LightLerp.floatVal;
         }
     }
 
@@ -168,6 +180,11 @@ public class MicrowaveController : Interactable
         }
     }
 
+    private void MicrowaveFinish()
+    {
+        microwaveAnimator.SetTrigger("FinishedTrigger");
+    }
+
     private void MicrowaveLoad()
     {
         //sound loading
@@ -177,7 +194,6 @@ public class MicrowaveController : Interactable
         sounds[3] = Resources.Load("Sound/So_MicrowaveFinish") as AudioClip;
         sounds[4] = Resources.Load("Sound/So_MicrowaveOpen") as AudioClip;
         sounds[5] = Resources.Load("Sound/So_MicrowaveClose") as AudioClip;
-        Debug.Log($"{gameObject.name} sounds loaded");
 
         microwaveAnimator = GetComponent<Animator>();
         microwavePlayer = GetComponent<AudioSource>();
@@ -192,10 +208,24 @@ public class MicrowaveController : Interactable
         
         mat = Instantiate(transform.GetChild(0).GetComponent<Renderer>().material);
         transform.GetChild(0).GetComponent<Renderer>().material = mat;
-        microwaveLight = transform.GetChild(2).GetComponent<Light>();
+        light = transform.GetChild(2).GetComponent<Light>();
         timerText = transform.GetChild(3).GetChild(0).GetComponent<TextMeshProUGUI>();
-        
-        Debug.Log($"{gameObject.name} initialized");
+    }
+
+    void PlaySound(AudioClip sound, bool interrupt)
+    {
+        if (interrupt)
+        {
+            microwavePlayer.Stop();
+        }
+        microwavePlayer.clip = sound;
+        microwavePlayer.Play();
+    }
+
+    IEnumerator waiter(float seconds)
+    {
+        bool done = false;
+        yield return new WaitForSeconds(seconds);
     }
 
     void CancelCook()

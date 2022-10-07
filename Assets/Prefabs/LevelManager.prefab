@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5494607972849784165}
-  - component: {fileID: 5494607972849784164}
+  - component: {fileID: 8373613921333564564}
   m_Layer: 0
   m_Name: LevelManager
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5494607972849784164
+--- !u!114 &8373613921333564564
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,7 +41,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 5494607972849784167}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9b4c4dedcf3e6245be81352c32bb4df, type: 3}
+  m_Script: {fileID: 11500000, guid: 85ee621acb9ae6b4fa5a4ab14a64c9cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MaxNoise: 100
+  NoiseDecayRate: 1
+  NoiseDecayDelay: 3
   CatsToPet: 1
+  Enemies: []
+  MostAlertEnemyState: 0
