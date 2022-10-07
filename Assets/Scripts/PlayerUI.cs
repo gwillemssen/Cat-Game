@@ -27,14 +27,14 @@ public class PlayerUI : MonoBehaviour
         noiseMeter.gameObject.SetActive(false);
     }
 
-    //private void Update()
-    //{
-    //    if(LevelManager.instance.Noise == 0)
-    //    { noiseMeter.gameObject.SetActive(false); }
-    //    else
-    //    {
-    //        noiseMeter.gameObject.SetActive(true);
-    //        noiseMeter.value = LevelManager.instance.Noise / LevelManager.instance.MaxNoise;
-    //    }
-    //}
+    private void Update()
+    {
+        if (LevelManager.instance.Noise == 0)
+        { noiseMeter.gameObject.SetActive(false); }
+        else
+        {
+            noiseMeter.gameObject.SetActive(true);
+            noiseMeter.value = LevelManager.instance.Noise / LevelManager.instance.MaxNoise;
+        }
+    }
 }
