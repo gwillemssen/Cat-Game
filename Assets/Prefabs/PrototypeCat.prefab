@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8298208050333102606}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.213, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -116,11 +116,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LookingAt: 0
+  CanInteract: 1
   StartState: 0
-  PettingSpeed: 1
-  PettingDecayRate: 0.1
+  PettingSpeed: 5
+  PettingDecayRate: 0.75
   PettingDecayDelay: 1
-  PettingSpeedRequired: 1000
+  PettingSpeedRequired: 150
 --- !u!82 &8298208050539112813
 AudioSource:
   m_ObjectHideFlags: 0

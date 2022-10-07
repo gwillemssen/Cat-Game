@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator TemporaryGameOverSequence()
     {
-        FirstPersonController.instance.enabled = false;
+        FirstPersonController.instance.DisableMovement = true;
         FirstPersonController.instance.MainCamera.GetComponent<Camera>().fieldOfView = 15f;
         yield return new WaitForSeconds(0.5f);
         RestartLevel();
@@ -48,5 +48,6 @@ public class GameManager : MonoBehaviour
     public void RestartLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        FirstPersonController.instance.DisableMovement = false;
     }
 }

@@ -14,7 +14,7 @@ public class ShakePosition : MonoBehaviour
 
     private void Start()
     {
-        Debug.LogError("NOT IMPLEMENTED YET");
+        Shake();
     }
 
     public void Shake()
