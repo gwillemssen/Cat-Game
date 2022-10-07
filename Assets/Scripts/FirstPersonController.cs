@@ -93,9 +93,6 @@ public class FirstPersonController : MonoBehaviour
 
     private void Awake()
     {
-        if(!GameObject.Find("LevelManager") || !GameObject.Find("GameManager"))
-        { Debug.LogError("Add the LevelManager and GameManager to the scene from Prefabs"); }
-
         if (instance != null)
         {
             Destroy(this);

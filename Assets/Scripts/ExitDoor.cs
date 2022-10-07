@@ -9,8 +9,7 @@ public class ExitDoor : Interactable
         if(LevelManager.instance.AllCatsPetted())
         {
             //open door
-            //gameObject.SetActive(false);
-            GameManager.instance.WinGame();
+            gameObject.SetActive(false);
         }
         else
         {

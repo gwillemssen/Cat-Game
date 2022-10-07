@@ -7,7 +7,7 @@ using UnityEditor;
 [RequireComponent(typeof(IAstarAI))]
 public class Enemy : MonoBehaviour
 {
-    public enum EnemyState { Idle, Patrolling, LostTarget, Chasing }
+    public enum EnemyState { Idle, Patrolling, Chasing, LostTarget }
 
     [Header("References")]
     [Range(0, 180f)]
@@ -35,23 +35,7 @@ public class Enemy : MonoBehaviour
     public bool DebugMode = false;
     public TextMesh EnemyDebugObject;
 
-    private EnemyState state;
-    public EnemyState State
-    {
-        get
-        {
-            return state;
-        }
-        private set
-        {
-            if(state != value)
-            {
-                state = value;
-                if (LevelManager.instance != null)
-                { LevelManager.instance.EnemyChangedState(value); }
-            }
-        }
-    }
+    public EnemyState State { get; private set; }
     public bool InFOV { get; private set; }
     public RaycastHit Hit { get; private set; }
     public float Alertness { get; private set; }
