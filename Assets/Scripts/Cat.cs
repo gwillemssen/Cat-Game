@@ -13,12 +13,11 @@ using UnityEngine;
 public class Cat : Interactable
 {
     //inspector
-    public enum CatStartState { Pettable, Unpettable } 
+    public enum CatStartState { Pettable, Unpettable }
     public CatStartState StartState;
-    public float PettingSpeed = 5f;
+    public int PetsRequired = 12;
     public float PettingDecayRate = 0.75f;
     public float PettingDecayDelay = 1f;
-    public float PettingSpeedRequired = 150f;
 
     //general
     private enum CatState { Pettable, Unpettable, PettingMinigame, DonePetting };
@@ -26,7 +25,7 @@ public class Cat : Interactable
     private Animator anim;
     private AudioSource audio;
     //private ShakePosition shake;
-    
+
     //Minigame
     private Vector3 catOriginalPos;
     private Quaternion catOriginalRot;
@@ -36,9 +35,15 @@ public class Cat : Interactable
     private FirstPersonController playerController;
     private float timeStartedMovingCat = -420f;
     private float pettingAmount = 0f;
+    private Vector2 lastPetMousePos; //need to travel a certain distance from this point to trigger a pet
+    private const float petDistance = 256f;
+    private const float sqrPetDistance = petDistance * petDistance;
+    private const float pettingSpeedMax = 1000f;
     private Vector2 lastMousePosition = Vector2.zero;
+    private Vector2 lastDirectionPet; //so we need to go back and forth while petting
+    private bool firstPet = true;
     private Vector2 mouseDelta = Vector2.zero;
-    private float mouseSpeed;
+    private Vector2 mouseSpeed;
     private float lastTimePet = -420f;
     private static float petPushCatAmt = 0.03f;
     private static float petStretchCatAmt = 0.007f;
@@ -52,6 +57,7 @@ public class Cat : Interactable
         state = (CatState)StartState;
         anim = GetComponentInChildren<Animator>();
         audio = GetComponent<AudioSource>();
+        lastPetMousePos = new Vector2(-420f, -420f);
     }
 
     private void Update()
@@ -68,11 +74,11 @@ public class Cat : Interactable
                 if (playerController.Input.throwing)
                 {
                     EndMinigame();
-                    base.CanInteract = true;    
+                    base.CanInteract = true;
                 }
             }
         }
-        if(audio.isPlaying && state != CatState.PettingMinigame)
+        if (audio.isPlaying && state != CatState.PettingMinigame)
         {
             audio.volume -= Time.deltaTime;
             if (audio.volume <= 0f)
@@ -82,7 +88,7 @@ public class Cat : Interactable
 
     public override void InteractClick(FirstPersonController controller)
     {
-        if(state == CatState.Pettable)
+        if (state == CatState.Pettable)
         {
             catHoldingPos = controller.CatHoldingPosition.position;
             catHoldingRot = controller.CatHoldingPosition.rotation;
@@ -108,7 +114,7 @@ public class Cat : Interactable
             if (playerController.Input.interacting)
             {
                 //cat gets pushed around by petting
-                offsetPos += transform.right * mouseDelta.x;
+                offsetPos -= transform.right * mouseDelta.x;
                 offsetPos += transform.up * mouseDelta.y;
                 offsetPos *= petPushCatAmt;
 
@@ -122,7 +128,7 @@ public class Cat : Interactable
             }
 
             //FOV from petting intensity
-            playerController.TargetFOV = Mathf.Lerp(petCameraFOVNormal, petCameraFOVZoomed, (mouseSpeed / PettingSpeedRequired * 5f));
+            playerController.TargetFOV = Mathf.Lerp(petCameraFOVNormal, petCameraFOVZoomed, (mouseSpeed.magnitude / pettingSpeedMax));
 
             startPos = catOriginalPos;
             startRot = catOriginalRot;
@@ -177,19 +183,30 @@ public class Cat : Interactable
 
     private void UpdateMinigame()
     {
-        //shake.Shake(); //test
         bool decay = Time.time - lastTimePet > PettingDecayDelay;
+
+        if (playerController.Input.interactedOnce)
+        { 
+            firstPet = true;
+            lastPetMousePos = playerController.Input.mousePosition;
+        }
 
         if (playerController.Input.interacting)
         {
             mouseDelta = playerController.Input.look;
-            mouseSpeed = mouseDelta.magnitude / Time.deltaTime; //speed = distance / time
+            mouseSpeed = mouseDelta / Time.deltaTime; //speed = distance / time
 
-            if (mouseSpeed >= PettingSpeedRequired)
+            if (Vector2.SqrMagnitude(playerController.Input.mousePosition - lastPetMousePos) >= sqrPetDistance)
             {
-                pettingAmount += mouseSpeed * PettingSpeed * .000001f;
-                lastTimePet = Time.time;
-                audio.volume += Time.deltaTime;
+                if (firstPet || Vector2.Dot(lastDirectionPet, (playerController.Input.mousePosition - lastMousePosition)) < 0)
+                {
+                    //petted the cat
+                    firstPet = false;
+                    lastDirectionPet = playerController.Input.mousePosition - lastMousePosition;
+                    lastPetMousePos = playerController.Input.mousePosition;
+                    pettingAmount += (1f / (float)PetsRequired);
+                    lastTimePet = Time.time;
+                }
             }
         }
         else if (!decay)
@@ -203,9 +220,9 @@ public class Cat : Interactable
             audio.volume -= Time.deltaTime;
         }
 
-        if(!playerController.Input.interacting)
+        if (!playerController.Input.interacting)
         {
-            mouseSpeed = 0f;
+            mouseSpeed = Vector2.zero;
             mouseDelta = Vector2.zero;
         }
 
@@ -219,7 +236,7 @@ public class Cat : Interactable
             if (LevelManager.instance != null)
             { LevelManager.instance.CatPetted(); }
             else
-            { 
+            {
                 Debug.LogWarning("Levelmanager not in scene.  Resetting cat");
                 base.CanInteract = true; //testing
             }
