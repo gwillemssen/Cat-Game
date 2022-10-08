@@ -36,7 +36,7 @@ public class Cat : Interactable
     private float timeStartedMovingCat = -420f;
     private float pettingAmount = 0f;
     private Vector2 lastPetMousePos; //need to travel a certain distance from this point to trigger a pet
-    private const float petDistance = 256f;
+    private const float petDistance = 128f;
     private const float sqrPetDistance = petDistance * petDistance;
     private const float pettingSpeedMax = 1000f;
     private Vector2 lastMousePosition = Vector2.zero;
@@ -198,11 +198,11 @@ public class Cat : Interactable
 
             if (Vector2.SqrMagnitude(playerController.Input.mousePosition - lastPetMousePos) >= sqrPetDistance)
             {
-                if (firstPet || Vector2.Dot(lastDirectionPet, (playerController.Input.mousePosition - lastMousePosition)) < 0)
+                if (firstPet || Vector2.Dot(lastDirectionPet, (playerController.Input.mousePosition - lastPetMousePos)) > 0)
                 {
                     //petted the cat
                     firstPet = false;
-                    lastDirectionPet = playerController.Input.mousePosition - lastMousePosition;
+                    lastDirectionPet = lastPetMousePos - playerController.Input.mousePosition;
                     lastPetMousePos = playerController.Input.mousePosition;
                     pettingAmount += (1f / (float)PetsRequired);
                     lastTimePet = Time.time;
