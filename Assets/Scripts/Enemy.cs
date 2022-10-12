@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Pathfinding;
 using UnityEngine;
 using UnityEditor;
+using System;
 
 [RequireComponent(typeof(IAstarAI))]
 public class Enemy : MonoBehaviour
@@ -35,6 +36,11 @@ public class Enemy : MonoBehaviour
     public bool DebugMode = false;
     public TextMesh EnemyDebugObject;
 
+    //events
+    public static event Action<Enemy.EnemyState> OnEnemyChangedState;
+    public static event Action<Enemy> OnEnemySpawn;
+    public static event Action OnCatchPlayer;
+
     private EnemyState state;
     public EnemyState State
     {
@@ -47,8 +53,7 @@ public class Enemy : MonoBehaviour
             if(state != value)
             {
                 state = value;
-                if (LevelManager.instance != null)
-                { LevelManager.instance.EnemyChangedState(value); }
+                OnEnemyChangedState?.Invoke(state);
             }
         }
     }
@@ -81,9 +86,7 @@ public class Enemy : MonoBehaviour
             { doPatrol = true; }
         }
 
-        if (LevelManager.instance == null)
-        { Debug.LogError("LEVELMANAGER NOT IN SCENE"); }
-        LevelManager.instance.Enemies.Add(this);
+        OnEnemySpawn?.Invoke(this);
 
     }
 
@@ -122,7 +125,7 @@ public class Enemy : MonoBehaviour
 
         if(Vector3.SqrMagnitude(transform.position - target.position) <= sqrCaughtDistance)
         {
-            GameManager.instance.GameOver();
+            OnCatchPlayer?.Invoke();
         }
     }
 

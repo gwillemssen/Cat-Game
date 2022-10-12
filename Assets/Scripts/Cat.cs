@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,6 +26,9 @@ public class Cat : Interactable
     private Animator anim;
     private AudioSource audio;
     //private ShakePosition shake;
+
+    //events
+    public static event Action OnCompletedPetting;
 
     //Minigame
     private Vector3 catOriginalPos;
@@ -233,13 +237,7 @@ public class Cat : Interactable
         {
             EndMinigame();
             base.CanInteract = false;
-            if (LevelManager.instance != null)
-            { LevelManager.instance.CatPetted(); }
-            else
-            {
-                Debug.LogWarning("Levelmanager not in scene.  Resetting cat");
-                base.CanInteract = true; //testing
-            }
+            OnCompletedPetting?.Invoke();
         }
     }
 

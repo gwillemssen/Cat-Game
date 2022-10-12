@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(CharacterController))]
@@ -60,7 +61,6 @@ public class FirstPersonController : MonoBehaviour
     public FirstPersonInteraction Interaction { get; private set; }
     [HideInInspector]
     public PlayerUI UI { get; private set; }
-
 
     // player
     private Vector2 wishMove;
