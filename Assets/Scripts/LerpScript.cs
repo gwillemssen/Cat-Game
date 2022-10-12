@@ -4,17 +4,19 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class LerpScript : MonoBehaviour
+
+//INFO: This script moves an adjustable value toward a set target value. It's an easy way to fake animation. For examples of how it's used check the switch prefab or microwave.
 {
     [HideInInspector]
     public float floatVal;
-
+    [HideInInspector]
     public Vector3 vecVal;
     [HideInInspector]
     public Color colorVal;
     
     [HideInInspector]
     public float floatTarget;
-
+    [HideInInspector]
     public Vector3 vecTarget;
     [HideInInspector]
     public Color colorTarget;
@@ -39,11 +41,6 @@ public class LerpScript : MonoBehaviour
     public LerpType typeOfLerp;
     [HideInInspector]
     public LerpTiming whenToLerp;
-
-    private void Start()
-    {
-        Debug.Log("PLEASE MAKE SURE TO TELL IT WHAT KIND OF LERP, idiot...");
-    }
 
     void Update()
     {
@@ -71,10 +68,12 @@ public class LerpScript : MonoBehaviour
 
     void Count()
     {
-        if(typeOfLerp == null)
+        if (typeOfLerp == null)
+        {
             Debug.Log("YOU FORGOT TO SET LERP TYPE IDIOT");
+        }
         
-        if (typeOfLerp == LerpType.Float && floatTarget != floatVal)
+        if (typeOfLerp == LerpType.Float && Math.Abs(floatTarget - floatVal) > 0.01f)
         {
             float delta = floatTarget - floatVal;
             delta *= Time.deltaTime * lerpSpeed;
