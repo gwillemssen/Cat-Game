@@ -1,21 +1,82 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class FridgeDoorController : MonoBehaviour
+namespace Fridge
 {
-    public int ID;
-    private LerpScript doorLerp;
-    // Start is called before the first frame update
-    void Start()
+    public class FridgeDoorController : Interactable
     {
-        doorLerp = this.AddComponent<LerpScript>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
+        public int ID;
         
+        private LerpScript doorLerp;
+
+        private GameObject doorHinge;
+
+        public bool open;
+
+        private Vector3 doorValue;
+
+        private FridgeController parentScript;
+        // Start is called before the first frame update
+        void Start()
+        {
+            parentScript = transform.parent.parent.GetComponent<FridgeController>();
+            
+            doorLerp = this.AddComponent<LerpScript>();
+            doorLerp.typeOfLerp = LerpScript.LerpType.Vector3;
+            doorLerp.lerpSpeed = 4;
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            DoorHandler();
+        }
+    
+        public override void InteractClick(FirstPersonController controller)
+        {
+            FridgeActivation();
+            Debug.Log("ACTIVATED");
+        }
+
+        private void DoorHandler()
+        {
+            if (ID == 0)
+            {
+                open = parentScript.bottomDoorOpen;
+            }
+            else
+            {
+                open = parentScript.topDoorOpen;
+            }
+            
+            if (open)
+            {
+                if (doorLerp.vecTarget != new Vector3(0, 0, -130))
+                {
+                    doorLerp.vecTarget = new Vector3(0, 0, -130);
+                }
+            }
+            else
+            {
+                if (doorLerp.vecTarget != Vector3.zero)
+                {
+                    doorLerp.vecTarget = new Vector3(0, 0, 0);
+                }
+            }
+            transform.localRotation = Quaternion.Euler(doorLerp.vecVal);
+        }
+
+        private void FridgeActivation()
+        {
+            if (ID == 0)
+            {
+                parentScript.bottomDoorOpen = !parentScript.bottomDoorOpen;
+            }
+            else
+            {
+                parentScript.topDoorOpen = !parentScript.topDoorOpen;
+            }
+        }
+    
     }
 }
