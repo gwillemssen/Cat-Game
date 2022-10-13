@@ -15,7 +15,7 @@ public class LevelManager : MonoBehaviour
     public int CatsPetted { get; private set; }
 
     //events
-    public static event Action OnAllCatsPetted;
+    public static event Action AllCatsPetted;
 
     private List<Enemy> enemies;
     [HideInInspector]
@@ -36,15 +36,16 @@ public class LevelManager : MonoBehaviour
             instance = this;
         }
 
-        Cat.OnCompletedPetting += CatPetted;
-        Enemy.OnEnemyChangedState += EnemyChangedState;
-        Enemy.OnEnemySpawn += RegisterEnemy;
+        Cat.CompletedPetting += OnCompletedPettingCat;
+        Enemy.EnemyChangedState += OnEnemyChangedState;
+        Enemy.EnemySpawned += OnEnemySpawned;
+        MicrowaveController.MicrowaveDone += MaxOutNoise;
 
         enemies = new List<Enemy>();
 
         StartGame();
     }
-    private void RegisterEnemy(Enemy e)
+    private void OnEnemySpawned(Enemy e)
     {
         enemies.Add(e);
     }
@@ -58,21 +59,25 @@ public class LevelManager : MonoBehaviour
         Noise = Mathf.Clamp(Noise, 0f, MaxNoise);
     }
 
-    public void MakeNoise(float noiseAmt)
+    public void MakeNoise(Vector3 pos, float noiseAmt) //add Vector3 LastNoise so the enemy AI investigates it
     {
-        Noise += noiseAmt;
         lastTimeNoise = Time.time;
 
-        if(Noise >= MaxNoise)
+        foreach (Enemy e in enemies)
         {
-            foreach(Enemy e in enemies)
-            {
-                e.GoAggro();
-            }
+            Noise += e.OnMadeNoise(pos, noiseAmt);
+
+            if (Noise >= MaxNoise)
+            { e.OnMaxNoise(); }
         }
     }
 
-    public void EnemyChangedState(Enemy.EnemyState state)
+    private void MaxOutNoise(Vector3 pos)
+    {
+        MakeNoise(pos, float.MaxValue);
+    }
+
+    private void OnEnemyChangedState(Enemy.EnemyState state)
     {
         int highest = (int)state;
 
@@ -93,12 +98,12 @@ public class LevelManager : MonoBehaviour
         Noise = 0;
     }
 
-    public void CatPetted()
+    private void OnCompletedPettingCat()
     {
         CatsPetted++;
         if(CatsPetted == CatsToPet)
         {
-            OnAllCatsPetted?.Invoke();
+            AllCatsPetted?.Invoke();
         }
     }
 }

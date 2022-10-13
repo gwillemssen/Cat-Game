@@ -28,7 +28,7 @@ public class Cat : Interactable
     //private ShakePosition shake;
 
     //events
-    public static event Action OnCompletedPetting;
+    public static event Action CompletedPetting;
 
     //Minigame
     private Vector3 catOriginalPos;
@@ -237,7 +237,7 @@ public class Cat : Interactable
         {
             EndMinigame();
             base.CanInteract = false;
-            OnCompletedPetting?.Invoke();
+            CompletedPetting?.Invoke();
         }
     }
 

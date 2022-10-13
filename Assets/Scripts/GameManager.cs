@@ -8,8 +8,6 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance { get; private set; }
 
-    public static event Action OnAllCatsPetted;
-
     enum State { Normal, Loading }
     State state = State.Loading;
 
@@ -28,8 +26,8 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
 
         //hook up win / lose events
-        Enemy.OnCatchPlayer += GameOver;
-        ExitDoor.OnExitedDoor += WinGame;
+        Enemy.CaughtPlayer += GameOver;
+        ExitDoor.ExitedDoor += WinGame;
     }
 
     private void Start()

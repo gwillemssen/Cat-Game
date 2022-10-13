@@ -6,19 +6,19 @@ using UnityEngine;
 public class ExitDoor : Interactable
 {
     //events
-    public static event Action OnExitedDoor;
+    public static event Action ExitedDoor;
 
     private bool locked = true;
 
     private void Start()
     {
-        LevelManager.OnAllCatsPetted += Unlock;
+        LevelManager.AllCatsPetted += Unlock;
     }
     public override void InteractClick(FirstPersonController controller)
     {
         if(!locked)
         {
-            OnExitedDoor?.Invoke();
+            ExitedDoor?.Invoke();
         }
         else
         {

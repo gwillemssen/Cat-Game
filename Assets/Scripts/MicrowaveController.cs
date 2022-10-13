@@ -18,6 +18,8 @@ public class MicrowaveController : Interactable
     public bool plateSpinning;
     public bool doorOpen;
 
+    public static event Action<Vector3> MicrowaveDone;
+
     private AudioClip[] sounds = new AudioClip[6];
     // SOUND LIST:
     // 0: beep
@@ -95,6 +97,7 @@ public class MicrowaveController : Interactable
                 {
                     timeLeft = 0;
                     Debug.Log("time up");
+                    MicrowaveDone?.Invoke(this.transform.position);
                     timerOn = false;
                     microwaveAnimator.SetTrigger("FinishedTrigger");
                     active = false;
