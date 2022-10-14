@@ -11,7 +11,7 @@ public class Enemy : MonoBehaviour
     public enum EnemyState { Idle, Patrolling, LostTarget, Chasing, MaxNoise }
 
     [Header("References")]
-    [Range(0, 180f)]
+    [HideInInspector] //Hiding this for now, until the patrolling code is functioning
     public List<Transform> PatrollingRoute;
     public Transform eyes;
 
@@ -89,6 +89,7 @@ public class Enemy : MonoBehaviour
         {
             GameObject g = new GameObject();
             g.transform.position = transform.position;
+            g.transform.rotation = transform.rotation;
             PatrollingRoute.Add(g.transform);
         }
         if (PatrollingRoute != null)
@@ -202,13 +203,18 @@ public class Enemy : MonoBehaviour
         if (State == EnemyState.Idle)
         {
             ai.destination = transform.position;
+            //TEMPORARY SOLUTION
+            transform.rotation = PatrollingRoute[0].rotation;
         }
         if(state == EnemyState.Patrolling)
         {
             //TEMPORARY SOLUTION
             ai.destination = PatrollingRoute[0].position;
+            if (Vector3.SqrMagnitude(transform.position - ai.destination) < 0.5f)
+            {
+                State = EnemyState.Idle;
+            }
         }
-        //add patrolling / sitting spots here
     }
 
     bool IsPlayerWithinFieldOfView()
