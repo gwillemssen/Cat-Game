@@ -54,6 +54,7 @@ public class PlayerUI : MonoBehaviour
     string debugOutput = "";
     private void Update()
     {
+        //If the noise is 0 UI disappears
         if(LevelManager.instance.Noise == 0)
         { noiseMeter.gameObject.SetActive(false); }
         else
