@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using Pathfinding;
 using UnityEngine;
 using UnityEditor;
+using System;
 
 [RequireComponent(typeof(IAstarAI))]
 public class Enemy : MonoBehaviour
 {
-    public enum EnemyState { Idle, Patrolling, LostTarget, Chasing }
+    public enum EnemyState { Idle, Patrolling, LostTarget, Chasing, MaxNoise }
 
     [Header("References")]
     [Range(0, 180f)]
@@ -18,16 +19,17 @@ public class Enemy : MonoBehaviour
     [Range(45f, 270f)]
     public float FieldOfView = 90f;
     public float SightDistance = 12f;
+    public float HearingRadius = 20f;
     [Tooltip("Higher value = more time / noise is neeeded to alert the enemy")]
     [Range(0f, 8f)]
     public float AlertnessRequired = 2f;
-    
+
     [Header("Chasing")]
     [Range(1f, 10f)]
     public float ChaseTime = 6f;
     [Tooltip("How long after losing the target does it take until the enemy goes back into idle")]
-    [Range(1f, 10f)]
-    public float LostTargetTime = 3f;
+    [Range(5f, 25f)]
+    public float LostTargetTime = 10f;
     public float CaughtDistance = 1.25f;
 
     [Header("Misc")]
@@ -35,7 +37,11 @@ public class Enemy : MonoBehaviour
     public bool DebugMode = false;
     public TextMesh EnemyDebugObject;
 
-    private EnemyState state;
+    //events
+    public static event Action<Enemy.EnemyState> EnemyChangedState;
+    public static event Action<Enemy> EnemySpawned;
+    public static event Action CaughtPlayer;
+
     public EnemyState State
     {
         get
@@ -44,11 +50,10 @@ public class Enemy : MonoBehaviour
         }
         private set
         {
-            if(state != value)
+            if (state != value)
             {
                 state = value;
-                if (LevelManager.instance != null)
-                { LevelManager.instance.EnemyChangedState(value); }
+                EnemyChangedState?.Invoke(state);
             }
         }
     }
@@ -58,12 +63,16 @@ public class Enemy : MonoBehaviour
 
     private IAstarAI ai;
     private Transform target;
+    private EnemyState state;
     private float lastTimeSighted = -420f;
     private float lastTimeLostTarget = -420f;
     private bool doPatrol = false;
     private float fov;
     private RaycastHit hit;
     private float sqrCaughtDistance;
+    private float sqrHearingRadius;
+    private float localNoise;
+    private Vector3 lastNoisePosition;
 
     void Start()
     {
@@ -74,6 +83,7 @@ public class Enemy : MonoBehaviour
         EnemyDebugObject.gameObject.SetActive(DebugMode);
         fov = Mathf.InverseLerp(180, 0, FieldOfView);
         sqrCaughtDistance = CaughtDistance * CaughtDistance;
+        sqrHearingRadius = HearingRadius * HearingRadius;
 
         if (PatrollingRoute != null)
         {
@@ -81,15 +91,17 @@ public class Enemy : MonoBehaviour
             { doPatrol = true; }
         }
 
-        if (LevelManager.instance == null)
-        { Debug.LogError("LEVELMANAGER NOT IN SCENE"); }
-        LevelManager.instance.Enemies.Add(this);
+        EnemySpawned?.Invoke(this);
 
     }
 
     void Update()
     {
-        if (IsPlayerWithinFieldOfView())
+        if (State == EnemyState.MaxNoise)
+        {
+            IncreaseAlertness();
+        }
+        else if (IsPlayerWithinFieldOfView())
         {
             if (RaycastToPlayer())
             {
@@ -98,8 +110,6 @@ public class Enemy : MonoBehaviour
                 else
                 {
                     IncreaseAlertness();
-                    if (Alertness >= AlertnessRequired)
-                    { SpotPlayer(); }
                 }
             }
             else if (State == EnemyState.Idle)
@@ -120,22 +130,40 @@ public class Enemy : MonoBehaviour
 
         Move();
 
-        if(Vector3.SqrMagnitude(transform.position - target.position) <= sqrCaughtDistance)
+        if (Vector3.SqrMagnitude(transform.position - target.position) <= sqrCaughtDistance)
         {
-            GameManager.instance.GameOver();
+            CaughtPlayer?.Invoke();
         }
     }
 
-    public void GoAggro()
+    public void OnMaxNoise()
     {
-        SpotPlayer();
+        State = EnemyState.MaxNoise;
+    }
+
+    public float OnMadeNoise(Vector3 pos, float amt)
+    {
+        //returns how much noise it made to the enemy
+        localNoise = Vector3.Distance(pos, transform.position) / HearingRadius;
+        localNoise = Mathf.Lerp(1, 0, localNoise);
+        localNoise = 1f - Mathf.Pow(1f - localNoise, 5f); //easeOutQuint
+        localNoise *= amt;
+        lastNoisePosition = pos;
+
+        return localNoise;
     }
 
     void SpotPlayer()
     {
         lastTimeSighted = Time.time;
-        State = EnemyState.Chasing;
-        Alertness = AlertnessRequired;
+
+        if (State != EnemyState.MaxNoise)
+        { State = EnemyState.Chasing; }
+        else
+        {
+            State = EnemyState.LostTarget;
+            lastTimeLostTarget = Time.time;
+        } //doesnt actually know where the player is yet, just moving to last noise
     }
 
     void DecreaseAlertness()
@@ -146,15 +174,26 @@ public class Enemy : MonoBehaviour
     void IncreaseAlertness()
     {
         Alertness = Mathf.Clamp(Alertness + Time.deltaTime, 0f, AlertnessRequired);
+
+        if (Alertness >= AlertnessRequired)
+        {
+            SpotPlayer();
+            Alertness = AlertnessRequired;
+        }
     }
 
     void Move()
     {
-        if(State == EnemyState.Chasing)
+        if (State == EnemyState.Chasing)
         {
             ai.destination = target.position;
+            lastNoisePosition = target.position;
         }
-        if(State == EnemyState.Idle)
+        if(State == EnemyState.LostTarget)
+        {
+            ai.destination = lastNoisePosition;
+        }
+        if (State == EnemyState.Idle)
         {
             ai.destination = transform.position;
         }
@@ -169,7 +208,7 @@ public class Enemy : MonoBehaviour
 
     bool RaycastToPlayer()
     {
-        if(Physics.Raycast(eyes.position, (target.position - eyes.position), out hit, SightDistance, EverythingExceptEnemy, QueryTriggerInteraction.Collide))
+        if (Physics.Raycast(eyes.position, (target.position - eyes.position), out hit, SightDistance, EverythingExceptEnemy, QueryTriggerInteraction.Collide))
         {
             Hit = hit;
             return Hit.collider.CompareTag("Player");

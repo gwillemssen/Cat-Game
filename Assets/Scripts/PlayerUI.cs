@@ -18,6 +18,8 @@ public class PlayerUI : MonoBehaviour
 
     public void Init(FirstPersonController controller)
     {
+        FPSCamPrefab = Resources.Load("Prefab/FpsCam") as GameObject;
+        
         canvas = Instantiate<GameObject>(FPSCamPrefab, Vector3.down * 100f, Quaternion.identity).GetComponentInChildren<Canvas>();
         Transform g;
         for(int i = 0; i < canvas.transform.childCount; i++)

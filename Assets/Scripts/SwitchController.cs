@@ -62,7 +62,7 @@ public class SwitchController : Interactable
     }
     public override void InteractClick(FirstPersonController controller)
     {
-        ToggleSwitch();
+        on = !on;
     }
 
     private void SwitchLoad()
@@ -86,11 +86,6 @@ public class SwitchController : Interactable
         clipID = clip;
         lightSwitchPlayer.clip = sounds[clipID];
         lightSwitchPlayer.Play();
-    }
-
-    private void ToggleSwitch()
-    {
-        on = !on;
     }
 
     
