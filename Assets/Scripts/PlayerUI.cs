@@ -23,27 +23,24 @@ public class PlayerUI : MonoBehaviour
         FPSCamPrefab = Resources.Load("Prefab/FpsCam") as GameObject;
         
         canvas = Instantiate<GameObject>(FPSCamPrefab, Vector3.down * 100f, Quaternion.identity).GetComponentInChildren<Canvas>();
-        Transform g;
-        for(int i = 0; i < canvas.transform.childCount; i++)
+        foreach(RectTransform r in canvas.GetComponentsInChildren<RectTransform>())
         {
-            g = canvas.transform.GetChild(i);
-
-            switch(g.gameObject.name)
+            switch(r.gameObject.name)
             {
                 case "NoiseMeter":
-                    noiseMeter = g.GetComponent<Slider>();
+                    noiseMeter = r.GetComponent<Slider>();
                     break;
                 case "PettingMeter":
-                    PettingMeter = g.GetComponent<Slider>();
+                    PettingMeter = r.GetComponent<Slider>(); ;
                     break;
                 case "DebugText":
-                    debugText = g.GetComponent<Text>();
+                    debugText = r.GetComponent<Text>();
                     break;
                 case "WIN":
-                    WinScreen = g.gameObject;
+                    WinScreen = r.gameObject;
                     break;
                 case "LOSE":
-                    LoseScreen = g.gameObject;
+                    LoseScreen = r.gameObject;
                     break;
                 case "INFO":
                     infoText = g.GetComponent<Text>();
