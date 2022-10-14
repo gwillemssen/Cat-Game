@@ -38,12 +38,15 @@ public class LevelManager : MonoBehaviour
 
         StartGame();
     }
-
+    /// <summary>
+    /// moderation of UI Noise metedr filling up
+    /// How can I manipulate the delay for the decrease?
+    /// </summary>
     private void Update()
     {
         if(Time.time - lastTimeNoise > NoiseDecayDelay)
         {
-            Noise -= Time.deltaTime * NoiseDecayRate;
+            Noise -= Time.deltaTime * NoiseDecayRate * 10;
         }
         Noise = Mathf.Clamp(Noise, 0f, MaxNoise);
     }
