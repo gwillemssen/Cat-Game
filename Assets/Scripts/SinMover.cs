@@ -20,8 +20,8 @@ public class SinMover : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        departurePosition = transform.parent.Find("Start").transform.position;
-        destinationPosition = transform.parent.Find("Destination").transform.position;
+        departurePosition = transform.parent.GetChild(1).transform.position;
+        destinationPosition = transform.parent.GetChild(2).transform.position;
         timer += Time.deltaTime;
         moveAmt = (Mathf.Sin(timer / (timeToLoop / 4)) + 1) / 2;
     }
