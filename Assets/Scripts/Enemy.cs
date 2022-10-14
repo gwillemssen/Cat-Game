@@ -74,6 +74,15 @@ public class Enemy : MonoBehaviour
         EnemyDebugObject.gameObject.SetActive(DebugMode);
         fov = Mathf.InverseLerp(180, 0, FieldOfView);
         sqrCaughtDistance = CaughtDistance * CaughtDistance;
+        
+        //TEMPORARY HACKY SOLUTION
+        //WARNING : BAD
+        if (PatrollingRoute != null)
+        {
+            GameObject g = new GameObject();
+            g.transform.position = transform.position;
+            PatrollingRoute.Add(g.transform);
+        }
 
         if (PatrollingRoute != null)
         {
@@ -115,7 +124,7 @@ public class Enemy : MonoBehaviour
         }
         if (State == EnemyState.LostTarget && Time.time > lastTimeLostTarget + LostTargetTime)
         {
-            State = EnemyState.Idle; //player got away, go back to normal
+            State = EnemyState.Patrolling; //player got away, go back to normal
         }
 
         Move();
@@ -154,7 +163,12 @@ public class Enemy : MonoBehaviour
         {
             ai.destination = target.position;
         }
-        if(State == EnemyState.Idle)
+        else if(State == EnemyState.Patrolling)
+        {
+            //TEMPORARY HACKY FIX
+            ai.destination = PatrollingRoute[0].position;
+        }
+        else if (State == EnemyState.Idle)
         {
             ai.destination = transform.position;
         }
