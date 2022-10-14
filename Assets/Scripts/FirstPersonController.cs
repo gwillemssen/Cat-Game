@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using System.Collections;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(CharacterController))]
@@ -146,6 +147,13 @@ public class FirstPersonController : MonoBehaviour
         Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z);
         Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
     }
+    //private void Crouch()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.LeftControl))
+    //    {
+    //        transform.localScale = transform.localScale / 2;
+    //    }
+    //}
 
     private void CameraRotation()
     {
