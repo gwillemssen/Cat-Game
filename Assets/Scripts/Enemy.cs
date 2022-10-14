@@ -85,6 +85,12 @@ public class Enemy : MonoBehaviour
         sqrCaughtDistance = CaughtDistance * CaughtDistance;
         sqrHearingRadius = HearingRadius * HearingRadius;
 
+        if(PatrollingRoute == null || PatrollingRoute.Count == 0)
+        {
+            GameObject g = new GameObject();
+            g.transform.position = transform.position;
+            PatrollingRoute.Add(g.transform);
+        }
         if (PatrollingRoute != null)
         {
             if (PatrollingRoute.Count > 0)
@@ -112,7 +118,7 @@ public class Enemy : MonoBehaviour
                     IncreaseAlertness();
                 }
             }
-            else if (State == EnemyState.Idle)
+            else if (State == EnemyState.Idle || State == EnemyState.Patrolling)
             { DecreaseAlertness(); }
         }
         else
@@ -125,7 +131,7 @@ public class Enemy : MonoBehaviour
         }
         if (State == EnemyState.LostTarget && Time.time > lastTimeLostTarget + LostTargetTime)
         {
-            State = EnemyState.Idle; //player got away, go back to normal
+            State = EnemyState.Patrolling; //player got away, go back to normal
         }
 
         Move();
@@ -196,6 +202,11 @@ public class Enemy : MonoBehaviour
         if (State == EnemyState.Idle)
         {
             ai.destination = transform.position;
+        }
+        if(state == EnemyState.Patrolling)
+        {
+            //TEMPORARY SOLUTION
+            ai.destination = PatrollingRoute[0].position;
         }
         //add patrolling / sitting spots here
     }
