@@ -180,7 +180,7 @@ public class Cat : Interactable
         playerController.UI.PettingMeter.gameObject.SetActive(true);
         playerController.UI.PettingMeter.value = 0f;
         playerController.Interaction.HideCrosshair = true;
-        playerController.UI.SetInfoText("Click and Drag to pet the Cat!");
+        playerController.UI.SetInfoText("Click and Drag to pet the Cat!\nRight click to Cancel");
         pettingAmount = 0f;
         audio.volume = 0f;
         audio.Play();
