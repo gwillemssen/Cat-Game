@@ -11,6 +11,8 @@ public class PlayerUI : MonoBehaviour
     public Slider PettingMeter;
     private Slider noiseMeter;
     private Text debugText;
+    private Text infoText;
+    private Animation infoTextFade;
     public GameObject WinScreen { get; private set; }
     public GameObject LoseScreen { get; private set; }
 
@@ -43,6 +45,10 @@ public class PlayerUI : MonoBehaviour
                 case "LOSE":
                     LoseScreen = g.gameObject;
                     break;
+                case "INFO":
+                    infoText = g.GetComponent<Text>();
+                    infoTextFade = g.GetComponent<Animation>();
+                    break;
             }
         }
         PettingMeter.gameObject.SetActive(false);
@@ -66,9 +72,17 @@ public class PlayerUI : MonoBehaviour
         }
 
         debugOutput = "";
-        debugOutput += $"Noise : {(int)LevelManager.instance.Noise} / {LevelManager.instance.MaxNoise}\n";
-        debugOutput += $"Most Alert Enemy State : {LevelManager.instance.MostAlertEnemyState}\n";
+        //debugOutput += $"Noise : {(int)LevelManager.instance.Noise} / {LevelManager.instance.MaxNoise}\n";
+        //debugOutput += $"Most Alert Enemy State : {LevelManager.instance.MostAlertEnemyState}\n";
         debugOutput += $"CATS : {LevelManager.instance.CatsPetted} / {LevelManager.instance.CatsToPet}\n";
         debugText.text = debugOutput;
+    }
+
+    public void SetInfoText(string text)
+    {
+        infoTextFade.Stop();
+        infoTextFade.Play();
+        infoText.color = Color.white;
+        infoText.text = text;
     }
 }

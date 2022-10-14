@@ -11,7 +11,7 @@ public class Enemy : MonoBehaviour
     public enum EnemyState { Idle, Patrolling, LostTarget, Chasing, MaxNoise }
 
     [Header("References")]
-    [Range(0, 180f)]
+    [HideInInspector] //Hiding this for now, until the patrolling code is functioning
     public List<Transform> PatrollingRoute;
     public Transform eyes;
 
@@ -85,6 +85,13 @@ public class Enemy : MonoBehaviour
         sqrCaughtDistance = CaughtDistance * CaughtDistance;
         sqrHearingRadius = HearingRadius * HearingRadius;
 
+        if(PatrollingRoute == null || PatrollingRoute.Count == 0)
+        {
+            GameObject g = new GameObject();
+            g.transform.position = transform.position;
+            g.transform.rotation = transform.rotation;
+            PatrollingRoute.Add(g.transform);
+        }
         if (PatrollingRoute != null)
         {
             if (PatrollingRoute.Count > 0)
@@ -112,7 +119,7 @@ public class Enemy : MonoBehaviour
                     IncreaseAlertness();
                 }
             }
-            else if (State == EnemyState.Idle)
+            else if (State == EnemyState.Idle || State == EnemyState.Patrolling)
             { DecreaseAlertness(); }
         }
         else
@@ -125,7 +132,7 @@ public class Enemy : MonoBehaviour
         }
         if (State == EnemyState.LostTarget && Time.time > lastTimeLostTarget + LostTargetTime)
         {
-            State = EnemyState.Idle; //player got away, go back to normal
+            State = EnemyState.Patrolling; //player got away, go back to normal
         }
 
         Move();
@@ -189,15 +196,25 @@ public class Enemy : MonoBehaviour
             ai.destination = target.position;
             lastNoisePosition = target.position;
         }
-        if(State == EnemyState.LostTarget)
+        if (State == EnemyState.LostTarget)
         {
             ai.destination = lastNoisePosition;
         }
         if (State == EnemyState.Idle)
         {
             ai.destination = transform.position;
+            //TEMPORARY SOLUTION
+            transform.rotation = PatrollingRoute[0].rotation;
         }
-        //add patrolling / sitting spots here
+        if(state == EnemyState.Patrolling)
+        {
+            //TEMPORARY SOLUTION
+            ai.destination = PatrollingRoute[0].position;
+            if (Vector3.SqrMagnitude(transform.position - ai.destination) < 0.5f)
+            {
+                State = EnemyState.Idle;
+            }
+        }
     }
 
     bool IsPlayerWithinFieldOfView()

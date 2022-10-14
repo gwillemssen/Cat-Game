@@ -103,6 +103,7 @@ public class LevelManager : MonoBehaviour
         CatsPetted++;
         if(CatsPetted == CatsToPet)
         {
+            FirstPersonController.instance.UI.SetInfoText("All cats petted!\nTime to escape!");
             AllCatsPetted?.Invoke();
         }
     }
