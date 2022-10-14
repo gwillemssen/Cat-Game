@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(CharacterController))]
@@ -60,7 +61,6 @@ public class FirstPersonController : MonoBehaviour
     public FirstPersonInteraction Interaction { get; private set; }
     [HideInInspector]
     public PlayerUI UI { get; private set; }
-
 
     // player
     private Vector2 wishMove;
@@ -179,7 +179,7 @@ public class FirstPersonController : MonoBehaviour
         moveDir = Vector3.SmoothDamp(moveDir, targetSpeed * wishMoveDir, ref moveDamp, Smoothing);
 
         if (controller.velocity.sqrMagnitude > 2 && Input.sprint)
-        { LevelManager.instance.MakeNoise(Time.deltaTime * NoiseAmt_Sprinting); }
+        { LevelManager.instance.MakeNoise(transform.position, Time.deltaTime * NoiseAmt_Sprinting); }
 
         moveDir.y = verticalVelocity;
         controller.Move(moveDir * Time.deltaTime);

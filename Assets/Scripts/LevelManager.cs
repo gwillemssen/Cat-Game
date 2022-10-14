@@ -1,10 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
-    public static LevelManager instance { get; private set; }
+    public static LevelManager instance;
+
     public float MaxNoise = 100f;
     public float NoiseDecayRate = 1f;
     public float NoiseDecayDelay = 3f;
@@ -12,13 +14,12 @@ public class LevelManager : MonoBehaviour
     public float Noise { get; private set; }
     public int CatsPetted { get; private set; }
 
-    [HideInInspector]
-    public List<Enemy> Enemies;
+    //events
+    public static event Action AllCatsPetted;
+
+    private List<Enemy> enemies;
     [HideInInspector]
     public Enemy.EnemyState MostAlertEnemyState = Enemy.EnemyState.Idle; //for the eyeball ui
-
-    //IAlertable
-    //subscribes to distraction events and also when alertness is maxed out
 
     
     private float lastTimeNoise = -420f;
@@ -26,17 +27,27 @@ public class LevelManager : MonoBehaviour
 
     private void Awake()
     {
-        if (instance != null)
+        if(instance != null)
         {
             Destroy(this);
-            return;
         }
         else
         {
             instance = this;
         }
 
+        Cat.CompletedPetting += OnCompletedPettingCat;
+        Enemy.EnemyChangedState += OnEnemyChangedState;
+        Enemy.EnemySpawned += OnEnemySpawned;
+        MicrowaveController.MicrowaveDone += MaxOutNoise;
+
+        enemies = new List<Enemy>();
+
         StartGame();
+    }
+    private void OnEnemySpawned(Enemy e)
+    {
+        enemies.Add(e);
     }
 
     private void Update()
@@ -48,25 +59,29 @@ public class LevelManager : MonoBehaviour
         Noise = Mathf.Clamp(Noise, 0f, MaxNoise);
     }
 
-    public void MakeNoise(float noiseAmt)
+    public void MakeNoise(Vector3 pos, float noiseAmt) //add Vector3 LastNoise so the enemy AI investigates it
     {
-        Noise += noiseAmt;
         lastTimeNoise = Time.time;
 
-        if(Noise >= MaxNoise)
+        foreach (Enemy e in enemies)
         {
-            foreach(Enemy e in Enemies)
-            {
-                e.GoAggro();
-            }
+            Noise += e.OnMadeNoise(pos, noiseAmt);
+
+            if (Noise >= MaxNoise)
+            { e.OnMaxNoise(); }
         }
     }
 
-    public void EnemyChangedState(Enemy.EnemyState state)
+    private void MaxOutNoise(Vector3 pos)
+    {
+        MakeNoise(pos, float.MaxValue);
+    }
+
+    private void OnEnemyChangedState(Enemy.EnemyState state)
     {
         int highest = (int)state;
 
-        foreach(Enemy e in Enemies)
+        foreach(Enemy e in enemies)
         {
             if((int)e.State > highest)
             {
@@ -83,13 +98,12 @@ public class LevelManager : MonoBehaviour
         Noise = 0;
     }
 
-    public bool AllCatsPetted()
-    {
-        return (CatsPetted == CatsToPet);
-    }
-
-    public void CatPetted()
+    private void OnCompletedPettingCat()
     {
         CatsPetted++;
+        if(CatsPetted == CatsToPet)
+        {
+            AllCatsPetted?.Invoke();
+        }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,6 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance { get; private set; }
-
 
     enum State { Normal, Loading }
     State state = State.Loading;
@@ -24,6 +24,10 @@ public class GameManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(this.gameObject);
+
+        //hook up win / lose events
+        Enemy.CaughtPlayer += GameOver;
+        ExitDoor.ExitedDoor += WinGame;
     }
 
     private void Start()
@@ -44,7 +48,7 @@ public class GameManager : MonoBehaviour
         state = State.Normal;
     }
 
-    public void WinGame()
+    private void WinGame()
     {
         if (state == State.Loading)
             return;
@@ -52,7 +56,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(TemporaryWinSequence());
     }
 
-    public void GameOver()
+    private void GameOver()
     {
         if (state == State.Loading)
             return;
