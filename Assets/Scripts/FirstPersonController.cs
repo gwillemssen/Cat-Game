@@ -82,6 +82,8 @@ public class FirstPersonController : MonoBehaviour
     public float TargetFOV = 90f; //changed by the cat minigame for visual effect
     [HideInInspector]
     public bool DisableMovement = false;
+    [HideInInspector]
+    public bool Hiding = false;
 
     //Private References
     private CharacterController controller;
@@ -124,6 +126,7 @@ public class FirstPersonController : MonoBehaviour
 
     private void LateUpdate()
     {
+        controller.enabled = !DisableMovement;
         if (!DisableMovement)
         {
             JumpAndGravity();

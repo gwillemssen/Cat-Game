@@ -110,7 +110,7 @@ public class Enemy : MonoBehaviour
         }
         else if (IsPlayerWithinFieldOfView())
         {
-            if (RaycastToPlayer())
+            if (RaycastToPlayer() && !FirstPersonController.instance.Hiding)
             {
                 if (State == EnemyState.LostTarget)  //LostTarget -> Chasing is instant
                 { SpotPlayer(); }
