@@ -43,7 +43,7 @@ public class Cat : Interactable
     private const float petDistance = 128f;
     private const float sqrPetDistance = petDistance * petDistance;
     private const float pettingSpeedMax = 1000f;
-    private Vector2 lastMousePosition = Vector2.zero;
+    //private Vector2 lastMousePosition = Vector2.zero;// Intellisense reamarked that it was never used
     private Vector2 lastDirectionPet; //so we need to go back and forth while petting
     private bool firstPet = true;
     private Vector2 mouseDelta = Vector2.zero;
@@ -151,15 +151,15 @@ public class Cat : Interactable
         {
             if (state == CatState.DonePetting && Vector3.SqrMagnitude(transform.position - targetPos) <= 0.005)
             {
-                transform.position = targetPos;
-                transform.rotation = targetRot;
+                transform.SetPositionAndRotation(targetPos, targetRot);
+
                 state = CatState.Pettable;
                 //maybe this should this change back to the startState?
             }
             else
             {
-                transform.position = Vector3.Lerp(startPos, targetPos, t);
-                transform.rotation = Quaternion.Lerp(startRot, targetRot, t);
+                transform.SetPositionAndRotation(Vector3.Lerp(startPos, targetPos, t), Quaternion.Lerp(startRot, targetRot, t));
+                
             }
         }
 
@@ -239,6 +239,8 @@ public class Cat : Interactable
             EndMinigame();
             base.CanInteract = false;
             CompletedPetting?.Invoke();
+            //maybe play an audio clip when the minigame is done?
+            // I'm thinking that the player desn't know if a cat has been finished petting or if they've already pet one.
         }
     }
 
