@@ -16,7 +16,7 @@ public class Enemy : MonoBehaviour
     public Transform eyes;
 
     [Header("Alertness")]
-    [Range(45f, 270f)]
+    [Range(45f, 180f)]
     public float FieldOfView = 90f;
     public float SightDistance = 12f;
     public float HearingRadius = 20f;
@@ -104,11 +104,7 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-        if (State == EnemyState.MaxNoise)
-        {
-            IncreaseAlertness();
-        }
-        else if (IsPlayerWithinFieldOfView())
+        if (State != EnemyState.MaxNoise && IsPlayerWithinFieldOfView())
         {
             if (RaycastToPlayer() && !FirstPersonController.instance.Hiding)
             {
@@ -130,7 +126,7 @@ public class Enemy : MonoBehaviour
             lastTimeLostTarget = Time.time;
             State = EnemyState.LostTarget; //enemy lost the player
         }
-        if (State == EnemyState.LostTarget && Time.time > lastTimeLostTarget + LostTargetTime)
+        if (State == EnemyState.LostTarget || State == EnemyState.MaxNoise && Time.time > lastTimeLostTarget + LostTargetTime)
         {
             State = EnemyState.Patrolling; //player got away, go back to normal
         }
@@ -146,6 +142,7 @@ public class Enemy : MonoBehaviour
     public void OnMaxNoise()
     {
         State = EnemyState.MaxNoise;
+        lastTimeLostTarget = Time.time;
     }
 
     public float OnMadeNoise(Vector3 pos, float amt)
@@ -163,14 +160,7 @@ public class Enemy : MonoBehaviour
     void SpotPlayer()
     {
         lastTimeSighted = Time.time;
-
-        if (State != EnemyState.MaxNoise)
-        { State = EnemyState.Chasing; }
-        else
-        {
-            State = EnemyState.LostTarget;
-            lastTimeLostTarget = Time.time;
-        } //doesnt actually know where the player is yet, just moving to last noise
+        State = EnemyState.Chasing;
     }
 
     void DecreaseAlertness()
@@ -196,9 +186,12 @@ public class Enemy : MonoBehaviour
             ai.destination = target.position;
             lastNoisePosition = target.position;
         }
-        if (State == EnemyState.LostTarget)
+        if (State == EnemyState.LostTarget || State == EnemyState.MaxNoise)
         {
             ai.destination = lastNoisePosition;
+
+            if (Vector3.SqrMagnitude(transform.position - lastNoisePosition) <= 1f)
+            { State = EnemyState.Patrolling; } //investigated the noise, going back to normal
         }
         if (State == EnemyState.Idle)
         {

@@ -27,23 +27,23 @@ public class LevelManager : MonoBehaviour
 
     private void Awake()
     {
-        if(instance != null)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            instance = this;
-        }
+        instance = this;
 
+        enemies = new List<Enemy>();
+        
         Cat.CompletedPetting += OnCompletedPettingCat;
         Enemy.EnemyChangedState += OnEnemyChangedState;
         Enemy.EnemySpawned += OnEnemySpawned;
         MicrowaveController.MicrowaveDone += MaxOutNoise;
 
-        enemies = new List<Enemy>();
-
         StartGame();
+    }
+    private void OnDestroy()
+    {
+        Cat.CompletedPetting -= OnCompletedPettingCat;
+        Enemy.EnemyChangedState -= OnEnemyChangedState;
+        Enemy.EnemySpawned -= OnEnemySpawned;
+        MicrowaveController.MicrowaveDone -= MaxOutNoise;
     }
     private void OnEnemySpawned(Enemy e)
     {

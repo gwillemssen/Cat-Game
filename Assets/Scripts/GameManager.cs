@@ -30,6 +30,12 @@ public class GameManager : MonoBehaviour
         ExitDoor.ExitedDoor += WinGame;
     }
 
+    private void OnDestroy()
+    {
+        Enemy.CaughtPlayer -= GameOver;
+        ExitDoor.ExitedDoor -= WinGame;
+    }
+
     private void Start()
     {
         StartGame();
