@@ -26,6 +26,7 @@ public class ExitDoor : Interactable
         }
         else
         {
+            //Possibly add an audio clip to let the player know they can't leave yet
             //cant leave yet
         }
     }
