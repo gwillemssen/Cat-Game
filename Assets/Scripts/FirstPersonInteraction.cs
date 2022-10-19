@@ -16,6 +16,7 @@ public class FirstPersonInteraction : MonoBehaviour
     private FirstPersonController controller;
     private Interactable interactable = null;
     public InteractablePickup Pickup { get; private set; } = null;
+    private InteractablePickup interactablePickup;
     private Interactable lastInteractable = null;
 
     //crosshair
@@ -42,26 +43,50 @@ public class FirstPersonInteraction : MonoBehaviour
         UpdateCrosshair();
     }
 
+    private void PickupInteractable()
+    {
+        Pickup = interactablePickup;
+        interactablePickup.InteractClick(controller);
+        Pickup.transform.SetParent(controller.PickupPosition);
+        Pickup.transform.localPosition = Vector3.zero;
+        Pickup.transform.localRotation = Quaternion.identity;
+        Pickup.Rigidbody.isKinematic = true;
+    }
+
+    private void DropInteractable()
+    {
+        Pickup.transform.SetParent(Pickup.OriginalParent);
+        Pickup.Rigidbody.isKinematic = false;
+        Pickup = null;
+    }
+
+    private void Interact()
+    {
+        //regular interaction
+        interactable.Interact(controller);
+        if (controller.Input.interactedOnce)
+        { interactable.InteractClick(controller); }
+    }
+
     private void HandleInteraction()
     {
+        //TODO: drop
         if (controller.Input.interacting && interactable != null)
         {
-            Pickup = interactable as InteractablePickup;
+            interactablePickup = interactable as InteractablePickup;
 
-            if(Pickup == null)
+            if(interactablePickup != null && Pickup == null)
             {
-                //regular interaction
-                interactable.Interact(controller);
-                if (controller.Input.interactedOnce)
-                { interactable.InteractClick(controller); }
+                PickupInteractable();
             }
             else
             {
-                //pickup logic
-                interactable.transform.SetParent(controller.PickupPosition);
-                interactable.transform.localPosition = Vector3.zero;
-                interactable.transform.localRotation = Quaternion.identity;
+                Interact();
             }
+        }
+        if(controller.Input.throwing && Pickup != null)
+        {
+            DropInteractable();
         }
 
         if (lastInteractable != interactable && lastInteractable != null)
