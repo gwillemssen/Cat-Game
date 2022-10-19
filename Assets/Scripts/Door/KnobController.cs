@@ -7,6 +7,7 @@ public class KnobController : Interactable
 {
     public bool Locked = false;
     public string KeyName = "TestKey";
+    public int NoiseAmt = 20;
 
     private DoorAnimController parent;
    
@@ -33,5 +34,6 @@ public class KnobController : Interactable
             }
         }
         parent.open = !parent.open;
+        LevelManager.instance.MakeNoise(transform.position, NoiseAmt);
     }
 }
