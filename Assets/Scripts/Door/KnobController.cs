@@ -27,7 +27,10 @@ public class KnobController : Interactable
                 Debug.Log($"Opening {gameObject.name} with {KeyName}");
             }
             else
-            { return; }
+            {
+                FirstPersonController.instance.UI.SetInfoText("Locked..");
+                return;
+            }
         }
         parent.open = !parent.open;
     }

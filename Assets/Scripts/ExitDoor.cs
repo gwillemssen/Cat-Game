@@ -28,6 +28,7 @@ public class ExitDoor : Interactable
         {
             //Possibly add an audio clip to let the player know they can't leave yet
             //cant leave yet
+            FirstPersonController.instance.UI.SetInfoText("MUST. PET. CATS. FIRST");
         }
     }
 

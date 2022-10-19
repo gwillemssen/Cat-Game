@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class KeyPickup : InteractablePickup
 {
-    public string KeyName = "Test Key";
+    public string KeyName = "TestKey";
 }

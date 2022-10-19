@@ -6,6 +6,7 @@ public class FirstPersonInteraction : MonoBehaviour
 {
     [Tooltip("How far can the player reach?")]
     public float InteractRange = 8.0f;
+    public float ThrowForce = 8.0f;
     [Tooltip("What layers can we interact with?")]
     public LayerMask InteractableLayerMask;
     public Texture2D CrosshairSprite_Normal;
@@ -56,7 +57,15 @@ public class FirstPersonInteraction : MonoBehaviour
     private void DropInteractable()
     {
         Pickup.transform.SetParent(Pickup.OriginalParent);
+        Pickup.transform.position = controller.MainCamera.transform.position;
         Pickup.Rigidbody.isKinematic = false;
+        /*RaycastHit hit;
+        if(!Physics.Raycast(controller.MainCamera.transform.position, Pickup.transform.position - controller.MainCamera.transform.position, out hit, InteractRange, InteractableLayerMask, QueryTriggerInteraction.Collide))
+        {
+            Pickup.transform.position = controller.MainCamera.transform.position;
+        }*/
+        //throw from same position if its not through a wall
+        Pickup.Rigidbody.AddForce(transform.forward * ThrowForce, ForceMode.VelocityChange);
         Pickup = null;
     }
 
@@ -75,9 +84,10 @@ public class FirstPersonInteraction : MonoBehaviour
         {
             interactablePickup = interactable as InteractablePickup;
 
-            if(interactablePickup != null && Pickup == null)
+            if(interactablePickup != null)
             {
-                PickupInteractable();
+                if (Pickup == null)
+                { PickupInteractable(); }
             }
             else
             {
