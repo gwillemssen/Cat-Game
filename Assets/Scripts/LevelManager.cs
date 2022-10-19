@@ -34,7 +34,6 @@ public class LevelManager : MonoBehaviour
         Cat.CompletedPetting += OnCompletedPettingCat;
         Enemy.EnemyChangedState += OnEnemyChangedState;
         Enemy.EnemySpawned += OnEnemySpawned;
-        MicrowaveController.MicrowaveDone += MaxOutNoise;
 
         StartGame();
     }
@@ -43,7 +42,6 @@ public class LevelManager : MonoBehaviour
         Cat.CompletedPetting -= OnCompletedPettingCat;
         Enemy.EnemyChangedState -= OnEnemyChangedState;
         Enemy.EnemySpawned -= OnEnemySpawned;
-        MicrowaveController.MicrowaveDone -= MaxOutNoise;
     }
     private void OnEnemySpawned(Enemy e)
     {
@@ -72,7 +70,7 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    private void MaxOutNoise(Vector3 pos)
+    public void MaxOutNoise(Vector3 pos)
     {
         MakeNoise(pos, float.MaxValue);
     }
