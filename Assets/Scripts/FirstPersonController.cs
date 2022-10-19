@@ -148,7 +148,7 @@ public class FirstPersonController : MonoBehaviour
     private void GroundedCheck()
     {
         // set sphere position, with offset
-        Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z);
+        Vector3 spherePosition = new(transform.position.x, transform.position.y - GroundedOffset, transform.position.z);
         Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
     }
     //private void Crouch()
@@ -254,8 +254,8 @@ public class FirstPersonController : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        Color transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);
-        Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.35f);
+        Color transparentGreen = new(0.0f, 1.0f, 0.0f, 0.35f);
+        Color transparentRed = new(1.0f, 0.0f, 0.0f, 0.35f);
 
         if (Grounded) Gizmos.color = transparentGreen;
         else Gizmos.color = transparentRed;
