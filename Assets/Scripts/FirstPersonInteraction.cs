@@ -15,6 +15,7 @@ public class FirstPersonInteraction : MonoBehaviour
 
     private FirstPersonController controller;
     private Interactable interactable = null;
+    public InteractablePickup Pickup { get; private set; } = null;
     private Interactable lastInteractable = null;
 
     //crosshair
@@ -34,6 +35,46 @@ public class FirstPersonInteraction : MonoBehaviour
 
     public void UpdateInteraction()
     {
+        RaycastForInteractable();
+
+        HandleInteraction();
+
+        UpdateCrosshair();
+    }
+
+    private void HandleInteraction()
+    {
+        if (controller.Input.interacting && interactable != null)
+        {
+            Pickup = interactable as InteractablePickup;
+
+            if(Pickup == null)
+            {
+                //regular interaction
+                interactable.Interact(controller);
+                if (controller.Input.interactedOnce)
+                { interactable.InteractClick(controller); }
+            }
+            else
+            {
+                //pickup logic
+                interactable.transform.SetParent(controller.PickupPosition);
+                interactable.transform.localPosition = Vector3.zero;
+                interactable.transform.localRotation = Quaternion.identity;
+            }
+        }
+
+        if (lastInteractable != interactable && lastInteractable != null)
+        { lastInteractable.LookingAt = false; }
+
+        if (interactable != lastInteractable && interactable != null)
+        { lastTimeNewInteractable = Time.time; }
+
+        lastInteractable = interactable;
+    }
+
+    private void RaycastForInteractable()
+    {
         RaycastHit hit;
 
         if (Physics.Raycast(controller.MainCamera.transform.position, controller.MainCamera.transform.forward, out hit, InteractRange, InteractableLayerMask, QueryTriggerInteraction.Collide))
@@ -42,38 +83,13 @@ public class FirstPersonInteraction : MonoBehaviour
             if (interactable != null)
             {
                 if (!interactable.CanInteract)
-                    { interactable = null; }
+                { interactable = null; }
                 else
-                    { interactable.LookingAt = true; }
+                { interactable.LookingAt = true; }
             }
         }
         else
         { interactable = null; }
-
-        if (controller.Input.interacting && interactable != null)
-        {
-            //we clicked
-            interactable.Interact(controller);
-            if (controller.Input.interactedOnce)
-                interactable.InteractClick(controller);
-        }
-
-        if (lastInteractable != interactable && lastInteractable != null)
-        { lastInteractable.LookingAt = false; }
-
-        if(interactable != lastInteractable && interactable != null)
-        { lastTimeNewInteractable = Time.time; }
-
-        lastInteractable = interactable;
-
-        UpdateCrosshair();
-
-        UpdatePickup();
-    }
-
-    private void UpdatePickup()
-    {
-        //pickup / throw / use logic here
     }
 
     private void UpdateCrosshair()
