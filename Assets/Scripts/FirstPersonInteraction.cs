@@ -67,6 +67,13 @@ public class FirstPersonInteraction : MonoBehaviour
         lastInteractable = interactable;
 
         UpdateCrosshair();
+
+        UpdatePickup();
+    }
+
+    private void UpdatePickup()
+    {
+        //pickup / throw / use logic here
     }
 
     private void UpdateCrosshair()

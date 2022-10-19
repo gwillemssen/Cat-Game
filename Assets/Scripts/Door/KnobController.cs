@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class KnobController : Interactable
 {
+    public bool Locked = false;
+    public string KeyName = "TestKey";
+
     private DoorAnimController parent;
    
     private void Start()
@@ -15,6 +18,8 @@ public class KnobController : Interactable
 
     public override void InteractClick(FirstPersonController controller)
     {
+        if (Locked && !parent.open)
+        { return; }
         parent.open = !parent.open;
     }
 }
