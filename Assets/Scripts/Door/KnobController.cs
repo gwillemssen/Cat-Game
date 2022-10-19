@@ -29,7 +29,7 @@ public class KnobController : Interactable
             }
             else
             {
-                FirstPersonController.instance.UI.SetInfoText("Locked..");
+                FirstPersonController.instance.UI.SetInfoText("Its Locked, there might be a key around here...");
                 return;
             }
         }
