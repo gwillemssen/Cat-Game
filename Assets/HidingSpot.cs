@@ -16,6 +16,7 @@ public class HidingSpot : Interactable
 
     public override void InteractClick(FirstPersonController controller)
     {
+        AudioManager.instance.Play("Door");
         if (player != null)
             return;
         player = controller;

@@ -10,7 +10,7 @@ public class KnobController : Interactable
     public int NoiseAmt = 20;
 
     private float lastTime;
-    private bool isPlaying;
+
     public float Cooldown;
 
     private DoorAnimController parent;
@@ -23,7 +23,8 @@ public class KnobController : Interactable
 
     public override void InteractClick(FirstPersonController controller)
     {
-        CheckAudio();
+        //AudioManager.instance.Play("Door");
+       
         if (Locked && !parent.open)
         {
             if (controller.Interaction.Pickup != null && //there is a pickup
@@ -40,31 +41,19 @@ public class KnobController : Interactable
         }
         parent.open = !parent.open;
         LevelManager.instance.MakeNoise(transform.position, NoiseAmt);
-
+        CheckAudio();
     }
     void CheckAudio()
     {
         if (Time.time > lastTime + Cooldown)
         {
             lastTime = Time.time;
-            isPlaying = true;
-        }
-
-
-        if (isPlaying == true)
-        {
-            if(parent.open)
-            {
-                PlayDoor();
-            }
-           
-
+            PlayDoor();
         }
     }
     void PlayDoor()
     {
-        FindObjectOfType<AudioManager>().Play("DoorClose");
-        isPlaying = false;
+        AudioManager.instance.Play("DoorClose");
     }
     public void Open()
     {

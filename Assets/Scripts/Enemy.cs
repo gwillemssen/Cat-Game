@@ -173,8 +173,7 @@ public class Enemy : MonoBehaviour
     }
     void PlayFootstep()
     {
-        FindObjectOfType<AudioManager>().Play("EnemyFootsteps");
-        isPlaying = false;
+        AudioManager.instance.Play("EnemyFootsteps");
     }
 
     void DecreaseAlertness()
@@ -197,14 +196,7 @@ public class Enemy : MonoBehaviour
         if (Time.time > lastTimeStep + stepCooldown)
         {
             lastTimeStep = Time.time;
-            isPlaying = true;
-        }
-
-
-        if (isPlaying == true)
-        {
             PlayFootstep();
-
         }
     }
 
@@ -272,7 +264,9 @@ public class Enemy : MonoBehaviour
         if (Physics.Raycast(eyes.position, (target.position - eyes.position), out hit, SightDistance, EverythingExceptEnemy, QueryTriggerInteraction.Collide))
         {
             Hit = hit;
+          
             return Hit.collider.CompareTag("Player");
+            
         }
         else
         {
