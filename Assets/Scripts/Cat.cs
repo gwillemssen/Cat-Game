@@ -184,6 +184,7 @@ public class Cat : Interactable
         pettingAmount = 0f;
         audio.volume = 0f;
         audio.Play();
+        
     }
 
     private void UpdateMinigame()
@@ -194,6 +195,7 @@ public class Cat : Interactable
         { 
             firstPet = true;
             lastPetMousePos = playerController.Input.mousePosition;
+            FindObjectOfType<AudioManager>().Play("DeathMetal");
         }
 
         if (playerController.Input.interacting)
