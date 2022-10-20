@@ -407,7 +407,7 @@ MonoBehaviour:
   radius: 1
   height: 2
   canMove: 1
-  maxSpeed: 1.2
+  maxSpeed: 2.5
   gravity: {x: NaN, y: NaN, z: NaN}
   groundMask:
     serializedVersion: 2
@@ -457,5 +457,8 @@ MonoBehaviour:
   EverythingExceptEnemy:
     serializedVersion: 2
     m_Bits: 3895
+  InteractableLayerMask:
+    serializedVersion: 2
+    m_Bits: 1024
   DebugMode: 0
   EnemyDebugObject: {fileID: 883035380}

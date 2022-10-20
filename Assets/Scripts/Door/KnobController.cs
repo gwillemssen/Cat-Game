@@ -36,4 +36,10 @@ public class KnobController : Interactable
         parent.open = !parent.open;
         LevelManager.instance.MakeNoise(transform.position, NoiseAmt);
     }
+
+    public void Open()
+    {
+        parent.open = true;
+        //for enemies to open it
+    }
 }

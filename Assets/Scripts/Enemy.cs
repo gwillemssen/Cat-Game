@@ -34,6 +34,7 @@ public class Enemy : MonoBehaviour
 
     [Header("Misc")]
     public LayerMask EverythingExceptEnemy;
+    public LayerMask InteractableLayerMask;
     public bool DebugMode = false;
     public TextMesh EnemyDebugObject;
 
@@ -199,13 +200,27 @@ public class Enemy : MonoBehaviour
             //TEMPORARY SOLUTION
             transform.rotation = PatrollingRoute[0].rotation;
         }
-        if(state == EnemyState.Patrolling)
+        if (State == EnemyState.Patrolling)
         {
             //TEMPORARY SOLUTION
             ai.destination = PatrollingRoute[0].position;
             if (Vector3.SqrMagnitude(transform.position - ai.destination) < 0.5f)
             {
                 State = EnemyState.Idle;
+            }
+        }
+        if(State != EnemyState.Idle)
+        {
+            //raycast for doors
+            RaycastHit hit;
+            Interactable interactable;
+            if (Physics.Raycast(eyes.position, eyes.forward, out hit, 2f, InteractableLayerMask, QueryTriggerInteraction.Collide))
+            {
+                interactable = hit.collider.GetComponent<Interactable>();
+                if(interactable != null && interactable is KnobController)
+                {
+                    (interactable as KnobController).Open();
+                }
             }
         }
     }
