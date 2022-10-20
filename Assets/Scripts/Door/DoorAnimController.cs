@@ -11,7 +11,11 @@ public class DoorAnimController : MonoBehaviour
     private GameObject doorHinge;
 
     private Collider doorCollider;
-    
+
+    private float lastTime;
+    private bool isPlaying;
+    public float Cooldown;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,8 +29,10 @@ public class DoorAnimController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         if (open)
         {
+            CheckAudio();
             if (doorLerp.vecTarget != new Vector3(0, 0, 103))
             {
                 doorLerp.vecTarget = new Vector3(0, 0, 103);
@@ -34,6 +40,7 @@ public class DoorAnimController : MonoBehaviour
         }
         else
         {
+            
             if (doorLerp.vecTarget != Vector3.zero)
             {
                 doorLerp.vecTarget = new Vector3(0, 0, 0);
@@ -57,4 +64,28 @@ public class DoorAnimController : MonoBehaviour
         }
 
     }
+    void CheckAudio()
+    {
+        if (Time.time > lastTime + Cooldown)
+        {
+            lastTime = Time.time;
+            isPlaying = true;
+        }
+
+
+        if (isPlaying == true)
+        {
+            PlayDoor();
+
+        }
+    }
+    void PlayDoor()
+    {
+        
+        FindObjectOfType<AudioManager>().Play("Door");
+            isPlaying = false;           
+
+
+    }
+
 }
