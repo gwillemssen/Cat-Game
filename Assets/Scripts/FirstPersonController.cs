@@ -34,6 +34,9 @@ public class FirstPersonController : MonoBehaviour
     [Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
     public float FallTimeout = 0.15f;
 
+
+
+
     [Header("Player Grounded")]
     [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
     public bool Grounded = true;
@@ -75,6 +78,8 @@ public class FirstPersonController : MonoBehaviour
     private float jumpTimeoutDelta;
     private float fallTimeoutDelta;
 
+   
+
     [Header("Other")]
     public float NoiseAmt_Sprinting = 10f;
     public Transform CatHoldingPosition;
@@ -93,6 +98,7 @@ public class FirstPersonController : MonoBehaviour
     private const float _threshold = 0.01f;
     private const bool isCurrentDeviceMouse = true;
     private const bool useAnalogMovement = false; //enable this if we want to use a controller
+    private bool isPlaying;
 
 
     private void Awake()
@@ -119,6 +125,7 @@ public class FirstPersonController : MonoBehaviour
 
     private void Start()
     {
+        
         controller = GetComponent<CharacterController>();
         // reset our timeouts on start
         jumpTimeoutDelta = JumpTimeout;
@@ -133,7 +140,10 @@ public class FirstPersonController : MonoBehaviour
             JumpAndGravity();
             GroundedCheck();
             Move();
+            
             CameraRotation();
+            
+
         }
         Interaction.UpdateInteraction();
         CameraFOVLerp();
@@ -190,12 +200,41 @@ public class FirstPersonController : MonoBehaviour
 
         moveDir = Vector3.SmoothDamp(moveDir, targetSpeed * wishMoveDir, ref moveDamp, Smoothing);
 
+        
+
         if (controller.velocity.sqrMagnitude > 2 && Input.sprint)
-        { LevelManager.instance.MakeNoise(transform.position, Time.deltaTime * NoiseAmt_Sprinting); }
+        { LevelManager.instance.MakeNoise(transform.position, Time.deltaTime * NoiseAmt_Sprinting);  }
 
         moveDir.y = verticalVelocity;
         controller.Move(moveDir * Time.deltaTime);
+
+
     }
+    /// <summary>
+    /// If the player is active and the audio is not already playing, it launches.
+    /// </summary>
+    //void PlayFootstep()
+    //{
+    //    FindObjectOfType<AudioManager>().Play("Footsteps");
+    //    isPlaying = false;
+ 
+    //}
+    //void CheckAudio()
+    //{
+    //    if (Time.time > lastTimeStep + stepCooldown)
+    //    {
+    //        lastTimeStep = Time.time;
+    //        isPlaying = true;
+    //    }
+            
+
+    //    if (isPlaying == true)
+    //    {
+    //        PlayFootstep();
+            
+    //    }
+    //}
+        
 
     private void JumpAndGravity()
     {
@@ -263,4 +302,5 @@ public class FirstPersonController : MonoBehaviour
         // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
         Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z), GroundedRadius);
     }
+
 }
