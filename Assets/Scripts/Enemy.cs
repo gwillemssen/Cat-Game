@@ -74,6 +74,10 @@ public class Enemy : MonoBehaviour
     private float sqrHearingRadius;
     private float localNoise;
     private Vector3 lastNoisePosition;
+    public float stepCooldown = .5f;
+    public float sprintCooldown = .25f;
+    private float lastTimeStep;
+    private bool isPlaying;
 
     void Start()
     {
@@ -130,6 +134,7 @@ public class Enemy : MonoBehaviour
         if (State == EnemyState.LostTarget || State == EnemyState.MaxNoise && Time.time > lastTimeLostTarget + LostTargetTime)
         {
             State = EnemyState.Patrolling; //player got away, go back to normal
+            
         }
 
         Move();
@@ -162,6 +167,14 @@ public class Enemy : MonoBehaviour
     {
         lastTimeSighted = Time.time;
         State = EnemyState.Chasing;
+        
+
+       // FindObjectOfType<AudioManager>().Play("EnemyFootsteps");
+    }
+    void PlayFootstep()
+    {
+        FindObjectOfType<AudioManager>().Play("EnemyFootsteps");
+        isPlaying = false;
     }
 
     void DecreaseAlertness()
@@ -179,20 +192,39 @@ public class Enemy : MonoBehaviour
             Alertness = AlertnessRequired;
         }
     }
+    void CheckAudio()
+    {
+        if (Time.time > lastTimeStep + stepCooldown)
+        {
+            lastTimeStep = Time.time;
+            isPlaying = true;
+        }
+
+
+        if (isPlaying == true)
+        {
+            PlayFootstep();
+
+        }
+    }
 
     void Move()
     {
         if (State == EnemyState.Chasing)
         {
+          
             ai.destination = target.position;
             lastNoisePosition = target.position;
+            stepCooldown = sprintCooldown;
+
         }
         if (State == EnemyState.LostTarget || State == EnemyState.MaxNoise)
+            
         {
             ai.destination = lastNoisePosition;
 
             if (Vector3.SqrMagnitude(transform.position - lastNoisePosition) <= 1f)
-            { State = EnemyState.Patrolling; } //investigated the noise, going back to normal
+            {State = EnemyState.Patrolling; } //investigated the noise, going back to normal
         }
         if (State == EnemyState.Idle)
         {
@@ -202,15 +234,18 @@ public class Enemy : MonoBehaviour
         }
         if (State == EnemyState.Patrolling)
         {
+            sprintCooldown = stepCooldown;
             //TEMPORARY SOLUTION
             ai.destination = PatrollingRoute[0].position;
             if (Vector3.SqrMagnitude(transform.position - ai.destination) < 0.5f)
             {
                 State = EnemyState.Idle;
             }
+           
         }
         if(State != EnemyState.Idle)
         {
+            CheckAudio();
             //raycast for doors
             RaycastHit hit;
             Interactable interactable;
@@ -223,6 +258,7 @@ public class Enemy : MonoBehaviour
                 }
             }
         }
+
     }
 
     bool IsPlayerWithinFieldOfView()
