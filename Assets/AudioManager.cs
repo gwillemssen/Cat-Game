@@ -13,7 +13,10 @@ public class AudioManager : MonoBehaviour
     private void Awake()
     {
         if (instance != null)
-        { Destroy(this); }
+        {
+            Destroy(this);
+            return;
+        }
         instance = this;
 
         foreach (Sound s in sounds)
