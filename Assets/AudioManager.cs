@@ -4,6 +4,7 @@ using System;
 
 public class AudioManager : MonoBehaviour
 {
+    public static AudioManager instance;
     private AudioSource audio;
     private AudioClip audioClip;
     public Sound[] sounds;
