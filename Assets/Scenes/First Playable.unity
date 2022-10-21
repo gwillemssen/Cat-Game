@@ -37784,7 +37784,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6476100087016943085}
   m_Layer: 0
-  m_Name: group
+  m_Name: Computer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -37838,7 +37838,7 @@ PrefabInstance:
     - target: {fileID: 3608787575105363908, guid: 2e77c58b98396a944a30f98ae2d7d24e,
         type: 3}
       propertyPath: sounds.Array.size
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 3608787575105363908, guid: 2e77c58b98396a944a30f98ae2d7d24e,
         type: 3}
@@ -37914,11 +37914,21 @@ PrefabInstance:
         type: 3}
       propertyPath: sounds.Array.data[6].clip
       value: 
-      objectReference: {fileID: 8300000, guid: b6e6c27ddb1f7ea40a341050869c91a1, type: 3}
+      objectReference: {fileID: 8300000, guid: 8b26715b33e40d94499af3fedaf90423, type: 3}
     - target: {fileID: 3608787575105363908, guid: 2e77c58b98396a944a30f98ae2d7d24e,
         type: 3}
       propertyPath: sounds.Array.data[6].name
-      value: Closet
+      value: PC Startup
+      objectReference: {fileID: 0}
+    - target: {fileID: 3608787575105363908, guid: 2e77c58b98396a944a30f98ae2d7d24e,
+        type: 3}
+      propertyPath: sounds.Array.data[7].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: d187a44db3a5ab14791690bcba63a326, type: 3}
+    - target: {fileID: 3608787575105363908, guid: 2e77c58b98396a944a30f98ae2d7d24e,
+        type: 3}
+      propertyPath: sounds.Array.data[7].name
+      value: PC Distraction
       objectReference: {fileID: 0}
     - target: {fileID: 3608787575105363908, guid: 2e77c58b98396a944a30f98ae2d7d24e,
         type: 3}
@@ -37948,7 +37958,12 @@ PrefabInstance:
     - target: {fileID: 3608787575105363908, guid: 2e77c58b98396a944a30f98ae2d7d24e,
         type: 3}
       propertyPath: sounds.Array.data[6].pitch
-      value: 0.576
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3608787575105363908, guid: 2e77c58b98396a944a30f98ae2d7d24e,
+        type: 3}
+      propertyPath: sounds.Array.data[7].pitch
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3608787575105363908, guid: 2e77c58b98396a944a30f98ae2d7d24e,
         type: 3}
@@ -37983,7 +37998,12 @@ PrefabInstance:
     - target: {fileID: 3608787575105363908, guid: 2e77c58b98396a944a30f98ae2d7d24e,
         type: 3}
       propertyPath: sounds.Array.data[6].volume
-      value: 0.15
+      value: 0.775
+      objectReference: {fileID: 0}
+    - target: {fileID: 3608787575105363908, guid: 2e77c58b98396a944a30f98ae2d7d24e,
+        type: 3}
+      propertyPath: sounds.Array.data[7].volume
+      value: 0.775
       objectReference: {fileID: 0}
     - target: {fileID: 3608787575105363909, guid: 2e77c58b98396a944a30f98ae2d7d24e,
         type: 3}
@@ -38495,7 +38515,7 @@ GameObject:
   - component: {fileID: 3436152759666897923}
   - component: {fileID: 77047451813904535}
   m_Layer: 0
-  m_Name: pasted__pCube69
+  m_Name: Monitor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -38534,8 +38554,9 @@ GameObject:
   - component: {fileID: 282777945751336814}
   - component: {fileID: 7362918629118504636}
   - component: {fileID: 739824932198120399}
+  - component: {fileID: 7362918629118504637}
   m_Layer: 0
-  m_Name: pCube70
+  m_Name: Tower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -38549,3 +38570,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6590142545194816785}
   m_Mesh: {fileID: -1336587733574700660, guid: c22c6c48f20f2a74ab82dae2d4093d15, type: 3}
+--- !u!114 &7362918629118504637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6590142545194816785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cd60c2194224bd479935255c8414c10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LookingAt: 0
+  CanInteract: 1
+  objPC: {fileID: 6590142545194816785}
+  pcTex: {fileID: 2800000, guid: 62aec62b9a93d76449de30ef995504d9, type: 3}
