@@ -66,7 +66,7 @@ public class FirstPersonInput : MonoBehaviour
 
     void PlayFootstep()
     {
-        FindObjectOfType<AudioManager>().Play("Footsteps");
+        AudioManager.instance.Play("Footsteps");
         isPlaying = false;
 
     }

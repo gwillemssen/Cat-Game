@@ -205,32 +205,7 @@ public class FirstPersonController : MonoBehaviour
 
 
     }
-    /// <summary>
-    /// If the player is active and the audio is not already playing, it launches.
-    /// </summary>
-    //void PlayFootstep()
-    //{
-    //    FindObjectOfType<AudioManager>().Play("Footsteps");
-    //    isPlaying = false;
- 
-    //}
-    //void CheckAudio()
-    //{
-    //    if (Time.time > lastTimeStep + stepCooldown)
-    //    {
-    //        lastTimeStep = Time.time;
-    //        isPlaying = true;
-    //    }
-            
-
-    //    if (isPlaying == true)
-    //    {
-    //        PlayFootstep();
-            
-    //    }
-    //}
-        
-
+  
     private void JumpAndGravity()
     {
         if (Grounded)
