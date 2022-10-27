@@ -11,8 +11,7 @@ public class Enemy : MonoBehaviour
     public enum EnemyState { Idle, Patrolling, LostTarget, Chasing, MaxNoise }
 
     [Header("References")]
-    [HideInInspector] //Hiding this for now, until the patrolling code is functioning
-    public List<Transform> PatrollingRoute;
+    public List<Waypoint> PatrollingRoute;
     public Transform eyes;
 
     [Header("Alertness")]
@@ -67,7 +66,6 @@ public class Enemy : MonoBehaviour
     private EnemyState state;
     private float lastTimeSighted = -420f;
     private float lastTimeLostTarget = -420f;
-    private bool doPatrol = false;
     private float fov;
     private RaycastHit hit;
     private float sqrCaughtDistance;
@@ -78,6 +76,9 @@ public class Enemy : MonoBehaviour
     public float sprintCooldown = .25f;
     private float lastTimeStep;
     private bool isPlaying;
+    private int waypointIndex;
+    private float lastTimeAtWaypoint = -420f;
+    private bool atWaypoint;
 
     void Start()
     {
@@ -92,15 +93,14 @@ public class Enemy : MonoBehaviour
 
         if(PatrollingRoute == null || PatrollingRoute.Count == 0)
         {
-            GameObject g = new GameObject();
-            g.transform.position = transform.position;
-            g.transform.rotation = transform.rotation;
-            PatrollingRoute.Add(g.transform);
+            Waypoint startPos = new GameObject().AddComponent<Waypoint>();
+            startPos.transform.position = transform.position;
+            startPos.transform.rotation = transform.rotation;
+            PatrollingRoute.Add(startPos);
         }
-        if (PatrollingRoute != null)
+        else
         {
-            if (PatrollingRoute.Count > 0)
-            { doPatrol = true; }
+            state = EnemyState.Patrolling;
         }
 
         EnemySpawned?.Invoke(this);
@@ -221,17 +221,28 @@ public class Enemy : MonoBehaviour
         if (State == EnemyState.Idle)
         {
             ai.destination = transform.position;
-            //TEMPORARY SOLUTION
-            transform.rotation = PatrollingRoute[0].rotation;
+            ai.rotation = PatrollingRoute[0].transform.rotation;
         }
         if (State == EnemyState.Patrolling)
         {
             sprintCooldown = stepCooldown;
-            //TEMPORARY SOLUTION
-            ai.destination = PatrollingRoute[0].position;
+
+            ai.destination = PatrollingRoute[waypointIndex].transform.position;
             if (Vector3.SqrMagnitude(transform.position - ai.destination) < 0.5f)
             {
-                State = EnemyState.Idle;
+                if(!atWaypoint)
+                {
+                    lastTimeAtWaypoint = Time.time;
+                    atWaypoint = true;
+                }
+                
+                if(Time.time > lastTimeAtWaypoint + PatrollingRoute[waypointIndex].StopTime)
+                {
+                    waypointIndex++;
+                    if (waypointIndex >= PatrollingRoute.Count)
+                    { waypointIndex = 0; }
+                    atWaypoint = false;
+                }                
             }
            
         }
@@ -271,6 +282,22 @@ public class Enemy : MonoBehaviour
         else
         {
             return false;
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        
+        if(PatrollingRoute == null || PatrollingRoute.Count == 0)
+        { return; }
+        for(int i = 0; i < PatrollingRoute.Count; i++)
+        {
+            Waypoint s = PatrollingRoute[i];
+            Waypoint e = PatrollingRoute[Mathf.Clamp(i + 1, 0, PatrollingRoute.Count - 1)];
+            Gizmos.color = Color.Lerp(Color.green, Color.red, ((float)i / PatrollingRoute.Count));
+            Gizmos.DrawLine(s.transform.position, e.transform.position);
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(s.transform.position, 0.5f);
         }
     }
 }
