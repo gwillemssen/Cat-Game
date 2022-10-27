@@ -77,6 +77,8 @@ public class FirstPersonController : MonoBehaviour
     private float terminalVelocity = 53.0f;
     private float jumpTimeoutDelta;
     private float fallTimeoutDelta;
+    private Vector3 crouchPosition;
+    private Vector3 resetPosition;
 
    
 
@@ -98,7 +100,6 @@ public class FirstPersonController : MonoBehaviour
     private const float _threshold = 0.01f;
     private const bool isCurrentDeviceMouse = true;
     private const bool useAnalogMovement = false; //enable this if we want to use a controller
-    private bool isPlaying;
 
 
     private void Awake()
@@ -161,13 +162,7 @@ public class FirstPersonController : MonoBehaviour
         Vector3 spherePosition = new(transform.position.x, transform.position.y - GroundedOffset, transform.position.z);
         Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
     }
-    //private void Crouch()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.LeftControl))
-    //    {
-    //        transform.localScale = transform.localScale / 2;
-    //    }
-    //}
+   
 
     private void CameraRotation()
     {
@@ -261,7 +256,22 @@ public class FirstPersonController : MonoBehaviour
             {
                 jumpTimeoutDelta -= Time.deltaTime;
             }
-        }
+
+            //Crouch
+            crouchPosition = transform.localScale / 2; //makes it half constantly. Only need it to half once.
+            resetPosition = transform.localScale.normalized;
+
+            if (Input.crouch && Input.crouch == false) // If the crouch button is held down
+            {
+                // transform.localScale = crouchPosition;// Half the size
+                Input.crouch = true;
+            }
+            else if (Input.jump &&Input.crouch == true)
+            {
+                // transform.localScale = resetPosition * 2;
+                Input.crouch = false;
+            }
+        } 
         else
         {
             // reset the jump timeout timer
