@@ -77,8 +77,8 @@ public class FirstPersonController : MonoBehaviour
     private float terminalVelocity = 53.0f;
     private float jumpTimeoutDelta;
     private float fallTimeoutDelta;
-    private Vector3 crouchPosition;
-    private Vector3 resetPosition;
+    private Vector3 crouchScale;
+    private Vector3 resetScale;
 
    
 
@@ -126,7 +126,9 @@ public class FirstPersonController : MonoBehaviour
 
     private void Start()
     {
-        
+        crouchScale = transform.localScale / 2; //makes it half constantly. Only need it to half once.
+        resetScale = transform.localScale;
+
         controller = GetComponent<CharacterController>();
         // reset our timeouts on start
         jumpTimeoutDelta = JumpTimeout;
@@ -233,18 +235,17 @@ public class FirstPersonController : MonoBehaviour
             }
 
             //Crouch
-            crouchPosition = transform.localScale / 2; //makes it half constantly. Only need it to half once.
-            resetPosition = transform.localScale.normalized;
+         
 
-            if (Input.crouch && Input.crouch == false) // If the crouch button is held down
+            if (Input.crouch) // If the crouch button is held down
             {
-                // transform.localScale = crouchPosition;// Half the size
-                Input.crouch = true;
+                transform.localScale = crouchScale;// Half the size
+                
             }
-            else if (Input.jump &&Input.crouch == true)
+            else if (!Input.crouch)
             {
-                // transform.localScale = resetPosition * 2;
-                Input.crouch = false;
+                transform.localScale = resetScale;
+             
             }
         } 
         else
