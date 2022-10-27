@@ -48,7 +48,7 @@ public class FirstPersonInput : MonoBehaviour
         interactedOnce = Input.GetButtonDown("Interact");
         interacting = Input.GetButton("Interact");
         mousePosition = Input.mousePosition;
-        crouch = Input.GetButtonDown("Crouch");
+        crouch = Input.GetButton("Crouch");
 
         if (move.x != stop.x || move.y != stop.y)
         {
