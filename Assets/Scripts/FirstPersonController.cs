@@ -77,6 +77,8 @@ public class FirstPersonController : MonoBehaviour
     private float terminalVelocity = 53.0f;
     private float jumpTimeoutDelta;
     private float fallTimeoutDelta;
+    private Vector3 crouchScale;
+    private Vector3 resetScale;
 
    
 
@@ -98,7 +100,6 @@ public class FirstPersonController : MonoBehaviour
     private const float _threshold = 0.01f;
     private const bool isCurrentDeviceMouse = true;
     private const bool useAnalogMovement = false; //enable this if we want to use a controller
-    private bool isPlaying;
 
 
     private void Awake()
@@ -125,7 +126,9 @@ public class FirstPersonController : MonoBehaviour
 
     private void Start()
     {
-        
+        crouchScale = transform.localScale / 2; //makes it half constantly. Only need it to half once.
+        resetScale = transform.localScale;
+
         controller = GetComponent<CharacterController>();
         // reset our timeouts on start
         jumpTimeoutDelta = JumpTimeout;
@@ -161,13 +164,7 @@ public class FirstPersonController : MonoBehaviour
         Vector3 spherePosition = new(transform.position.x, transform.position.y - GroundedOffset, transform.position.z);
         Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
     }
-    //private void Crouch()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.LeftControl))
-    //    {
-    //        transform.localScale = transform.localScale / 2;
-    //    }
-    //}
+   
 
     private void CameraRotation()
     {
@@ -210,32 +207,7 @@ public class FirstPersonController : MonoBehaviour
 
 
     }
-    /// <summary>
-    /// If the player is active and the audio is not already playing, it launches.
-    /// </summary>
-    //void PlayFootstep()
-    //{
-    //    FindObjectOfType<AudioManager>().Play("Footsteps");
-    //    isPlaying = false;
- 
-    //}
-    //void CheckAudio()
-    //{
-    //    if (Time.time > lastTimeStep + stepCooldown)
-    //    {
-    //        lastTimeStep = Time.time;
-    //        isPlaying = true;
-    //    }
-            
-
-    //    if (isPlaying == true)
-    //    {
-    //        PlayFootstep();
-            
-    //    }
-    //}
-        
-
+  
     private void JumpAndGravity()
     {
         if (Grounded)
@@ -261,7 +233,21 @@ public class FirstPersonController : MonoBehaviour
             {
                 jumpTimeoutDelta -= Time.deltaTime;
             }
-        }
+
+            //Crouch
+         
+
+            if (Input.crouch) // If the crouch button is held down
+            {
+                transform.localScale = crouchScale;// Half the size
+                
+            }
+            else if (!Input.crouch)
+            {
+                transform.localScale = resetScale;
+             
+            }
+        } 
         else
         {
             // reset the jump timeout timer

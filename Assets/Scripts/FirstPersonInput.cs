@@ -9,6 +9,7 @@ public class FirstPersonInput : MonoBehaviour
     public Vector2 mousePosition;
     public bool jump;
     public bool sprint;
+    public bool crouch;
     public bool interacting;
     public bool interactedOnce;
     public bool throwing;
@@ -47,9 +48,7 @@ public class FirstPersonInput : MonoBehaviour
         interactedOnce = Input.GetButtonDown("Interact");
         interacting = Input.GetButton("Interact");
         mousePosition = Input.mousePosition;
-
-        // I need the footsteps to play one at a time contiously as long as the player is moving
-        // Loop it when moving. Stop when not
+        crouch = Input.GetButton("Crouch");
 
         if (move.x != stop.x || move.y != stop.y)
         {
@@ -65,10 +64,9 @@ public class FirstPersonInput : MonoBehaviour
         }
     }
 
-
     void PlayFootstep()
     {
-        FindObjectOfType<AudioManager>().Play("Footsteps");
+        AudioManager.instance.Play("Footsteps");
         isPlaying = false;
 
     }

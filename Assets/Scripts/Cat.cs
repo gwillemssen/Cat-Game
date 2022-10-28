@@ -195,7 +195,7 @@ public class Cat : Interactable
         { 
             firstPet = true;
             lastPetMousePos = playerController.Input.mousePosition;
-            FindObjectOfType<AudioManager>().Play("DeathMetal");
+            AudioManager.instance.Play("DeathMetal");
         }
 
         if (playerController.Input.interacting)
@@ -257,6 +257,6 @@ public class Cat : Interactable
         Cursor.lockState = CursorLockMode.Locked;
         playerController.UI.PettingMeter.gameObject.SetActive(false);
         playerController.Interaction.HideCrosshair = false;
-        FindObjectOfType<AudioManager>().Stop("DeathMetal");
+        AudioManager.instance.Stop("DeathMetal");
     }
 }
