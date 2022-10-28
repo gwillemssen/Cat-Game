@@ -61,6 +61,7 @@ public class Cat : Interactable
         state = (CatState)StartState;
         anim = GetComponentInChildren<Animator>();
         audio = GetComponent<AudioSource>();
+        audio.loop = true;
         lastPetMousePos = new Vector2(-420f, -420f);
     }
 
@@ -86,7 +87,7 @@ public class Cat : Interactable
         {
             audio.volume -= Time.deltaTime;
             if (audio.volume <= 0f)
-                audio.Stop();
+            { audio.Stop(); }
         }
     }
 
@@ -195,7 +196,6 @@ public class Cat : Interactable
         { 
             firstPet = true;
             lastPetMousePos = playerController.Input.mousePosition;
-            AudioManager.instance.Play("DeathMetal");
         }
 
         if (playerController.Input.interacting)
@@ -208,23 +208,24 @@ public class Cat : Interactable
                 if (firstPet || Vector2.Dot(lastDirectionPet, (playerController.Input.mousePosition - lastPetMousePos)) > 0)
                 {
                     //petted the cat
+                    if(!firstPet)
+                    { lastTimePet = Time.time; }
                     firstPet = false;
                     lastDirectionPet = lastPetMousePos - playerController.Input.mousePosition;
                     lastPetMousePos = playerController.Input.mousePosition;
                     pettingAmount += (1f / (float)PetsRequired);
-                    lastTimePet = Time.time;
                 }
             }
-        }
-        else if (!decay)
-        {
-            audio.volume -= Time.deltaTime;
         }
 
         if (decay) //cat got bored
         {
             pettingAmount -= Time.deltaTime * PettingDecayRate;
             audio.volume -= Time.deltaTime;
+        }
+        else
+        {
+            audio.volume += Time.deltaTime;
         }
 
         if (!playerController.Input.interacting)
