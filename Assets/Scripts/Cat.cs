@@ -18,7 +18,7 @@ public class Cat : Interactable
     public CatStartState StartState;
     public int PetsRequired = 12;
     public float PettingDecayRate = 0.75f;
-    public float PettingDecayDelay = 1f;
+    public float PettingDecayDelay = 0.5f;
 
     //general
     private enum CatState { Pettable, Unpettable, PettingMinigame, DonePetting };
@@ -221,7 +221,8 @@ public class Cat : Interactable
         if (decay) //cat got bored
         {
             pettingAmount -= Time.deltaTime * PettingDecayRate;
-            audio.volume -= Time.deltaTime;
+            //audio.volume -= Time.deltaTime;
+            audio.volume = 0f;
         }
         else
         {
