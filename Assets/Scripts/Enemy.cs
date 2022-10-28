@@ -11,7 +11,6 @@ public class Enemy : MonoBehaviour
     public enum EnemyState { Patrolling, Searching, Chasing }
 
     [Header("References")]
-    [HideInInspector] //Hiding this for now, until the patrolling code is functioning
     public List<Waypoint> PatrollingRoute;
     public Transform eyes;
 
@@ -91,10 +90,10 @@ public class Enemy : MonoBehaviour
 
         if (PatrollingRoute == null || PatrollingRoute.Count == 0)
         {
-            GameObject g = new GameObject();
+            Waypoint g = new GameObject().AddComponent<Waypoint>();
             g.transform.position = transform.position;
             g.transform.rotation = transform.rotation;
-            PatrollingRoute.Add(g.transform);
+            PatrollingRoute.Add(g);
         }
 
         EnemySpawned?.Invoke(this);
@@ -103,11 +102,8 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-        if (FirstPersonController.instance.Hiding && IsPlayerWithinFieldOfView() && RaycastToPlayer())
-        {
-            FirstPersonController.instance.Hiding = false;
-            Debug.LogError("deez");
-        } //CAUGHT LACKIN
+        if (FirstPersonController.instance.Hiding && IsPlayerWithinFieldOfView() && RaycastToPlayer()) //CAUGHT while going into a hiding spot
+        { FirstPersonController.instance.Hiding = false; } 
 
         if (IsPlayerWithinFieldOfView() && RaycastToPlayer() && !FirstPersonController.instance.Hiding)
         {
@@ -179,12 +175,11 @@ public class Enemy : MonoBehaviour
     {
         if (State == EnemyState.Chasing)
         {
-
             ai.destination = target.position;
             lastNoisePosition = target.position;
             stepCooldown = sprintCooldown;
-
         }
+
         if (State == EnemyState.Searching)
         {
             ai.destination = lastNoisePosition;
@@ -192,6 +187,7 @@ public class Enemy : MonoBehaviour
             if (Vector3.SqrMagnitude(transform.position - lastNoisePosition) <= 1f)
             { State = EnemyState.Patrolling; } //investigated the noise, going back to normal
         }
+
         if (State == EnemyState.Patrolling)
         {
             sprintCooldown = stepCooldown;
@@ -249,6 +245,21 @@ public class Enemy : MonoBehaviour
         else
         {
             return false;
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (PatrollingRoute == null || PatrollingRoute.Count == 0)
+        { return; }
+        for (int i = 0; i < PatrollingRoute.Count; i++)
+        {
+            Waypoint s = PatrollingRoute[i];
+            Waypoint e = PatrollingRoute[Mathf.Clamp(i + 1, 0, PatrollingRoute.Count - 1)];
+            Gizmos.color = Color.Lerp(Color.green, Color.red, ((float)i / PatrollingRoute.Count));
+            Gizmos.DrawLine(s.transform.position, e.transform.position);
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(s.transform.position, 0.5f);
         }
     }
 }

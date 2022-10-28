@@ -19,7 +19,7 @@ public class LevelManager : MonoBehaviour
 
     private List<Enemy> enemies;
     [HideInInspector]
-    public Enemy.EnemyState MostAlertEnemyState = Enemy.EnemyState.Idle; //for the eyeball ui
+    public Enemy.EnemyState MostAlertEnemyState = Enemy.EnemyState.Patrolling; //for the eyeball ui
 
     
     private float lastTimeNoise = -420f;
