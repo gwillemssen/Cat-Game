@@ -8,10 +8,11 @@ using System;
 [RequireComponent(typeof(IAstarAI))]
 public class Enemy : MonoBehaviour
 {
-    public enum EnemyState { Patrolling, Searching, Chasing }
+    public enum EnemyState { Patrolling, SearchingForNoise, Chasing, CallingCops }
 
     [Header("References")]
     public List<Waypoint> PatrollingRoute;
+    public Waypoint PhonePosition;
     public Transform eyes;
 
     [Header("Alertness")]
@@ -102,24 +103,20 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-        if (FirstPersonController.instance.Hiding && IsPlayerWithinFieldOfView() && RaycastToPlayer()) //CAUGHT while going into a hiding spot
-        { FirstPersonController.instance.Hiding = false; } 
+        if (FirstPersonController.instance.Hiding && IsPlayerWithinFieldOfView() && RaycastToPlayer()) 
+        { FirstPersonController.instance.Hiding = false; } //CAUGHT while going into a hiding spot
 
         if (IsPlayerWithinFieldOfView() && RaycastToPlayer() && !FirstPersonController.instance.Hiding)
-        {
-            IncreaseAlertness();
-        }
+        { IncreaseAlertness(); }
         else
-        {
-            DecreaseAlertness();
-        }
+        { DecreaseAlertness(); }
 
         Move();
     }
 
     public void OnMaxNoise()
     {
-        State = EnemyState.Searching;
+        State = EnemyState.SearchingForNoise;
         lastTimeLostTarget = Time.time;
     }
 
@@ -138,8 +135,10 @@ public class Enemy : MonoBehaviour
     void SpotPlayer()
     {
         lastTimeSighted = Time.time;
-        if (State == EnemyState.Patrolling)
-            State = EnemyState.Chasing;
+        if (State == EnemyState.Patrolling && GameManager.instance.State == GameManager.GameState.CopsCalled)
+        { State = EnemyState.Chasing; }
+        else
+        { State = EnemyState.CallingCops; }
     }
 
     void PlayFootstep()
@@ -180,7 +179,7 @@ public class Enemy : MonoBehaviour
             stepCooldown = sprintCooldown;
         }
 
-        if (State == EnemyState.Searching)
+        if (State == EnemyState.SearchingForNoise)
         {
             ai.destination = lastNoisePosition;
 
@@ -209,6 +208,11 @@ public class Enemy : MonoBehaviour
                     atWaypoint = false;
                 }
             }
+        }
+        if(State == EnemyState.CallingCops)
+        {
+            //TODO: go to the phone, wait, grab gun
+            ai.destination = PhonePosition.transform.position;
         }
 
 

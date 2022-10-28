@@ -8,8 +8,9 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance { get; private set; }
 
-    enum State { Normal, Loading }
-    State state = State.Loading;
+    public enum GameState { Normal, Loading, CopsCalled }
+
+    public GameState State { get; private set; }
 
     void Awake()
     {
@@ -49,29 +50,30 @@ public class GameManager : MonoBehaviour
     private void CalledCops()
     {
         //TODO: start timer
+        State = GameState.CopsCalled;
     }
 
     private void StartGame()
     {
-        if (state == State.Normal)
+        if (State == GameState.Normal)
             return;
 
-        state = State.Normal;
+        State = GameState.Normal;
     }
 
     private void WinGame()
     {
-        if (state == State.Loading)
+        if (State == GameState.Loading)
             return;
-        state = State.Loading;
+        State = GameState.Loading;
         StartCoroutine(TemporaryWinSequence());
     }
 
     private void GameOver()
     {
-        if (state == State.Loading)
+        if (State == GameState.Loading)
             return;
-        state = State.Loading;
+        State = GameState.Loading;
         StartCoroutine(TemporaryGameOverSequence());
     }
 
@@ -97,7 +99,7 @@ public class GameManager : MonoBehaviour
 
     public void RestartLevel()
     {
-        state = State.Loading;
+        State = GameState.Loading;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         FirstPersonController.instance.DisableMovement = false;
     }
