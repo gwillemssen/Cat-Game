@@ -8,11 +8,11 @@ using System;
 [RequireComponent(typeof(IAstarAI))]
 public class Enemy : MonoBehaviour
 {
-    public enum EnemyState { Idle, Patrolling, LostTarget, Chasing, MaxNoise }
+    public enum EnemyState { Patrolling, Searching, Chasing }
 
     [Header("References")]
     [HideInInspector] //Hiding this for now, until the patrolling code is functioning
-    public List<Transform> PatrollingRoute;
+    public List<Waypoint> PatrollingRoute;
     public Transform eyes;
 
     [Header("Alertness")]
@@ -30,7 +30,6 @@ public class Enemy : MonoBehaviour
     [Tooltip("How long after losing the target does it take until the enemy goes back into idle")]
     [Range(5f, 25f)]
     public float LostTargetTime = 10f;
-    public float CaughtDistance = 1.25f;
 
     [Header("Misc")]
     public LayerMask EverythingExceptEnemy;
@@ -41,7 +40,7 @@ public class Enemy : MonoBehaviour
     //events
     public static event Action<Enemy.EnemyState> EnemyChangedState;
     public static event Action<Enemy> EnemySpawned;
-    public static event Action CaughtPlayer;
+    public static event Action CalledCops;
 
     public EnemyState State
     {
@@ -67,10 +66,8 @@ public class Enemy : MonoBehaviour
     private EnemyState state;
     private float lastTimeSighted = -420f;
     private float lastTimeLostTarget = -420f;
-    private bool doPatrol = false;
     private float fov;
     private RaycastHit hit;
-    private float sqrCaughtDistance;
     private float sqrHearingRadius;
     private float localNoise;
     private Vector3 lastNoisePosition;
@@ -78,29 +75,26 @@ public class Enemy : MonoBehaviour
     public float sprintCooldown = .25f;
     private float lastTimeStep;
     private bool isPlaying;
+    private int waypointIndex;
+    private float lastTimeAtWaypoint = -420f;
+    private bool atWaypoint;
 
     void Start()
     {
         ai = GetComponent<IAstarAI>();
         target = FirstPersonController.instance.MainCamera.transform;
-        State = EnemyState.Idle;
+        State = EnemyState.Patrolling;
 
         EnemyDebugObject.gameObject.SetActive(DebugMode);
         fov = Mathf.InverseLerp(180, 0, FieldOfView);
-        sqrCaughtDistance = CaughtDistance * CaughtDistance;
         sqrHearingRadius = HearingRadius * HearingRadius;
 
-        if(PatrollingRoute == null || PatrollingRoute.Count == 0)
+        if (PatrollingRoute == null || PatrollingRoute.Count == 0)
         {
             GameObject g = new GameObject();
             g.transform.position = transform.position;
             g.transform.rotation = transform.rotation;
             PatrollingRoute.Add(g.transform);
-        }
-        if (PatrollingRoute != null)
-        {
-            if (PatrollingRoute.Count > 0)
-            { doPatrol = true; }
         }
 
         EnemySpawned?.Invoke(this);
@@ -109,45 +103,27 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-        if (State != EnemyState.MaxNoise && IsPlayerWithinFieldOfView())
+        if (FirstPersonController.instance.Hiding && IsPlayerWithinFieldOfView() && RaycastToPlayer())
         {
-            if (RaycastToPlayer() && !FirstPersonController.instance.Hiding)
-            {
-                if (State == EnemyState.LostTarget)  //LostTarget -> Chasing is instant
-                { SpotPlayer(); }
-                else
-                {
-                    IncreaseAlertness();
-                }
-            }
-            else if (State == EnemyState.Idle || State == EnemyState.Patrolling)
-            { DecreaseAlertness(); }
+            FirstPersonController.instance.Hiding = false;
+            Debug.LogError("deez");
+        } //CAUGHT LACKIN
+
+        if (IsPlayerWithinFieldOfView() && RaycastToPlayer() && !FirstPersonController.instance.Hiding)
+        {
+            IncreaseAlertness();
         }
         else
-        { DecreaseAlertness(); }
-
-        if (State == EnemyState.Chasing && Time.time > lastTimeSighted + ChaseTime)
         {
-            lastTimeLostTarget = Time.time;
-            State = EnemyState.LostTarget; //enemy lost the player
-        }
-        if (State == EnemyState.LostTarget || State == EnemyState.MaxNoise && Time.time > lastTimeLostTarget + LostTargetTime)
-        {
-            State = EnemyState.Patrolling; //player got away, go back to normal
-            
+            DecreaseAlertness();
         }
 
         Move();
-
-        if (Vector3.SqrMagnitude(transform.position - target.position) <= sqrCaughtDistance)
-        {
-            CaughtPlayer?.Invoke();
-        }
     }
 
     public void OnMaxNoise()
     {
-        State = EnemyState.MaxNoise;
+        State = EnemyState.Searching;
         lastTimeLostTarget = Time.time;
     }
 
@@ -166,11 +142,10 @@ public class Enemy : MonoBehaviour
     void SpotPlayer()
     {
         lastTimeSighted = Time.time;
-        State = EnemyState.Chasing;
-        
-
-       // FindObjectOfType<AudioManager>().Play("EnemyFootsteps");
+        if (State == EnemyState.Patrolling)
+            State = EnemyState.Chasing;
     }
+
     void PlayFootstep()
     {
         AudioManager.instance.Play("EnemyFootsteps");
@@ -204,50 +179,53 @@ public class Enemy : MonoBehaviour
     {
         if (State == EnemyState.Chasing)
         {
-          
+
             ai.destination = target.position;
             lastNoisePosition = target.position;
             stepCooldown = sprintCooldown;
 
         }
-        if (State == EnemyState.LostTarget || State == EnemyState.MaxNoise)
-            
+        if (State == EnemyState.Searching)
         {
             ai.destination = lastNoisePosition;
 
             if (Vector3.SqrMagnitude(transform.position - lastNoisePosition) <= 1f)
-            {State = EnemyState.Patrolling; } //investigated the noise, going back to normal
-        }
-        if (State == EnemyState.Idle)
-        {
-            ai.destination = transform.position;
-            //TEMPORARY SOLUTION
-            transform.rotation = PatrollingRoute[0].rotation;
+            { State = EnemyState.Patrolling; } //investigated the noise, going back to normal
         }
         if (State == EnemyState.Patrolling)
         {
             sprintCooldown = stepCooldown;
-            //TEMPORARY SOLUTION
-            ai.destination = PatrollingRoute[0].position;
+
+            ai.destination = PatrollingRoute[waypointIndex].transform.position;
             if (Vector3.SqrMagnitude(transform.position - ai.destination) < 0.5f)
             {
-                State = EnemyState.Idle;
-            }
-           
-        }
-        if(State != EnemyState.Idle)
-        {
-            CheckAudio();
-            //raycast for doors
-            RaycastHit hit;
-            Interactable interactable;
-            if (Physics.Raycast(eyes.position, eyes.forward, out hit, 2f, InteractableLayerMask, QueryTriggerInteraction.Collide))
-            {
-                interactable = hit.collider.GetComponent<Interactable>();
-                if(interactable != null && interactable is KnobController)
+                if (!atWaypoint)
                 {
-                    (interactable as KnobController).Open();
+                    lastTimeAtWaypoint = Time.time;
+                    atWaypoint = true;
                 }
+
+                if (Time.time > lastTimeAtWaypoint + PatrollingRoute[waypointIndex].StopTime)
+                {
+                    waypointIndex++;
+                    if (waypointIndex >= PatrollingRoute.Count)
+                    { waypointIndex = 0; }
+                    atWaypoint = false;
+                }
+            }
+        }
+
+
+        CheckAudio();
+        //raycast for doors
+        RaycastHit hit;
+        Interactable interactable;
+        if (Physics.Raycast(eyes.position, eyes.forward, out hit, 2f, InteractableLayerMask, QueryTriggerInteraction.Collide))
+        {
+            interactable = hit.collider.GetComponent<Interactable>();
+            if (interactable != null && interactable is KnobController)
+            {
+                (interactable as KnobController).Open();
             }
         }
 
@@ -264,9 +242,9 @@ public class Enemy : MonoBehaviour
         if (Physics.Raycast(eyes.position, (target.position - eyes.position), out hit, SightDistance, EverythingExceptEnemy, QueryTriggerInteraction.Collide))
         {
             Hit = hit;
-          
+
             return Hit.collider.CompareTag("Player");
-            
+
         }
         else
         {

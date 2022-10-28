@@ -26,13 +26,13 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
 
         //hook up win / lose events
-        Enemy.CaughtPlayer += GameOver;
+        Enemy.CalledCops += CalledCops;
         ExitDoor.ExitedDoor += WinGame;
     }
 
     private void OnDestroy()
     {
-        Enemy.CaughtPlayer -= GameOver;
+        Enemy.CalledCops -= CalledCops;
         ExitDoor.ExitedDoor -= WinGame;
     }
 
@@ -44,6 +44,11 @@ public class GameManager : MonoBehaviour
     private void OnLevelWasLoaded(int level)
     {
         StartGame();
+    }
+
+    private void CalledCops()
+    {
+        //TODO: start timer
     }
 
     private void StartGame()

@@ -5,9 +5,15 @@ using UnityEngine;
 public class HidingSpot : Interactable
 {
     public Transform HidingPosition;
+    public float EnterSpeed = 2f;
+    public float ExitSpeed = 0.75f;
     public Animation anim;
     private FirstPersonController player;
     private Vector3 startPos;
+    private Quaternion startRot;
+
+    private float lerp;
+    private bool entering;
 
     private void Start()
     {
@@ -21,25 +27,55 @@ public class HidingSpot : Interactable
             return;
         player = controller;
         startPos = player.transform.position;
+        startRot = player.transform.rotation;
         player.DisableMovement = true;
         player.UI.SetInfoText("Hiding...\nRight click to exit");
-        player.transform.position = HidingPosition.position;
-        player.transform.rotation = HidingPosition.rotation;
         player.Hiding = true;
         anim.Stop();
         anim.Play();
+        entering = true;
+        lerp = 0f;
     }
 
     private void Update()
     {
         if(player != null)
         {
+            if (entering)
+            {
+                player.transform.position = Vector3.Lerp(startPos, HidingPosition.position, lerp);
+                player.transform.rotation = Quaternion.Lerp(startRot, HidingPosition.rotation, lerp);
+            }
+            else
+            {
+                player.transform.position = Vector3.Lerp(HidingPosition.position, startPos, lerp);
+                //player.transform.rotation = Quaternion.Lerp(HidingPosition.rotation, startRot, lerp);
+            }
+
+            if (entering)
+            { lerp += Time.deltaTime * EnterSpeed; }
+            else
+            { lerp += Time.deltaTime * ExitSpeed; }
+
+            lerp = Mathf.Clamp01(lerp);
+            if(lerp >= 1f)
+            {
+                if(entering)
+                {
+                    Debug.Log(player.Hiding);
+                }
+                else
+                {
+                    player.DisableMovement = false;
+                    player.Hiding = false;
+                    player = null;
+                }
+            }
+
             if(player.Input.throwing)
             {
-                player.transform.position = startPos;
-                player.DisableMovement = false;
-                player.Hiding = false;
-                player = null;
+                entering = false;
+                lerp = 0f;
                 anim.Stop();
                 anim.Play();
             }
