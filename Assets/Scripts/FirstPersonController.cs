@@ -21,6 +21,10 @@ public class FirstPersonController : MonoBehaviour
     public float RotationSpeed = 1.0f;
     [Tooltip("higher value = more smooth, lower value = more snappy")]
     public float Smoothing = .1f;
+    public float crouchSmoothSpeed = .5f;
+    [Tooltip("Move speed of the character when crouching")]
+    public float crouchSpeed;
+
 
     [Space(10)]
     [Tooltip("The height the player can jump")]
@@ -79,7 +83,7 @@ public class FirstPersonController : MonoBehaviour
     private float fallTimeoutDelta;
     private Vector3 crouchScale;
     private Vector3 resetScale;
-
+    
    
 
     [Header("Other")]
@@ -100,6 +104,7 @@ public class FirstPersonController : MonoBehaviour
     private const float _threshold = 0.01f;
     private const bool isCurrentDeviceMouse = true;
     private const bool useAnalogMovement = false; //enable this if we want to use a controller
+    private float crouchAmount;
 
 
     private void Awake()
@@ -126,7 +131,7 @@ public class FirstPersonController : MonoBehaviour
 
     private void Start()
     {
-        crouchScale = transform.localScale / 2; //makes it half constantly. Only need it to half once.
+        crouchScale = new(transform.localScale.x, transform.localScale.y / 2, transform.localScale.z); //makes it half constantly. Only need it to half once.
         resetScale = transform.localScale;
 
         controller = GetComponent<CharacterController>();
@@ -193,7 +198,19 @@ public class FirstPersonController : MonoBehaviour
 
         wishMoveDir = transform.TransformDirection(wishMoveDir);
 
-        targetSpeed = Input.sprint ? SprintSpeed : MoveSpeed;
+        // targetSpeed = Input.sprint ? SprintSpeed : MoveSpeed;
+        if (Input.crouch)
+        {
+            targetSpeed = crouchSmoothSpeed;
+        }
+        else if(Input.sprint)
+        {
+            targetSpeed = SprintSpeed;
+        }
+        else
+        {
+            targetSpeed = MoveSpeed;
+        }
 
         moveDir = Vector3.SmoothDamp(moveDir, targetSpeed * wishMoveDir, ref moveDamp, Smoothing);
 
@@ -239,14 +256,18 @@ public class FirstPersonController : MonoBehaviour
 
             if (Input.crouch) // If the crouch button is held down
             {
-                transform.localScale = crouchScale;// Half the size
+                crouchAmount += Time.deltaTime * crouchSpeed;
+              
                 
             }
             else if (!Input.crouch)
             {
-                transform.localScale = resetScale;
-             
+                crouchAmount -= Time.deltaTime* crouchSpeed;
+            
             }
+
+            crouchAmount = Mathf.Clamp01(crouchAmount);
+            transform.localScale = Vector3.Lerp(resetScale, crouchScale, crouchAmount);
         } 
         else
         {
