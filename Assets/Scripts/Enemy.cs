@@ -157,7 +157,7 @@ public class Enemy : MonoBehaviour
         lastTimeSighted = Time.time;
         if (State == EnemyState.PatrollingWithGun)
         { State = EnemyState.Chasing; }
-        else
+        else if(State == EnemyState.Patrolling)
         { State = EnemyState.CallingCops; }
     }
 
