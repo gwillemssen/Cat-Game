@@ -251,11 +251,15 @@ public class Enemy : MonoBehaviour
                 lastTimeAtWaypoint = Time.time;
                 atWaypoint = true;
             }
-            if(Time.time > lastTimeAtWaypoint + PatrollingRoute[waypointIndex].StopTime)
+            if (Time.time - lastTimeAtWaypoint > waypoint.StopTime)
             {
                 atWaypoint = false;
                 return true;
             }
+        }
+        else
+        {
+            atWaypoint = false;
         }
         return false;
     }
