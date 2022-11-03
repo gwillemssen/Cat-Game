@@ -8,6 +8,7 @@ using Random = UnityEngine.Random;
 
 public class PC_Controller : Interactable
 {
+    private AudioPlayer audioPlayer;
     public GameObject objPC;
     private Renderer pcRenderer;
     public Texture pcTex;
@@ -16,7 +17,7 @@ public class PC_Controller : Interactable
 
     private void Start()
     {
-
+        audioPlayer = GetComponent<AudioPlayer>();
         pcRenderer = objPC.GetComponent<Renderer>();
         mat = Instantiate(pcRenderer.material);
         pcRenderer.material = mat;
@@ -27,15 +28,14 @@ public class PC_Controller : Interactable
         {
             mat.SetFloat(Shader.PropertyToID("_PowerBool"),0);
             on = !on;
-            AudioManager.instance.Stop("PC Startup");
-            AudioManager.instance.Stop("PC Distraction");
+            audioPlayer.Stop();
         }
         else
         {
             mat.SetFloat(Shader.PropertyToID("_PowerBool"),1);
             on = !on;
-            AudioManager.instance.Play("PC Startup");
-            AudioManager.instance.Play("PC Distraction");
+            audioPlayer.Play("PC Startup");
+            audioPlayer.Play("PC Distraction");
         }
 
 

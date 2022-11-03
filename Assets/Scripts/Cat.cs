@@ -259,6 +259,5 @@ public class Cat : Interactable
         Cursor.lockState = CursorLockMode.Locked;
         playerController.UI.PettingMeter.gameObject.SetActive(false);
         playerController.Interaction.HideCrosshair = false;
-        AudioManager.instance.Stop("DeathMetal");
     }
 }

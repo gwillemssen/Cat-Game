@@ -7,6 +7,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(FirstPersonInput))]
 [RequireComponent(typeof(FirstPersonInteraction))]
 [RequireComponent(typeof(PlayerUI))]
+[RequireComponent(typeof(AudioPlayer))]
 
 public class FirstPersonController : MonoBehaviour
 {
@@ -39,8 +40,6 @@ public class FirstPersonController : MonoBehaviour
     public float FallTimeout = 0.15f;
 
 
-
-
     [Header("Player Grounded")]
     [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
     public bool Grounded = true;
@@ -59,6 +58,11 @@ public class FirstPersonController : MonoBehaviour
     public float BottomClamp = -90.0f;
     private float _cinemachineTargetPitch;
     public GameObject CinemachineCameraTarget;
+
+    [Header("Sound")]
+    private AudioPlayer audioPlayer;
+    public float StepCooldownWalk = .5f;
+    public float StepCooldownChase = .25f;
 
     //Public References
     [HideInInspector]
@@ -83,8 +87,8 @@ public class FirstPersonController : MonoBehaviour
     private float fallTimeoutDelta;
     private Vector3 crouchScale;
     private Vector3 resetScale;
-    
-   
+    private float stepCooldown;
+    private float lastTimeStep = -420f;
 
     [Header("Other")]
     public float NoiseAmt_Sprinting = 10f;
@@ -123,6 +127,7 @@ public class FirstPersonController : MonoBehaviour
 
         MainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         Input = GetComponent<FirstPersonInput>();
+        audioPlayer = GetComponent<AudioPlayer>();
         Interaction = GetComponent<FirstPersonInteraction>();
         Interaction.Init(this);
         UI = GetComponent<PlayerUI>();
@@ -148,20 +153,29 @@ public class FirstPersonController : MonoBehaviour
             JumpAndGravity();
             GroundedCheck();
             Move();
-            
+            Audio();
             CameraRotation();
-            
-
         }
         Interaction.UpdateInteraction();
         CameraFOVLerp();
     }
 
+    private void Audio()
+    {
+        stepCooldown = Input.sprint ? StepCooldownChase : StepCooldownWalk;
+
+        if (Time.time > lastTimeStep + stepCooldown)
+        {
+            lastTimeStep = Time.time;
+            audioPlayer.Play("footstep");
+        }
+    }
+
+
     private void CameraFOVLerp()
     {
         MainCamera.fieldOfView = Mathf.Lerp(MainCamera.fieldOfView, TargetFOV, Time.deltaTime * CameraFOVLerpSpeed);
     }
-
 
     private void GroundedCheck()
     {
@@ -169,7 +183,6 @@ public class FirstPersonController : MonoBehaviour
         Vector3 spherePosition = new(transform.position.x, transform.position.y - GroundedOffset, transform.position.z);
         Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
     }
-   
 
     private void CameraRotation()
     {

@@ -25,16 +25,6 @@ public class GameManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(this.gameObject);
-
-        //hook up win / lose events
-        Enemy.CalledCops += CalledCops;
-        ExitDoor.ExitedDoor += WinGame;
-    }
-
-    private void OnDestroy()
-    {
-        Enemy.CalledCops -= CalledCops;
-        ExitDoor.ExitedDoor -= WinGame;
     }
 
     private void Start()
@@ -47,7 +37,7 @@ public class GameManager : MonoBehaviour
         StartGame();
     }
 
-    private void CalledCops()
+    public void CallCops()
     {
         //TODO: start timer
         State = GameState.CopsCalled;
@@ -61,7 +51,7 @@ public class GameManager : MonoBehaviour
         State = GameState.Normal;
     }
 
-    private void WinGame()
+    public void WinGame()
     {
         if (State == GameState.Loading)
             return;
@@ -69,7 +59,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(TemporaryWinSequence());
     }
 
-    private void GameOver()
+    public void GameOver()
     {
         if (State == GameState.Loading)
             return;

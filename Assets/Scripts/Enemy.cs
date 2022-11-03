@@ -6,13 +6,15 @@ using UnityEditor;
 using System;
 
 [RequireComponent(typeof(IAstarAI))]
+[RequireComponent(typeof(AudioPlayer))]
 public class Enemy : MonoBehaviour
 {
-    public enum EnemyState { Patrolling, SearchingForNoise, Chasing, CallingCops }
+    public enum EnemyState { Patrolling, SearchingForNoise, Chasing, CallingCops, GrabbingGun, PatrollingWithGun }
 
     [Header("References")]
     public List<Waypoint> PatrollingRoute;
-    public Waypoint PhonePosition;
+    public Waypoint PhoneWaypoint;
+    public Waypoint GunWaypoint;
     public Transform eyes;
 
     [Header("Alertness")]
@@ -30,6 +32,7 @@ public class Enemy : MonoBehaviour
     [Tooltip("How long after losing the target does it take until the enemy goes back into idle")]
     [Range(5f, 25f)]
     public float LostTargetTime = 10f;
+    public float ShootDistance = 5f;
 
     [Header("Misc")]
     public LayerMask EverythingExceptEnemy;
@@ -37,10 +40,14 @@ public class Enemy : MonoBehaviour
     public bool DebugMode = false;
     public TextMesh EnemyDebugObject;
 
+    [Header("Sound")]
+    AudioPlayer audioPlayer;
+    public float StepCooldownWalk = .5f;
+    public float StepCooldownChase = .25f;
+
     //events
     public static event Action<Enemy.EnemyState> EnemyChangedState;
     public static event Action<Enemy> EnemySpawned;
-    public static event Action CalledCops;
 
     public EnemyState State
     {
@@ -71,23 +78,26 @@ public class Enemy : MonoBehaviour
     private float sqrHearingRadius;
     private float localNoise;
     private Vector3 lastNoisePosition;
-    public float stepCooldown = .5f;
-    public float sprintCooldown = .25f;
+    private float stepCooldown;
     private float lastTimeStep;
     private bool isPlaying;
     private int waypointIndex;
     private float lastTimeAtWaypoint = -420f;
     private bool atWaypoint;
+    private float timeCalledCops = -420f;
+    private float sqrShootDistance;
 
     void Start()
     {
         ai = GetComponent<IAstarAI>();
+        audioPlayer = GetComponent<AudioPlayer>();
         target = FirstPersonController.instance.MainCamera.transform;
         State = EnemyState.Patrolling;
 
         EnemyDebugObject.gameObject.SetActive(DebugMode);
         fov = Mathf.InverseLerp(180, 0, FieldOfView);
         sqrHearingRadius = HearingRadius * HearingRadius;
+        sqrShootDistance = ShootDistance * ShootDistance;
 
         if (PatrollingRoute == null || PatrollingRoute.Count == 0)
         {
@@ -111,7 +121,17 @@ public class Enemy : MonoBehaviour
         else
         { DecreaseAlertness(); }
 
+        if(state == EnemyState.Chasing)
+        {
+            if(Vector3.SqrMagnitude(transform.position - target.position) <= sqrShootDistance)
+            {
+                GameManager.instance.GameOver();
+            }
+        }
+
         Move();
+
+        FootstepAudio();
     }
 
     public void OnMaxNoise()
@@ -135,15 +155,10 @@ public class Enemy : MonoBehaviour
     void SpotPlayer()
     {
         lastTimeSighted = Time.time;
-        if (State == EnemyState.Patrolling && GameManager.instance.State == GameManager.GameState.CopsCalled)
+        if (State == EnemyState.PatrollingWithGun)
         { State = EnemyState.Chasing; }
         else
         { State = EnemyState.CallingCops; }
-    }
-
-    void PlayFootstep()
-    {
-        AudioManager.instance.Play("EnemyFootsteps");
     }
 
     void DecreaseAlertness()
@@ -161,62 +176,57 @@ public class Enemy : MonoBehaviour
             Alertness = AlertnessRequired;
         }
     }
-    void CheckAudio()
+    void FootstepAudio()
     {
         if (Time.time > lastTimeStep + stepCooldown)
         {
             lastTimeStep = Time.time;
-            PlayFootstep();
+            audioPlayer.Play("footstep");
         }
     }
 
     void Move()
     {
-        if (State == EnemyState.Chasing)
+        switch (State)
         {
-            ai.destination = target.position;
-            lastNoisePosition = target.position;
-            stepCooldown = sprintCooldown;
-        }
+            case EnemyState.Chasing:
+                ai.destination = target.position;
+                lastNoisePosition = target.position;
+                stepCooldown = StepCooldownChase;
+                break;
 
-        if (State == EnemyState.SearchingForNoise)
-        {
-            ai.destination = lastNoisePosition;
+            case EnemyState.SearchingForNoise:
+                ai.destination = lastNoisePosition;
+                if (Vector3.SqrMagnitude(transform.position - lastNoisePosition) <= 1f)
+                { State = EnemyState.Patrolling; } //investigated the noise, going back to normal
+                break;
 
-            if (Vector3.SqrMagnitude(transform.position - lastNoisePosition) <= 1f)
-            { State = EnemyState.Patrolling; } //investigated the noise, going back to normal
-        }
-
-        if (State == EnemyState.Patrolling)
-        {
-            sprintCooldown = stepCooldown;
-
-            ai.destination = PatrollingRoute[waypointIndex].transform.position;
-            if (Vector3.SqrMagnitude(transform.position - ai.destination) < 0.5f)
-            {
-                if (!atWaypoint)
-                {
-                    lastTimeAtWaypoint = Time.time;
-                    atWaypoint = true;
-                }
-
-                if (Time.time > lastTimeAtWaypoint + PatrollingRoute[waypointIndex].StopTime)
+            case EnemyState.Patrolling:
+            case EnemyState.PatrollingWithGun:
+                stepCooldown = StepCooldownWalk;
+                if (NavigateToWaypoint(PatrollingRoute[waypointIndex]))
                 {
                     waypointIndex++;
                     if (waypointIndex >= PatrollingRoute.Count)
                     { waypointIndex = 0; }
-                    atWaypoint = false;
                 }
-            }
-        }
-        if(State == EnemyState.CallingCops)
-        {
-            //TODO: go to the phone, wait, grab gun
-            ai.destination = PhonePosition.transform.position;
+                break;
+
+            case EnemyState.CallingCops:
+                if (NavigateToWaypoint(PhoneWaypoint))
+                {
+                    timeCalledCops = Time.time;
+                    State = EnemyState.GrabbingGun;
+                }
+                break;
+
+            case EnemyState.GrabbingGun:
+                if(NavigateToWaypoint(GunWaypoint))
+                { state = EnemyState.PatrollingWithGun; }
+                break;
         }
 
 
-        CheckAudio();
         //raycast for doors
         RaycastHit hit;
         Interactable interactable;
@@ -229,6 +239,25 @@ public class Enemy : MonoBehaviour
             }
         }
 
+    }
+
+    bool NavigateToWaypoint(Waypoint waypoint)
+    {
+        ai.destination = waypoint.transform.position;
+        if (Vector3.SqrMagnitude(transform.position - waypoint.transform.position) < 0.5f)
+        {
+            if (!atWaypoint)
+            {
+                lastTimeAtWaypoint = Time.time;
+                atWaypoint = true;
+            }
+            if(Time.time > lastTimeAtWaypoint + PatrollingRoute[waypointIndex].StopTime)
+            {
+                atWaypoint = false;
+                return true;
+            }
+        }
+        return false;
     }
 
     bool IsPlayerWithinFieldOfView()

@@ -22,7 +22,7 @@ public class ExitDoor : Interactable
     {
         if(!locked)
         {
-            ExitedDoor?.Invoke();
+            GameManager.instance.WinGame();
         }
         else
         {

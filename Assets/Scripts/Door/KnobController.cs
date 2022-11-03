@@ -41,19 +41,7 @@ public class KnobController : Interactable
         }
         parent.open = !parent.open;
         LevelManager.instance.MakeNoise(transform.position, NoiseAmt);
-        CheckAudio();
-    }
-    void CheckAudio()
-    {
-        if (Time.time > lastTime + Cooldown)
-        {
-            lastTime = Time.time;
-            PlayDoor();
-        }
-    }
-    void PlayDoor()
-    {
-        AudioManager.instance.Play("DoorClose");
+        
     }
     public void Open()
     {

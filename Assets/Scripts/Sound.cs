@@ -2,18 +2,15 @@ using UnityEngine.Audio;
 using UnityEngine;
 
 [System.Serializable]
-public class Sound
+[CreateAssetMenu(fileName = "Sound", menuName = "Sound", order = 1)]
+public class Sound : ScriptableObject
 {
-    public string name;
-    public AudioClip clip;
-
-    
+    public string Name;
+    public AudioClip Clip;
     [Range(0f, 1f)]
-    public float volume;
+    public float Volume;
     [Range(.1f, 1f)]
-    public float pitch;
-    [HideInInspector]
-    public AudioSource source;
-
-    public bool loop;
+    public float Pitch;
+    [Range(1, 100)]
+    public int NoiseAmt;
 }

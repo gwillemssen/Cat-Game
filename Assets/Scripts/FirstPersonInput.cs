@@ -13,15 +13,6 @@ public class FirstPersonInput : MonoBehaviour
     public bool interacting;
     public bool interactedOnce;
     public bool throwing;
-    private Sound playerSound;
-    public bool isMoving;
-    private bool isPlaying;
-    private float lastTimeStep;
-
-    [Space(10)]
-    [Tooltip("Cooldown for sounds to play")]
-    public float stepCooldown = .5f;
-    public float sprintCooldown =.25f;
 
 
     [Header("Mouse Cursor Settings")]
@@ -36,8 +27,6 @@ public class FirstPersonInput : MonoBehaviour
     
     private void Update()
     {
-       
-        
         move.x = Input.GetAxisRaw("Horizontal");
         move.y = Input.GetAxisRaw("Vertical");
         look.x = Input.GetAxis("Mouse X");
@@ -49,43 +38,7 @@ public class FirstPersonInput : MonoBehaviour
         interacting = Input.GetButton("Interact");
         mousePosition = Input.mousePosition;
         crouch = Input.GetButton("Crouch");
-
-        if (move.x != stop.x || move.y != stop.y)
-        {
-            CheckAudio();
-        }
-        if (sprint)
-        {
-            stepCooldown = sprintCooldown;
-        }
-        else
-        {
-            stepCooldown = .5f;
-        }
     }
-
-    void PlayFootstep()
-    {
-        AudioManager.instance.Play("Footsteps");
-        isPlaying = false;
-
-    }
-    void CheckAudio()
-    {
-        if (Time.time > lastTimeStep + stepCooldown)
-        {
-            lastTimeStep = Time.time;
-            isPlaying = true;
-        }
-
-
-        if (isPlaying == true)
-        {
-            PlayFootstep();
-
-        }
-    }
-
 
     private void SetCursorState(bool newState)
     {

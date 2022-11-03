@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioPlayer))]
 public class HidingSpot : Interactable
 {
     public Transform HidingPosition;
     public float EnterSpeed = 2f;
     public float ExitSpeed = 0.75f;
     public Animation anim;
+    private AudioPlayer audioPlayer;
+
     private FirstPersonController player;
     private Vector3 startPos;
     private Quaternion startRot;
@@ -18,11 +21,12 @@ public class HidingSpot : Interactable
     private void Start()
     {
         anim = GetComponentInChildren<Animation>();
+        audioPlayer = GetComponent<AudioPlayer>();
     }
 
     public override void InteractClick(FirstPersonController controller)
     {
-        AudioManager.instance.Play("Door");
+        audioPlayer.Play("Door");
         if (player != null)
             return;
         player = controller;
