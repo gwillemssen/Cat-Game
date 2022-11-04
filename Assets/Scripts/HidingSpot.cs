@@ -10,6 +10,7 @@ public class HidingSpot : Interactable
     public float ExitSpeed = 0.75f;
     public Animation anim;
     private AudioPlayer audioPlayer;
+    public Sound[] doorSounds;
 
     private FirstPersonController player;
     private Vector3 startPos;
@@ -26,7 +27,7 @@ public class HidingSpot : Interactable
 
     public override void InteractClick(FirstPersonController controller)
     {
-        audioPlayer.Play("Door");
+        audioPlayer.Play(doorSounds[Random.Range(0, doorSounds.Length)]);
         if (player != null)
             return;
         player = controller;

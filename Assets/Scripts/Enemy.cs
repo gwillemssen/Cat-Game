@@ -42,6 +42,7 @@ public class Enemy : MonoBehaviour
 
     [Header("Sound")]
     AudioPlayer audioPlayer;
+    public Sound[] FootstepSounds;
     public float StepCooldownWalk = .5f;
     public float StepCooldownChase = .25f;
 
@@ -178,10 +179,12 @@ public class Enemy : MonoBehaviour
     }
     void FootstepAudio()
     {
+        if(ai.velocity.sqrMagnitude < 0.05f)
+        { return; }
         if (Time.time > lastTimeStep + stepCooldown)
         {
             lastTimeStep = Time.time;
-            audioPlayer.Play("footstep");
+            audioPlayer.Play(FootstepSounds[UnityEngine.Random.Range(0, FootstepSounds.Length)]);
         }
     }
 

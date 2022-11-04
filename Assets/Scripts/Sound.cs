@@ -5,12 +5,11 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Sound", menuName = "Sound", order = 1)]
 public class Sound : ScriptableObject
 {
-    public string Name;
     public AudioClip Clip;
     [Range(0f, 1f)]
-    public float Volume;
-    [Range(.1f, 1f)]
-    public float Pitch;
-    [Range(1, 100)]
+    public float Volume = 1f;
+    [Range(-3f, 3f)]
+    public float Pitch = 1f;
+    [Range(0, 100)]
     public int NoiseAmt;
 }
