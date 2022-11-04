@@ -24,7 +24,7 @@ public class Cat : Interactable
     private enum CatState { Pettable, Unpettable, PettingMinigame, DonePetting };
     private CatState state;
     private Animator anim;
-    private AudioSource audio;
+    private AudioSource audioSource;
     //private ShakePosition shake;
 
     //events
@@ -60,8 +60,8 @@ public class Cat : Interactable
     {
         state = (CatState)StartState;
         anim = GetComponentInChildren<Animator>();
-        audio = GetComponent<AudioSource>();
-        audio.loop = true;
+        audioSource = GetComponent<AudioSource>();
+        audioSource.loop = true;
         lastPetMousePos = new Vector2(-420f, -420f);
     }
 
@@ -83,11 +83,11 @@ public class Cat : Interactable
                 }
             }
         }
-        if (audio.isPlaying && state != CatState.PettingMinigame)
+        if (audioSource.isPlaying && state != CatState.PettingMinigame)
         {
-            audio.volume -= Time.deltaTime;
-            if (audio.volume <= 0f)
-            { audio.Stop(); }
+            audioSource.volume -= Time.deltaTime;
+            if (audioSource.volume <= 0f)
+            { audioSource.Stop(); }
         }
     }
 
@@ -183,8 +183,8 @@ public class Cat : Interactable
         playerController.Interaction.HideCrosshair = true;
         playerController.UI.SetInfoText("Click and Drag to pet the Cat!\nRight click to Cancel");
         pettingAmount = 0f;
-        audio.volume = 0f;
-        audio.Play();
+        audioSource.volume = 0f;
+        audioSource.Play();
         
     }
 
@@ -222,11 +222,11 @@ public class Cat : Interactable
         {
             pettingAmount -= Time.deltaTime * PettingDecayRate;
             //audio.volume -= Time.deltaTime;
-            audio.volume = 0f;
+            audioSource.volume = 0f;
         }
         else
         {
-            audio.volume += Time.deltaTime;
+            audioSource.volume += Time.deltaTime;
         }
 
         if (!playerController.Input.interacting)

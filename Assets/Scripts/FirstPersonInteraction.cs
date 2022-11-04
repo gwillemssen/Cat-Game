@@ -11,6 +11,7 @@ public class FirstPersonInteraction : MonoBehaviour
     public LayerMask InteractableLayerMask;
     public Texture2D CrosshairSprite_Normal;
     public Texture2D CrosshairSprite_Interactable;
+    public Texture2D CrosshairSprite_Noise;
     [HideInInspector]
     public bool HideCrosshair = false;
 
@@ -56,7 +57,6 @@ public class FirstPersonInteraction : MonoBehaviour
 
     private void DropInteractable()
     {
-        Pickup.transform.SetParent(Pickup.OriginalParent);
         Pickup.transform.position = controller.MainCamera.transform.position;
         Pickup.Rigidbody.isKinematic = false;
         /*RaycastHit hit;
@@ -79,7 +79,11 @@ public class FirstPersonInteraction : MonoBehaviour
 
     private void HandleInteraction()
     {
-        //TODO: drop
+        if(Pickup != null)
+        {
+            Pickup.transform.position = controller.PickupPosition.position;
+        }
+
         if (controller.Input.interacting && interactable != null)
         {
             interactablePickup = interactable as InteractablePickup;
@@ -129,10 +133,12 @@ public class FirstPersonInteraction : MonoBehaviour
 
     private void UpdateCrosshair()
     {
-        if(interactable != null)
+        if(interactable == null)
+            { crosshairImage = CrosshairSprite_Normal; }
+        else if(interactable.NoiseCrosshair == false)
             { crosshairImage = CrosshairSprite_Interactable; }
         else
-            { crosshairImage = CrosshairSprite_Normal; }
+            { crosshairImage = CrosshairSprite_Noise; }
     }
 
     public void CalculateCrosshair()
@@ -159,7 +165,7 @@ public class FirstPersonInteraction : MonoBehaviour
         size.x = crosshairImage.width;
         size.y = crosshairImage.height;
 
-        if (crosshairImage == CrosshairSprite_Interactable)
+        if (crosshairImage == CrosshairSprite_Interactable || crosshairImage == CrosshairSprite_Noise)
         {
             t = (Time.time - lastTimeNewInteractable) / .5f;
             t = Mathf.Clamp01(t);
