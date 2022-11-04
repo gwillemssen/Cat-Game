@@ -178,11 +178,11 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4114987660335100383}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.082063675, y: 2.1282387, z: 1.369961}
-  m_Center: {x: -0.45896816, y: 1.6621025, z: 0.003119588}
+  m_Size: {x: 0.082063675, y: 2.420848, z: 0.4109143}
+  m_Center: {x: -0.45896816, y: 1.6620786, z: -0.010397971}
 --- !u!82 &4377785079992641056
 AudioSource:
   m_ObjectHideFlags: 0
@@ -417,6 +417,7 @@ GameObject:
   - component: {fileID: 3693074593212614396}
   - component: {fileID: 4775567286874802141}
   - component: {fileID: 2437214207443727139}
+  - component: {fileID: 1769308279}
   m_Layer: 0
   m_Name: Closet
   m_TagString: Untagged
@@ -489,6 +490,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &1769308279
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5520363089023401646}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 180.00005, y: 260, z: 100.00002}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &9150291424670769750
 GameObject:
   m_ObjectHideFlags: 0
