@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 8900000, guid: 619e305f5165a9946b7f72464e44ca4a, type: 3}
   m_Sun: {fileID: 2114283754330233425}
-  m_IndirectSpecularColor: {r: 0.0031405094, g: 0.0061705993, b: 0.014241768, a: 1}
+  m_IndirectSpecularColor: {r: 0.0031405292, g: 0.0061706104, b: 0.014241753, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -14024,11 +14024,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4114987660335100380, guid: 2edeb8ec40b874b4bbdf828d17fbf747,
         type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4114987660335100380, guid: 2edeb8ec40b874b4bbdf828d17fbf747,
-        type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.506
       objectReference: {fileID: 0}
@@ -14077,45 +14072,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4114987660335100382, guid: 2edeb8ec40b874b4bbdf828d17fbf747,
-        type: 3}
-      propertyPath: m_Size.x
-      value: 0.082063675
-      objectReference: {fileID: 0}
-    - target: {fileID: 4114987660335100382, guid: 2edeb8ec40b874b4bbdf828d17fbf747,
-        type: 3}
-      propertyPath: m_Size.y
-      value: 2.1282387
-      objectReference: {fileID: 0}
-    - target: {fileID: 4114987660335100382, guid: 2edeb8ec40b874b4bbdf828d17fbf747,
-        type: 3}
-      propertyPath: m_Size.z
-      value: 1.6731207
-      objectReference: {fileID: 0}
-    - target: {fileID: 4114987660335100382, guid: 2edeb8ec40b874b4bbdf828d17fbf747,
-        type: 3}
-      propertyPath: m_Center.x
-      value: -0.45896816
-      objectReference: {fileID: 0}
-    - target: {fileID: 4114987660335100382, guid: 2edeb8ec40b874b4bbdf828d17fbf747,
-        type: 3}
-      propertyPath: m_Center.y
-      value: 1.6621025
-      objectReference: {fileID: 0}
-    - target: {fileID: 4114987660335100382, guid: 2edeb8ec40b874b4bbdf828d17fbf747,
-        type: 3}
-      propertyPath: m_Center.z
-      value: -0.0017969906
-      objectReference: {fileID: 0}
     - target: {fileID: 4114987660335100383, guid: 2edeb8ec40b874b4bbdf828d17fbf747,
         type: 3}
       propertyPath: m_Name
       value: PrototypeCloset
-      objectReference: {fileID: 0}
-    - target: {fileID: 4114987660335100383, guid: 2edeb8ec40b874b4bbdf828d17fbf747,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2edeb8ec40b874b4bbdf828d17fbf747, type: 3}
@@ -31958,6 +31918,11 @@ PrefabInstance:
     - target: {fileID: 7685893926986943177, guid: d41f7101bd0ed3f4296b8e9d175710c0,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7864268683426589985, guid: d41f7101bd0ed3f4296b8e9d175710c0,
+        type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8612036440356897875, guid: d41f7101bd0ed3f4296b8e9d175710c0,
