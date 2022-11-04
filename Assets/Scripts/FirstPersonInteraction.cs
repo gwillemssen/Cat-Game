@@ -57,7 +57,6 @@ public class FirstPersonInteraction : MonoBehaviour
 
     private void DropInteractable()
     {
-        Pickup.transform.SetParent(Pickup.OriginalParent);
         Pickup.transform.position = controller.MainCamera.transform.position;
         Pickup.Rigidbody.isKinematic = false;
         /*RaycastHit hit;
@@ -80,7 +79,11 @@ public class FirstPersonInteraction : MonoBehaviour
 
     private void HandleInteraction()
     {
-        //TODO: drop
+        if(Pickup != null)
+        {
+            Pickup.transform.position = controller.PickupPosition.position;
+        }
+
         if (controller.Input.interacting && interactable != null)
         {
             interactablePickup = interactable as InteractablePickup;

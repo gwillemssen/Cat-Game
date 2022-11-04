@@ -7,7 +7,6 @@ using UnityEngine;
 public class InteractablePickup : Interactable
 {
     public Rigidbody Rigidbody { get; private set; }
-    public Transform OriginalParent { get; private set; }
     public float ImpactVelocity = 1f;
 
     public Sound ImpactSound;
@@ -19,7 +18,6 @@ public class InteractablePickup : Interactable
     {
         Rigidbody = GetComponent<Rigidbody>();
         audioPlayer = GetComponent<AudioPlayer>();
-        OriginalParent = transform.parent;
         sqrImpactSoundVelocity = ImpactVelocity * ImpactVelocity;
     }
 
