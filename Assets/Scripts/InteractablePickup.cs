@@ -8,16 +8,37 @@ public class InteractablePickup : Interactable
 {
     public Rigidbody Rigidbody { get; private set; }
     public Transform OriginalParent { get; private set; }
+    public float ImpactVelocity = 1.5f;
 
     public Sound ImpactSound;
 
     private AudioPlayer audioPlayer;
+    private float sqrImpactSoundVelocity;
 
     private void Awake()
     {
         Rigidbody = GetComponent<Rigidbody>();
         audioPlayer = GetComponent<AudioPlayer>();
         OriginalParent = transform.parent;
+        sqrImpactSoundVelocity = ImpactVelocity * ImpactVelocity;
+    }
+
+    public void OnCollisionEnter(Collision collision)
+    {
+        if(ImpactSound == null)
+        { return; }
+
+        if(Rigidbody.velocity.sqrMagnitude > sqrImpactSoundVelocity)
+        {
+            Debug.Log(Rigidbody.velocity.magnitude);
+            audioPlayer.Play(ImpactSound);
+            Impacted();
+        }
+    }
+
+    public virtual void Impacted()
+    {
+
     }
 
     public override void InteractClick(FirstPersonController controller)
