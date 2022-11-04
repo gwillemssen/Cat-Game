@@ -35,6 +35,7 @@ public class Enemy : MonoBehaviour
     public float ShootDistance = 5f;
 
     [Header("Misc")]
+    public float OpenDoorStopTime = 1f;
     public LayerMask EverythingExceptEnemy;
     public LayerMask InteractableLayerMask;
     public bool DebugMode = false;
@@ -86,6 +87,8 @@ public class Enemy : MonoBehaviour
     private float lastTimeAtWaypoint = -420f;
     private bool atWaypoint;
     private float timeCalledCops = -420f;
+    private float lastTimeOpenedDoor = -420f;
+    private KnobController lastDoor;
     private float sqrShootDistance;
 
     void Start()
@@ -131,7 +134,7 @@ public class Enemy : MonoBehaviour
         }
 
         Move();
-
+        Interact();
         FootstepAudio();
     }
 
@@ -229,7 +232,22 @@ public class Enemy : MonoBehaviour
                 break;
         }
 
+        if(Time.time - lastTimeOpenedDoor < OpenDoorStopTime)
+        {
+            ai.isStopped = true;
+        }
+        else
+        {
+            ai.isStopped = false;
+            if(lastDoor != null && (Time.time - lastTimeOpenedDoor > OpenDoorStopTime + 1f))
+            { lastDoor.Close(); }
+        }
 
+
+    }
+
+    private void Interact()
+    {
         //raycast for doors
         RaycastHit hit;
         Interactable interactable;
@@ -238,10 +256,14 @@ public class Enemy : MonoBehaviour
             interactable = hit.collider.GetComponent<Interactable>();
             if (interactable != null && interactable is KnobController)
             {
-                (interactable as KnobController).Open();
+                if(!(interactable as KnobController).IsOpen())
+                {
+                    lastTimeOpenedDoor = Time.time;
+                    lastDoor = (interactable as KnobController);
+                    lastDoor.Open();
+                }
             }
         }
-
     }
 
     bool NavigateToWaypoint(Waypoint waypoint)
