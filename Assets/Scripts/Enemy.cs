@@ -66,6 +66,7 @@ public class Enemy : MonoBehaviour
             }
         }
     }
+    public bool SeesPlayer { get; private set; }
     public bool InFOV { get; private set; }
     public RaycastHit Hit { get; private set; }
     public float Alertness { get; private set; }
@@ -167,11 +168,13 @@ public class Enemy : MonoBehaviour
 
     void DecreaseAlertness()
     {
+        SeesPlayer = false;
         Alertness = Mathf.Clamp(Alertness - Time.deltaTime, 0f, AlertnessRequired);
     }
 
     void IncreaseAlertness()
     {
+        SeesPlayer = true;
         Alertness = Mathf.Clamp(Alertness + Time.deltaTime, 0f, AlertnessRequired);
 
         if (Alertness >= AlertnessRequired)
