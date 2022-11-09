@@ -28,7 +28,6 @@ public class InteractablePickup : Interactable
 
         if(Rigidbody.velocity.sqrMagnitude > sqrImpactSoundVelocity)
         {
-            Debug.Log(Rigidbody.velocity.magnitude);
             audioPlayer.Play(ImpactSound);
             Impacted();
         }
@@ -41,7 +40,7 @@ public class InteractablePickup : Interactable
 
     public override void InteractClick(FirstPersonController controller)
     {
-        controller.UI.SetInfoText("Left click to use\nRight click to drop");
+        PlayerUI.instance.SetInfoText("Left click to use\nRight click to drop");
     }
 
 
