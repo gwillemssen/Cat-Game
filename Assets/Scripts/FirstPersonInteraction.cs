@@ -6,7 +6,9 @@ public class FirstPersonInteraction : MonoBehaviour
 {
     [Tooltip("How far can the player reach?")]
     public float InteractRange = 8.0f;
-    public float ThrowForce = 8.0f;
+    public float ThrowForceMin = 0.5f;
+    public float ThrowForceMax = 8.0f;
+    public float ThrowWindupSpeed = 0.75f;
     [Tooltip("What layers can we interact with?")]
     public LayerMask InteractableLayerMask;
     public Texture2D CrosshairSprite_Normal;
@@ -29,6 +31,7 @@ public class FirstPersonInteraction : MonoBehaviour
     private Vector2 crosshairSizeInteractBig;
     private const float crosshairInteractBigMult = 1.5f;
     private float lastTimeNewInteractable = -420f;
+    private float throwForce;
 
     public void Init(FirstPersonController con)
     {
@@ -49,13 +52,10 @@ public class FirstPersonInteraction : MonoBehaviour
     {
         Pickup = interactablePickup;
         interactablePickup.InteractClick(controller);
-        Pickup.transform.SetParent(controller.PickupPosition);
-        Pickup.transform.localPosition = Vector3.zero;
-        Pickup.transform.localRotation = Quaternion.identity;
         Pickup.Rigidbody.isKinematic = true;
     }
 
-    private void DropInteractable()
+    private void ThrowInteractable()
     {
         Pickup.transform.position = controller.MainCamera.transform.position;
         Pickup.Rigidbody.isKinematic = false;
@@ -65,7 +65,8 @@ public class FirstPersonInteraction : MonoBehaviour
             Pickup.transform.position = controller.MainCamera.transform.position;
         }*/
         //throw from same position if its not through a wall
-        Pickup.Rigidbody.AddForce(transform.forward * ThrowForce, ForceMode.VelocityChange);
+        Pickup.Rigidbody.AddForce(transform.forward * Mathf.Lerp(ThrowForceMin, ThrowForceMax, throwForce), ForceMode.VelocityChange);
+        throwForce = 0f;
         Pickup = null;
     }
 
@@ -79,10 +80,6 @@ public class FirstPersonInteraction : MonoBehaviour
 
     private void HandleInteraction()
     {
-        if(Pickup != null)
-        {
-            Pickup.transform.position = controller.PickupPosition.position;
-        }
 
         if (controller.Input.interacting && interactable != null)
         {
@@ -98,9 +95,21 @@ public class FirstPersonInteraction : MonoBehaviour
                 Interact();
             }
         }
-        if(controller.Input.throwing && Pickup != null)
+        if (Pickup != null)
         {
-            DropInteractable();
+            float t = Mathf.Sin(throwForce * Mathf.PI * 0.5f);
+            Pickup.transform.position = Vector3.Lerp(controller.PickupPosition.position, controller.PickupPositionWindup.position, t);
+            Pickup.transform.rotation = Quaternion.Lerp(controller.PickupPosition.rotation, controller.PickupPositionWindup.rotation, t);
+
+            if (controller.Input.throwing)
+            {
+                throwForce += Time.deltaTime * ThrowWindupSpeed;
+                throwForce = Mathf.Clamp01(throwForce);
+
+                controller.UI.SetThrowStrengthMeter(throwForce);
+            }
+            else if (controller.Input.throwRelease)
+            { ThrowInteractable(); }
         }
 
         if (lastInteractable != interactable && lastInteractable != null)

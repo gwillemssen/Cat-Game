@@ -94,6 +94,7 @@ public class FirstPersonController : MonoBehaviour
     public float NoiseAmt_Sprinting = 10f;
     public Transform CatHoldingPosition;
     public Transform PickupPosition;
+    public Transform PickupPositionWindup;
     [HideInInspector]
     public float TargetFOV = 90f; //changed by the cat minigame for visual effect
     [HideInInspector]

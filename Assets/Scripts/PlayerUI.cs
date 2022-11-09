@@ -10,6 +10,7 @@ public class PlayerUI : MonoBehaviour
     [HideInInspector]
     public Slider PettingMeter;
     private Slider noiseMeter;
+    private Slider throwStrengthMeter;
     private Text debugText;
     private Text infoText;
     private Animation infoTextFade;
@@ -49,12 +50,16 @@ public class PlayerUI : MonoBehaviour
                     infoText = g.GetComponent<Text>();
                     infoTextFade = g.GetComponent<Animation>();
                     break;
+                case "ThrowStrengthMeter":
+                    throwStrengthMeter = g.GetComponent<Slider>();
+                    break;
             }
         }
         PettingMeter.gameObject.SetActive(false);
         noiseMeter.gameObject.SetActive(false);
         LoseScreen.SetActive(false);
         WinScreen.SetActive(false);
+        throwStrengthMeter.gameObject.SetActive(false);
         //debugText.enabled = false;
         debugText.text = "";
     }
@@ -85,4 +90,11 @@ public class PlayerUI : MonoBehaviour
         infoText.color = Color.white;
         infoText.text = text;
     }
+
+    public void SetThrowStrengthMeter(float p)
+    {
+        throwStrengthMeter.gameObject.SetActive(p > 0.15f);
+        throwStrengthMeter.value = p;
+    }
+
 }

@@ -28,7 +28,6 @@ public class InteractablePickup : Interactable
 
         if(Rigidbody.velocity.sqrMagnitude > sqrImpactSoundVelocity)
         {
-            Debug.Log(Rigidbody.velocity.magnitude);
             audioPlayer.Play(ImpactSound);
             Impacted();
         }
