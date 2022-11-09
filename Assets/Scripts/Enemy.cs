@@ -87,7 +87,6 @@ public class Enemy : MonoBehaviour
     private int waypointIndex;
     private float lastTimeAtWaypoint = -420f;
     private bool atWaypoint;
-    private float timeCalledCops = -420f;
     private float lastTimeOpenedDoor = -420f;
     private KnobController lastDoor;
     private float sqrShootDistance;
@@ -130,7 +129,7 @@ public class Enemy : MonoBehaviour
         {
             if(Vector3.SqrMagnitude(transform.position - target.position) <= sqrShootDistance)
             {
-                GameManager.instance.GameOver();
+                GameManager.instance.GameOver(GameManager.LoseState.Shot);
             }
         }
 
@@ -224,7 +223,7 @@ public class Enemy : MonoBehaviour
             case EnemyState.CallingCops:
                 if (NavigateToWaypoint(PhoneWaypoint))
                 {
-                    timeCalledCops = Time.time;
+                    LevelManager.instance.CallCops();
                     State = EnemyState.GrabbingGun;
                 }
                 break;

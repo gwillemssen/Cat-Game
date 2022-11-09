@@ -178,10 +178,10 @@ public class Cat : Interactable
         playerController.DisableMovement = true;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-        playerController.UI.PettingMeter.gameObject.SetActive(true);
-        playerController.UI.PettingMeter.value = 0f;
+        PlayerUI.instance.PettingMeter.gameObject.SetActive(true);
+        PlayerUI.instance.PettingMeter.value = 0f;
         playerController.Interaction.HideCrosshair = true;
-        playerController.UI.SetInfoText("Click and Drag to pet the Cat!\nRight click to Cancel");
+        PlayerUI.instance.SetInfoText("Click and Drag to pet the Cat!\nRight click to Cancel");
         pettingAmount = 0f;
         audioSource.volume = 0f;
         audioSource.Play();
@@ -235,7 +235,7 @@ public class Cat : Interactable
             mouseDelta = Vector2.zero;
         }
 
-        playerController.UI.PettingMeter.value = pettingAmount;
+        PlayerUI.instance.PettingMeter.value = pettingAmount;
 
         pettingAmount = Mathf.Clamp01(pettingAmount);
         if (pettingAmount == 1f)                         //win
@@ -257,7 +257,7 @@ public class Cat : Interactable
         playerController.DisableMovement = false;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        playerController.UI.PettingMeter.gameObject.SetActive(false);
+        PlayerUI.instance.PettingMeter.gameObject.SetActive(false);
         playerController.Interaction.HideCrosshair = false;
     }
 }

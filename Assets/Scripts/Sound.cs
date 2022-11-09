@@ -12,4 +12,5 @@ public class Sound : ScriptableObject
     public float Pitch = 1f;
     [Range(0, 100)]
     public int NoiseAmt;
+    public bool IncreasesNoiseMeter = false;
 }

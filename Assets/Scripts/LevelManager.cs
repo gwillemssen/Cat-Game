@@ -7,12 +7,16 @@ public class LevelManager : MonoBehaviour
 {
     public static LevelManager instance;
 
+    public enum LevelState { Normal, CopsCalled }
+
     public float MaxNoise = 100f;
     public float NoiseDecayRate = 1f;
     public float NoiseDecayDelay = 3f;
     public int CatsToPet = 1;
+    public float CalledCopsTime = 30f;
     public float Noise { get; private set; }
     public int CatsPetted { get; private set; }
+    public LevelState State { get; private set; } = LevelState.Normal;
 
     //events
     public static event Action AllCatsPetted;
@@ -21,8 +25,9 @@ public class LevelManager : MonoBehaviour
     [HideInInspector]
     public Enemy.EnemyState MostAlertEnemyState = Enemy.EnemyState.Patrolling; //for the eyeball ui
 
-    
+    private float lastTimeCalledCops = -420f;
     private float lastTimeNoise = -420f;
+    private float timeRemaining;
 
 
     private void Awake()
@@ -34,6 +39,8 @@ public class LevelManager : MonoBehaviour
         Cat.CompletedPetting += OnCompletedPettingCat;
         Enemy.EnemyChangedState += OnEnemyChangedState;
         Enemy.EnemySpawned += OnEnemySpawned;
+
+        State = LevelState.Normal;
 
         StartGame();
     }
@@ -55,6 +62,14 @@ public class LevelManager : MonoBehaviour
             Noise -= Time.deltaTime * NoiseDecayRate;
         }
         Noise = Mathf.Clamp(Noise, 0f, MaxNoise);
+
+        if(State == LevelState.CopsCalled)
+        {
+            timeRemaining = CalledCopsTime - (Time.time - lastTimeCalledCops);
+            PlayerUI.instance.SetTimeUI(timeRemaining / CalledCopsTime);
+            if(timeRemaining <= 0)
+            { GameManager.instance.GameOver(GameManager.LoseState.Arrested); }
+        }
     }
 
     public void MakeNoise(Vector3 pos, float noiseAmt) //add Vector3 LastNoise so the enemy AI investigates it
@@ -89,6 +104,13 @@ public class LevelManager : MonoBehaviour
 
         MostAlertEnemyState = (Enemy.EnemyState)highest;
     }
+    public void CallCops()
+    {
+        if(State == LevelState.CopsCalled)
+        { return; }
+        lastTimeCalledCops = Time.time;
+        State = LevelState.CopsCalled;
+    }
 
     public void StartGame()
     {
@@ -101,7 +123,7 @@ public class LevelManager : MonoBehaviour
         CatsPetted++;
         if(CatsPetted == CatsToPet)
         {
-            FirstPersonController.instance.UI.SetInfoText("All cats petted!\nTime to escape!");
+            PlayerUI.instance.SetInfoText("All cats petted!\nTime to escape!");
             AllCatsPetted?.Invoke();
         }
     }

@@ -106,7 +106,7 @@ public class FirstPersonInteraction : MonoBehaviour
                 throwForce += Time.deltaTime * ThrowWindupSpeed;
                 throwForce = Mathf.Clamp01(throwForce);
 
-                controller.UI.SetThrowStrengthMeter(throwForce);
+                PlayerUI.instance.SetThrowStrengthMeter(throwForce);
             }
             else if (controller.Input.throwRelease)
             { ThrowInteractable(); }
