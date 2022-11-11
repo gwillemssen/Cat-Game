@@ -1,6 +1,5 @@
-﻿using System;
-using UnityEngine;
-using System.Collections;
+﻿using UnityEngine;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(CharacterController))]
@@ -61,6 +60,7 @@ public class FirstPersonController : MonoBehaviour
 
     [Header("Sound")]
     private AudioPlayer audioPlayer;
+    public Sound[] FootstepSounds;
     public float StepCooldownWalk = .5f;
     public float StepCooldownChase = .25f;
 
@@ -94,6 +94,7 @@ public class FirstPersonController : MonoBehaviour
     public float NoiseAmt_Sprinting = 10f;
     public Transform CatHoldingPosition;
     public Transform PickupPosition;
+    public Transform PickupPositionWindup;
     [HideInInspector]
     public float TargetFOV = 90f; //changed by the cat minigame for visual effect
     [HideInInspector]
@@ -162,12 +163,15 @@ public class FirstPersonController : MonoBehaviour
 
     private void Audio()
     {
+        if(Input.move.sqrMagnitude < 0.05f)
+        { return; }
+
         stepCooldown = Input.sprint ? StepCooldownChase : StepCooldownWalk;
 
         if (Time.time > lastTimeStep + stepCooldown)
         {
             lastTimeStep = Time.time;
-            audioPlayer.Play("footstep");
+            audioPlayer.Play(FootstepSounds[Random.Range(0, FootstepSounds.Length)]);
         }
     }
 

@@ -35,6 +35,7 @@ public class Enemy : MonoBehaviour
     public float ShootDistance = 5f;
 
     [Header("Misc")]
+    public float OpenDoorStopTime = 1f;
     public LayerMask EverythingExceptEnemy;
     public LayerMask InteractableLayerMask;
     public bool DebugMode = false;
@@ -42,6 +43,7 @@ public class Enemy : MonoBehaviour
 
     [Header("Sound")]
     AudioPlayer audioPlayer;
+    public Sound[] FootstepSounds;
     public float StepCooldownWalk = .5f;
     public float StepCooldownChase = .25f;
 
@@ -64,6 +66,7 @@ public class Enemy : MonoBehaviour
             }
         }
     }
+    public bool SeesPlayer { get; private set; }
     public bool InFOV { get; private set; }
     public RaycastHit Hit { get; private set; }
     public float Alertness { get; private set; }
@@ -84,7 +87,8 @@ public class Enemy : MonoBehaviour
     private int waypointIndex;
     private float lastTimeAtWaypoint = -420f;
     private bool atWaypoint;
-    private float timeCalledCops = -420f;
+    private float lastTimeOpenedDoor = -420f;
+    private KnobController lastDoor;
     private float sqrShootDistance;
 
     void Start()
@@ -125,12 +129,12 @@ public class Enemy : MonoBehaviour
         {
             if(Vector3.SqrMagnitude(transform.position - target.position) <= sqrShootDistance)
             {
-                GameManager.instance.GameOver();
+                GameManager.instance.GameOver(GameManager.LoseState.Shot);
             }
         }
 
         Move();
-
+        Interact();
         FootstepAudio();
     }
 
@@ -163,11 +167,13 @@ public class Enemy : MonoBehaviour
 
     void DecreaseAlertness()
     {
+        SeesPlayer = false;
         Alertness = Mathf.Clamp(Alertness - Time.deltaTime, 0f, AlertnessRequired);
     }
 
     void IncreaseAlertness()
     {
+        SeesPlayer = true;
         Alertness = Mathf.Clamp(Alertness + Time.deltaTime, 0f, AlertnessRequired);
 
         if (Alertness >= AlertnessRequired)
@@ -178,10 +184,12 @@ public class Enemy : MonoBehaviour
     }
     void FootstepAudio()
     {
+        if(ai.velocity.sqrMagnitude < 0.05f)
+        { return; }
         if (Time.time > lastTimeStep + stepCooldown)
         {
             lastTimeStep = Time.time;
-            audioPlayer.Play("footstep");
+            audioPlayer.Play(FootstepSounds[UnityEngine.Random.Range(0, FootstepSounds.Length)]);
         }
     }
 
@@ -215,7 +223,7 @@ public class Enemy : MonoBehaviour
             case EnemyState.CallingCops:
                 if (NavigateToWaypoint(PhoneWaypoint))
                 {
-                    timeCalledCops = Time.time;
+                    LevelManager.instance.CallCops();
                     State = EnemyState.GrabbingGun;
                 }
                 break;
@@ -226,7 +234,22 @@ public class Enemy : MonoBehaviour
                 break;
         }
 
+        if(Time.time - lastTimeOpenedDoor < OpenDoorStopTime)
+        {
+            ai.isStopped = true;
+        }
+        else
+        {
+            ai.isStopped = false;
+            if(lastDoor != null && (Time.time - lastTimeOpenedDoor > OpenDoorStopTime + 1f))
+            { lastDoor.Close(); }
+        }
 
+
+    }
+
+    private void Interact()
+    {
         //raycast for doors
         RaycastHit hit;
         Interactable interactable;
@@ -235,10 +258,14 @@ public class Enemy : MonoBehaviour
             interactable = hit.collider.GetComponent<Interactable>();
             if (interactable != null && interactable is KnobController)
             {
-                (interactable as KnobController).Open();
+                if(!(interactable as KnobController).IsOpen())
+                {
+                    lastTimeOpenedDoor = Time.time;
+                    lastDoor = (interactable as KnobController);
+                    lastDoor.Open();
+                }
             }
         }
-
     }
 
     bool NavigateToWaypoint(Waypoint waypoint)

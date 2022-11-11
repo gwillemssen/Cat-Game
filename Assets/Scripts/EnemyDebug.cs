@@ -28,7 +28,7 @@ public class EnemyDebug : MonoBehaviour
             if(alertnessPercentage >= 5f * i)
             { alertnessBar += "|"; }
         }
-        return $"{Enemy.State.ToString()}\nIn FOV: {Enemy.InFOV}\nALERTNESS: {alertnessBar}";
+        return $"{Enemy.State.ToString()}\nSees Player: {Enemy.SeesPlayer}\nALERTNESS: {alertnessBar}";
     }
 
     void Update()

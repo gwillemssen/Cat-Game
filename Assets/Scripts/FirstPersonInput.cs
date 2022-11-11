@@ -13,6 +13,7 @@ public class FirstPersonInput : MonoBehaviour
     public bool interacting;
     public bool interactedOnce;
     public bool throwing;
+    public bool throwRelease;
 
 
     [Header("Mouse Cursor Settings")]
@@ -33,7 +34,8 @@ public class FirstPersonInput : MonoBehaviour
         look.y = -Input.GetAxis("Mouse Y");
         jump = Input.GetButtonDown("Jump");
         sprint = Input.GetButton("Sprint");
-        throwing = Input.GetButtonDown("Throw");
+        throwing = Input.GetButton("Throw");
+        throwRelease = Input.GetButtonUp("Throw");
         interactedOnce = Input.GetButtonDown("Interact");
         interacting = Input.GetButton("Interact");
         mousePosition = Input.mousePosition;

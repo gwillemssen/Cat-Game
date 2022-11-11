@@ -1056,12 +1056,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2088783070201022501, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
-        type: 3}
-      propertyPath: FPSCamPrefab
-      value: 
-      objectReference: {fileID: 4314685351953935132, guid: c1d2f901eca9872429a6a38cc0642e28,
-        type: 3}
     - target: {fileID: 8616685848737228372, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
         type: 3}
       propertyPath: m_Name
@@ -2683,6 +2677,75 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4e8695006a0728b4d803f618bf87c097, type: 3}
+--- !u!1001 &762439782692345812
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 762439783231874695, guid: 21b518de5e58bfb4f82ff072c239d7d7,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 762439783231874695, guid: 21b518de5e58bfb4f82ff072c239d7d7,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.21
+      objectReference: {fileID: 0}
+    - target: {fileID: 762439783231874695, guid: 21b518de5e58bfb4f82ff072c239d7d7,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.53
+      objectReference: {fileID: 0}
+    - target: {fileID: 762439783231874695, guid: 21b518de5e58bfb4f82ff072c239d7d7,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 5.97
+      objectReference: {fileID: 0}
+    - target: {fileID: 762439783231874695, guid: 21b518de5e58bfb4f82ff072c239d7d7,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 762439783231874695, guid: 21b518de5e58bfb4f82ff072c239d7d7,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 762439783231874695, guid: 21b518de5e58bfb4f82ff072c239d7d7,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 762439783231874695, guid: 21b518de5e58bfb4f82ff072c239d7d7,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 762439783231874695, guid: 21b518de5e58bfb4f82ff072c239d7d7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 762439783231874695, guid: 21b518de5e58bfb4f82ff072c239d7d7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 762439783231874695, guid: 21b518de5e58bfb4f82ff072c239d7d7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 762439783231874713, guid: 21b518de5e58bfb4f82ff072c239d7d7,
+        type: 3}
+      propertyPath: m_Name
+      value: Throwable
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 21b518de5e58bfb4f82ff072c239d7d7, type: 3}
 --- !u!1001 &5252652434874983597
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2835,29 +2898,14 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
         type: 3}
-      propertyPath: DebugMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
-        type: 3}
       propertyPath: GunWaypoint
       value: 
       objectReference: {fileID: 1929139170}
     - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
         type: 3}
-      propertyPath: PhonePosition
-      value: 
-      objectReference: {fileID: 2018760199}
-    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
-        type: 3}
       propertyPath: PhoneWaypoint
       value: 
       objectReference: {fileID: 2018760199}
-    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
-        type: 3}
-      propertyPath: PatrollingRoute.Array.size
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
         type: 3}
       propertyPath: PatrollingRoute.Array.data[0]

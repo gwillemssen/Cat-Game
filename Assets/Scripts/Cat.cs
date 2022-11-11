@@ -24,7 +24,7 @@ public class Cat : Interactable
     private enum CatState { Pettable, Unpettable, PettingMinigame, DonePetting };
     private CatState state;
     private Animator anim;
-    private AudioSource audio;
+    private AudioSource audioSource;
     //private ShakePosition shake;
 
     //events
@@ -60,8 +60,8 @@ public class Cat : Interactable
     {
         state = (CatState)StartState;
         anim = GetComponentInChildren<Animator>();
-        audio = GetComponent<AudioSource>();
-        audio.loop = true;
+        audioSource = GetComponent<AudioSource>();
+        audioSource.loop = true;
         lastPetMousePos = new Vector2(-420f, -420f);
     }
 
@@ -83,11 +83,11 @@ public class Cat : Interactable
                 }
             }
         }
-        if (audio.isPlaying && state != CatState.PettingMinigame)
+        if (audioSource.isPlaying && state != CatState.PettingMinigame)
         {
-            audio.volume -= Time.deltaTime;
-            if (audio.volume <= 0f)
-            { audio.Stop(); }
+            audioSource.volume -= Time.deltaTime;
+            if (audioSource.volume <= 0f)
+            { audioSource.Stop(); }
         }
     }
 
@@ -178,13 +178,13 @@ public class Cat : Interactable
         playerController.DisableMovement = true;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-        playerController.UI.PettingMeter.gameObject.SetActive(true);
-        playerController.UI.PettingMeter.value = 0f;
+        PlayerUI.instance.PettingMeter.gameObject.SetActive(true);
+        PlayerUI.instance.PettingMeter.value = 0f;
         playerController.Interaction.HideCrosshair = true;
-        playerController.UI.SetInfoText("Click and Drag to pet the Cat!\nRight click to Cancel");
+        PlayerUI.instance.SetInfoText("Click and Drag to pet the Cat!\nRight click to Cancel");
         pettingAmount = 0f;
-        audio.volume = 0f;
-        audio.Play();
+        audioSource.volume = 0f;
+        audioSource.Play();
         
     }
 
@@ -222,11 +222,11 @@ public class Cat : Interactable
         {
             pettingAmount -= Time.deltaTime * PettingDecayRate;
             //audio.volume -= Time.deltaTime;
-            audio.volume = 0f;
+            audioSource.volume = 0f;
         }
         else
         {
-            audio.volume += Time.deltaTime;
+            audioSource.volume += Time.deltaTime;
         }
 
         if (!playerController.Input.interacting)
@@ -235,7 +235,7 @@ public class Cat : Interactable
             mouseDelta = Vector2.zero;
         }
 
-        playerController.UI.PettingMeter.value = pettingAmount;
+        PlayerUI.instance.PettingMeter.value = pettingAmount;
 
         pettingAmount = Mathf.Clamp01(pettingAmount);
         if (pettingAmount == 1f)                         //win
@@ -257,7 +257,7 @@ public class Cat : Interactable
         playerController.DisableMovement = false;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        playerController.UI.PettingMeter.gameObject.SetActive(false);
+        PlayerUI.instance.PettingMeter.gameObject.SetActive(false);
         playerController.Interaction.HideCrosshair = false;
     }
 }

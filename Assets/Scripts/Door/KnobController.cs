@@ -48,4 +48,13 @@ public class KnobController : Interactable
         parent.open = true;
         //for enemies to open it
     }
+
+    public void Close()
+    {
+        parent.open = false;
+        //for enemies to close it
+    }
+
+    public bool IsOpen()
+    { return parent.open; }
 }

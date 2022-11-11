@@ -8,9 +8,13 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance { get; private set; }
 
-    public enum GameState { Normal, Loading, CopsCalled }
+    public enum GameState { Normal, Loading, GameOver }
+    public enum LoseState { Shot, Arrested }
 
-    public GameState State { get; private set; }
+
+    public GameState State { get; private set; } = GameState.Loading;
+    private LoseState loseState;
+
 
     void Awake()
     {
@@ -37,12 +41,6 @@ public class GameManager : MonoBehaviour
         StartGame();
     }
 
-    public void CallCops()
-    {
-        //TODO: start timer
-        State = GameState.CopsCalled;
-    }
-
     private void StartGame()
     {
         if (State == GameState.Normal)
@@ -59,11 +57,14 @@ public class GameManager : MonoBehaviour
         StartCoroutine(TemporaryWinSequence());
     }
 
-    public void GameOver()
+    public void GameOver(LoseState lose)
     {
-        if (State == GameState.Loading)
-            return;
-        State = GameState.Loading;
+        if(State != GameState.Normal)
+        { return; }
+
+        State = GameState.GameOver;
+        loseState = lose;
+
         StartCoroutine(TemporaryGameOverSequence());
     }
 
@@ -71,7 +72,16 @@ public class GameManager : MonoBehaviour
     {
         FirstPersonController.instance.Interaction.HideCrosshair = true;
         FirstPersonController.instance.enabled = false;
-        FirstPersonController.instance.UI.LoseScreen.SetActive(true);
+        switch(loseState)
+        {
+            case LoseState.Shot:
+                PlayerUI.instance.LoseScreen.SetActive(true);
+                break;
+            case LoseState.Arrested:
+                PlayerUI.instance.LoseCopsScreen.SetActive(true);
+                break;
+        }
+        
         FirstPersonController.instance.DisableMovement = true;
         yield return new WaitForSeconds(1.5f);
         RestartLevel();
@@ -81,7 +91,7 @@ public class GameManager : MonoBehaviour
     {
         FirstPersonController.instance.Interaction.HideCrosshair = true;
         FirstPersonController.instance.enabled = false;
-        FirstPersonController.instance.UI.WinScreen.SetActive(true);
+        PlayerUI.instance.WinScreen.SetActive(true);
         FirstPersonController.instance.DisableMovement = true;
         yield return new WaitForSeconds(1.5f);
         RestartLevel();

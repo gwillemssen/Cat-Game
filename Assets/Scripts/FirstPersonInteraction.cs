@@ -6,11 +6,14 @@ public class FirstPersonInteraction : MonoBehaviour
 {
     [Tooltip("How far can the player reach?")]
     public float InteractRange = 8.0f;
-    public float ThrowForce = 8.0f;
+    public float ThrowForceMin = 0.5f;
+    public float ThrowForceMax = 8.0f;
+    public float ThrowWindupSpeed = 0.75f;
     [Tooltip("What layers can we interact with?")]
     public LayerMask InteractableLayerMask;
     public Texture2D CrosshairSprite_Normal;
     public Texture2D CrosshairSprite_Interactable;
+    public Texture2D CrosshairSprite_Noise;
     [HideInInspector]
     public bool HideCrosshair = false;
 
@@ -28,6 +31,7 @@ public class FirstPersonInteraction : MonoBehaviour
     private Vector2 crosshairSizeInteractBig;
     private const float crosshairInteractBigMult = 1.5f;
     private float lastTimeNewInteractable = -420f;
+    private float throwForce;
 
     public void Init(FirstPersonController con)
     {
@@ -48,15 +52,11 @@ public class FirstPersonInteraction : MonoBehaviour
     {
         Pickup = interactablePickup;
         interactablePickup.InteractClick(controller);
-        Pickup.transform.SetParent(controller.PickupPosition);
-        Pickup.transform.localPosition = Vector3.zero;
-        Pickup.transform.localRotation = Quaternion.identity;
         Pickup.Rigidbody.isKinematic = true;
     }
 
-    private void DropInteractable()
+    private void ThrowInteractable()
     {
-        Pickup.transform.SetParent(Pickup.OriginalParent);
         Pickup.transform.position = controller.MainCamera.transform.position;
         Pickup.Rigidbody.isKinematic = false;
         /*RaycastHit hit;
@@ -65,7 +65,8 @@ public class FirstPersonInteraction : MonoBehaviour
             Pickup.transform.position = controller.MainCamera.transform.position;
         }*/
         //throw from same position if its not through a wall
-        Pickup.Rigidbody.AddForce(transform.forward * ThrowForce, ForceMode.VelocityChange);
+        Pickup.Rigidbody.AddForce(transform.forward * Mathf.Lerp(ThrowForceMin, ThrowForceMax, throwForce), ForceMode.VelocityChange);
+        throwForce = 0f;
         Pickup = null;
     }
 
@@ -79,7 +80,7 @@ public class FirstPersonInteraction : MonoBehaviour
 
     private void HandleInteraction()
     {
-        //TODO: drop
+
         if (controller.Input.interacting && interactable != null)
         {
             interactablePickup = interactable as InteractablePickup;
@@ -94,9 +95,21 @@ public class FirstPersonInteraction : MonoBehaviour
                 Interact();
             }
         }
-        if(controller.Input.throwing && Pickup != null)
+        if (Pickup != null)
         {
-            DropInteractable();
+            float t = Mathf.Sin(throwForce * Mathf.PI * 0.5f);
+            Pickup.transform.position = Vector3.Lerp(controller.PickupPosition.position, controller.PickupPositionWindup.position, t);
+            Pickup.transform.rotation = Quaternion.Lerp(controller.PickupPosition.rotation, controller.PickupPositionWindup.rotation, t);
+
+            if (controller.Input.throwing)
+            {
+                throwForce += Time.deltaTime * ThrowWindupSpeed;
+                throwForce = Mathf.Clamp01(throwForce);
+
+                PlayerUI.instance.SetThrowStrengthMeter(throwForce);
+            }
+            else if (controller.Input.throwRelease)
+            { ThrowInteractable(); }
         }
 
         if (lastInteractable != interactable && lastInteractable != null)
@@ -129,10 +142,12 @@ public class FirstPersonInteraction : MonoBehaviour
 
     private void UpdateCrosshair()
     {
-        if(interactable != null)
+        if(interactable == null)
+            { crosshairImage = CrosshairSprite_Normal; }
+        else if(interactable.NoiseCrosshair == false)
             { crosshairImage = CrosshairSprite_Interactable; }
         else
-            { crosshairImage = CrosshairSprite_Normal; }
+            { crosshairImage = CrosshairSprite_Noise; }
     }
 
     public void CalculateCrosshair()
@@ -159,7 +174,7 @@ public class FirstPersonInteraction : MonoBehaviour
         size.x = crosshairImage.width;
         size.y = crosshairImage.height;
 
-        if (crosshairImage == CrosshairSprite_Interactable)
+        if (crosshairImage == CrosshairSprite_Interactable || crosshairImage == CrosshairSprite_Noise)
         {
             t = (Time.time - lastTimeNewInteractable) / .5f;
             t = Mathf.Clamp01(t);
