@@ -174,7 +174,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6234930926901320959
 Transform:
   m_ObjectHideFlags: 0
@@ -258,6 +258,7 @@ GameObject:
   - component: {fileID: 6234930927336056517}
   - component: {fileID: 820578986273975116}
   - component: {fileID: 4149229492679475760}
+  - component: {fileID: -1981050854719233473}
   m_Layer: 12
   m_Name: Enemy
   m_TagString: Untagged
@@ -290,7 +291,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6234930927336056523}
-  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: -619554456473623024, guid: c386bb787ca4aaa41a314002380505d5, type: 3}
 --- !u!23 &6234930927336056525
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -311,7 +312,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 905c27109fc3319449005c76557a291b, type: 2}
+  - {fileID: 2100000, guid: 147cacdd931614949bc812d0d4edb80c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -461,6 +462,7 @@ MonoBehaviour:
   ChaseTime: 5.14
   LostTargetTime: 10
   ShootDistance: 5
+  OpenDoorStopTime: 1
   EverythingExceptEnemy:
     serializedVersion: 2
     m_Bits: 3895
@@ -583,3 +585,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03d6b8fc5abf6674b9fb3d7bef260517, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!95 &-1981050854719233473
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6234930927336056523}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3475b52464773974986e67d8610a9cb7, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
