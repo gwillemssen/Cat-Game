@@ -18,7 +18,7 @@ public class ExitDoor : Interactable
     {
         LevelManager.AllCatsPetted -= Unlock;
     }
-    public override void InteractClick(FirstPersonController controller)
+    public override void InteractDown(FirstPersonController controller)
     {
         if(!locked)
         {

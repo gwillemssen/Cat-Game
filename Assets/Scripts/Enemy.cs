@@ -173,6 +173,8 @@ public class Enemy : MonoBehaviour
 
     void IncreaseAlertness()
     {
+
+
         SeesPlayer = true;
         Alertness = Mathf.Clamp(Alertness + Time.deltaTime, 0f, AlertnessRequired);
 
