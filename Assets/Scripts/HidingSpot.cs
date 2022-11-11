@@ -9,12 +9,13 @@ public class HidingSpot : Interactable
     public float EnterSpeed = 2f;
     public float ExitSpeed = 0.75f;
     public Animation anim;
-    private AudioPlayer audioPlayer;
-    public Sound[] doorSounds;
+    public Sound DoorOpenSound;
+    public Sound DoorCloseSound;
 
     private FirstPersonController player;
     private Vector3 startPos;
     private Quaternion startRot;
+    private AudioPlayer audioPlayer;
 
     private float lerp;
     private bool entering;
@@ -27,7 +28,7 @@ public class HidingSpot : Interactable
 
     public override void InteractDown(FirstPersonController controller)
     {
-        audioPlayer.Play(doorSounds[Random.Range(0, doorSounds.Length)]);
+        audioPlayer.Play(DoorOpenSound);
         if (player != null)
             return;
         player = controller;
@@ -77,8 +78,9 @@ public class HidingSpot : Interactable
                 }
             }
 
-            if(player.Input.throwing)
+            if(player != null && player.Input.throwing && entering)
             {
+                audioPlayer.Play(DoorCloseSound);
                 entering = false;
                 lerp = 0f;
                 anim.Stop();

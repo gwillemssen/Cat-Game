@@ -166,10 +166,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LookingAt: 0
   CanInteract: 1
+  NoiseCrosshair: 0
+  OnInteract:
+    m_PersistentCalls:
+      m_Calls: []
   HidingPosition: {fileID: 4114987661786476682}
   EnterSpeed: 2
   ExitSpeed: 0.75
   anim: {fileID: 0}
+  DoorOpenSound: {fileID: 11400000, guid: 5927957cab4e7374a9d2e15a389eed66, type: 2}
+  DoorCloseSound: {fileID: 11400000, guid: f79dfc44d56bf414bbec4e8179df14cc, type: 2}
 --- !u!65 &4114987660335100382
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -181,8 +187,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.3772273, y: 2.278908, z: 0.83945465}
-  m_Center: {x: -0.4682421, y: 1.5481261, z: 0.0005568862}
+  m_Size: {x: 0.3772273, y: 2.4321537, z: 1.6970172}
+  m_Center: {x: -0.4682421, y: 1.624749, z: 0.010545433}
 --- !u!82 &4377785079992641056
 AudioSource:
   m_ObjectHideFlags: 0
@@ -291,7 +297,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03d6b8fc5abf6674b9fb3d7bef260517, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Sounds: []
 --- !u!1 &4114987661786476683
 GameObject:
   m_ObjectHideFlags: 0
