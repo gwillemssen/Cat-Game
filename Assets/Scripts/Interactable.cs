@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Interactable : MonoBehaviour
 {
@@ -9,14 +10,22 @@ public class Interactable : MonoBehaviour
     public bool CanInteract = true;
     public bool NoiseCrosshair = false;
 
-    //we are clicking the object
-    public virtual void Interact(FirstPersonController controller)
+    [Tooltip("Called when we click on the object")]
+    public UnityEvent OnInteract;
+
+    /// <summary>
+    /// Called every frame as you hold left mouse on the object
+    /// </summary>
+    public virtual void InteractHold(FirstPersonController controller)
     {
 
     }
-    //we are clicking the object (ONLY CALLED THE FIRST FRAME)
-    public virtual void InteractClick(FirstPersonController controller)
+    /// <summary>
+    /// Called when the player clicks on the object
+    /// </summary>
+    /// <param name="controller"></param>
+    public virtual void InteractDown(FirstPersonController controller)
     {
-
+        OnInteract?.Invoke();
     }
 }

@@ -51,7 +51,7 @@ public class FirstPersonInteraction : MonoBehaviour
     private void PickupInteractable()
     {
         Pickup = interactablePickup;
-        interactablePickup.InteractClick(controller);
+        interactablePickup.InteractDown(controller);
         Pickup.Rigidbody.isKinematic = true;
     }
 
@@ -73,9 +73,9 @@ public class FirstPersonInteraction : MonoBehaviour
     private void Interact()
     {
         //regular interaction
-        interactable.Interact(controller);
+        interactable.InteractHold(controller);
         if (controller.Input.interactedOnce)
-        { interactable.InteractClick(controller); }
+        { interactable.InteractDown(controller); }
     }
 
     private void HandleInteraction()

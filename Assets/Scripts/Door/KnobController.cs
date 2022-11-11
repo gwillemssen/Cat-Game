@@ -21,7 +21,7 @@ public class KnobController : Interactable
        
     }
 
-    public override void InteractClick(FirstPersonController controller)
+    public override void InteractDown(FirstPersonController controller)
     {
         //AudioManager.instance.Play("Door");
        

@@ -25,7 +25,7 @@ public class HidingSpot : Interactable
         audioPlayer = GetComponent<AudioPlayer>();
     }
 
-    public override void InteractClick(FirstPersonController controller)
+    public override void InteractDown(FirstPersonController controller)
     {
         audioPlayer.Play(doorSounds[Random.Range(0, doorSounds.Length)]);
         if (player != null)
