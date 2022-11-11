@@ -130,7 +130,7 @@ public class Enemy : MonoBehaviour
         else
         { DecreaseAlertness(); }
 
-        if(state == EnemyState.Chasing)
+        if(state == EnemyState.Chasing && SeesPlayer)
         {
             if(Vector3.SqrMagnitude(transform.position - target.position) <= sqrShootDistance)
             {
