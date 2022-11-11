@@ -173,10 +173,8 @@ public class Enemy : MonoBehaviour
 
     void IncreaseAlertness()
     {
-
-
         SeesPlayer = true;
-        Alertness = Mathf.Clamp(Alertness + Time.deltaTime, 0f, AlertnessRequired);
+        Alertness = Mathf.Clamp(Alertness + (Time.deltaTime * (FirstPersonController.instance.IsCrouching ? 0.5f : 1f)), 0f, AlertnessRequired);
 
         if (Alertness >= AlertnessRequired)
         {
