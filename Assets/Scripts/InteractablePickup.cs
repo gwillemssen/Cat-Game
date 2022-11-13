@@ -38,7 +38,7 @@ public class InteractablePickup : Interactable
 
     }
 
-    public override void InteractClick(FirstPersonController controller)
+    public override void InteractDown(FirstPersonController controller)
     {
         PlayerUI.instance.SetInfoText("Left click to use\nRight click to drop");
     }

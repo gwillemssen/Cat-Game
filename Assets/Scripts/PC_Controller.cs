@@ -23,7 +23,7 @@ public class PC_Controller : Interactable
         mat = Instantiate(pcRenderer.material);
         pcRenderer.material = mat;
     }
-    public override void InteractClick(FirstPersonController controller)
+    public override void InteractDown(FirstPersonController controller)
     {
         if (on)
         {

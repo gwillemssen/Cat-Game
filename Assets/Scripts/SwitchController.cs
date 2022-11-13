@@ -60,7 +60,7 @@ public class SwitchController : Interactable
             light1.enabled = !light1.enabled;
         }
     }
-    public override void InteractClick(FirstPersonController controller)
+    public override void InteractDown(FirstPersonController controller)
     {
         on = !on;
     }

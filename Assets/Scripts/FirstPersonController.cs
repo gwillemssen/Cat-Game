@@ -21,9 +21,10 @@ public class FirstPersonController : MonoBehaviour
     public float RotationSpeed = 1.0f;
     [Tooltip("higher value = more smooth, lower value = more snappy")]
     public float Smoothing = .1f;
-    public float crouchSmoothSpeed = .5f;
     [Tooltip("Move speed of the character when crouching")]
-    public float crouchSpeed;
+    public float CrouchSpeed = 2f;
+    [Tooltip("How fast do we transition from crouching / standing")]
+    public float CrouchTransitionSpeed = 8f;
 
 
     [Space(10)]
@@ -73,6 +74,8 @@ public class FirstPersonController : MonoBehaviour
     public FirstPersonInteraction Interaction { get; private set; }
     [HideInInspector]
     public PlayerUI UI { get; private set; }
+    [HideInInspector]
+    public bool IsCrouching { get; private set; }
 
     // player
     private Vector2 wishMove;
@@ -215,10 +218,12 @@ public class FirstPersonController : MonoBehaviour
 
         wishMoveDir = transform.TransformDirection(wishMoveDir);
 
+        IsCrouching = Input.crouch;
+
         // targetSpeed = Input.sprint ? SprintSpeed : MoveSpeed;
         if (Input.crouch)
         {
-            targetSpeed = crouchSmoothSpeed;
+            targetSpeed = CrouchSpeed;
         }
         else if(Input.sprint)
         {
@@ -273,13 +278,13 @@ public class FirstPersonController : MonoBehaviour
 
             if (Input.crouch) // If the crouch button is held down
             {
-                crouchAmount += Time.deltaTime * crouchSpeed;
+                crouchAmount += Time.deltaTime * CrouchTransitionSpeed;
               
                 
             }
             else if (!Input.crouch)
             {
-                crouchAmount -= Time.deltaTime* crouchSpeed;
+                crouchAmount -= Time.deltaTime* CrouchTransitionSpeed;
             
             }
 

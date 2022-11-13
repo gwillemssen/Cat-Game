@@ -16,6 +16,7 @@ public class Enemy : MonoBehaviour
     public Waypoint PhoneWaypoint;
     public Waypoint GunWaypoint;
     public Transform eyes;
+    public Animator anim;
 
     [Header("Alertness")]
     [Range(45f, 180f)]
@@ -90,6 +91,9 @@ public class Enemy : MonoBehaviour
     private float lastTimeOpenedDoor = -420f;
     private KnobController lastDoor;
     private float sqrShootDistance;
+    private float sqrMoveSpeed;
+    private Vector2 pos2D;
+    private Vector2 waypointPos2D;
 
     void Start()
     {
@@ -102,6 +106,7 @@ public class Enemy : MonoBehaviour
         fov = Mathf.InverseLerp(180, 0, FieldOfView);
         sqrHearingRadius = HearingRadius * HearingRadius;
         sqrShootDistance = ShootDistance * ShootDistance;
+        sqrMoveSpeed = Mathf.Pow((ai.maxSpeed / 2f), 2);
 
         if (PatrollingRoute == null || PatrollingRoute.Count == 0)
         {
@@ -125,7 +130,7 @@ public class Enemy : MonoBehaviour
         else
         { DecreaseAlertness(); }
 
-        if(state == EnemyState.Chasing)
+        if(state == EnemyState.Chasing && SeesPlayer)
         {
             if(Vector3.SqrMagnitude(transform.position - target.position) <= sqrShootDistance)
             {
@@ -136,7 +141,17 @@ public class Enemy : MonoBehaviour
         Move();
         Interact();
         FootstepAudio();
+        UpdateAnimationState();
     }
+
+    public void UpdateAnimationState()
+    {
+        anim.SetBool("isWalking", ai.velocity.sqrMagnitude > sqrMoveSpeed);
+        if(State == EnemyState.PatrollingWithGun)
+        { anim.SetBool("isRifleRunning", ai.velocity.sqrMagnitude > sqrMoveSpeed); }
+        //anim.SetBool("isWalking", true);
+    }
+
 
     public void OnMaxNoise()
     {
@@ -174,7 +189,7 @@ public class Enemy : MonoBehaviour
     void IncreaseAlertness()
     {
         SeesPlayer = true;
-        Alertness = Mathf.Clamp(Alertness + Time.deltaTime, 0f, AlertnessRequired);
+        Alertness = Mathf.Clamp(Alertness + (Time.deltaTime * (FirstPersonController.instance.IsCrouching ? 0.5f : 1f)), 0f, AlertnessRequired);
 
         if (Alertness >= AlertnessRequired)
         {
@@ -270,8 +285,13 @@ public class Enemy : MonoBehaviour
 
     bool NavigateToWaypoint(Waypoint waypoint)
     {
+        pos2D.x = transform.position.x;
+        pos2D.y = transform.position.z;
+        waypointPos2D.x = waypoint.transform.position.x;
+        waypointPos2D.y = waypoint.transform.position.z;
+
         ai.destination = waypoint.transform.position;
-        if (Vector3.SqrMagnitude(transform.position - waypoint.transform.position) < 0.5f)
+        if (Vector2.SqrMagnitude(pos2D - waypointPos2D) < 0.5f)
         {
             if (!atWaypoint)
             {
