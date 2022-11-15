@@ -204,7 +204,7 @@ public class Enemy : MonoBehaviour
         if (Time.time > lastTimeStep + stepCooldown)
         {
             lastTimeStep = Time.time;
-            audioPlayer.Play(FootstepSounds[UnityEngine.Random.Range(0, FootstepSounds.Length)]);
+           // audioPlayer.Play(FootstepSounds[UnityEngine.Random.Range(0, FootstepSounds.Length)]);
         }
     }
 
