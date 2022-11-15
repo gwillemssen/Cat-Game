@@ -133,7 +133,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.4364662, y: 0.107402764, z: 2.4012876}
+  m_Size: {x: 1.4364662, y: 0.15, z: 2.4012876}
   m_Center: {x: -0.72361183, y: 0.054223113, z: 0.0114860535}
 --- !u!114 &6428762795789604630
 MonoBehaviour:
@@ -149,9 +149,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LookingAt: 0
   CanInteract: 1
+  NoiseCrosshair: 1
+  OnInteract:
+    m_PersistentCalls:
+      m_Calls: []
   Locked: 0
   KeyName: TestKey
   NoiseAmt: 20
+  Cooldown: 0
 --- !u!1 &1202625810477640098
 GameObject:
   m_ObjectHideFlags: 0
