@@ -32,7 +32,7 @@ namespace Fridge
             DoorHandler();
         }
     
-        public override void InteractDown(FirstPersonController controller)
+        public override void Interact(FirstPersonController controller)
         {
             FridgeActivation();
             Debug.Log("ACTIVATED");

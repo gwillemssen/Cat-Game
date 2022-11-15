@@ -51,7 +51,7 @@ public class FirstPersonInteraction : MonoBehaviour
     private void PickupInteractable()
     {
         Pickup = interactablePickup;
-        interactablePickup.InteractDown(controller);
+        interactablePickup.Interact(controller);
         Pickup.Rigidbody.isKinematic = true;
     }
 
@@ -72,10 +72,11 @@ public class FirstPersonInteraction : MonoBehaviour
 
     private void Interact()
     {
-        //regular interaction
+        if (Pickup != null)
+        { interactable.InteractWith(controller, Pickup); }
         interactable.InteractHold(controller);
         if (controller.Input.interactedOnce)
-        { interactable.InteractDown(controller); }
+        { interactable.Interact(controller); }
     }
 
     private void HandleInteraction()
@@ -111,6 +112,8 @@ public class FirstPersonInteraction : MonoBehaviour
             else if (controller.Input.throwRelease)
             { ThrowInteractable(); }
         }
+        else
+        { PlayerUI.instance.SetThrowStrengthMeter(0f); }
 
         if (lastInteractable != interactable && lastInteractable != null)
         { lastInteractable.LookingAt = false; }

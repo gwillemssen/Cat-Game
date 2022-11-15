@@ -91,7 +91,7 @@ public class Cat : Interactable
         }
     }
 
-    public override void InteractDown(FirstPersonController controller)
+    public override void Interact(FirstPersonController controller)
     {
         if (state == CatState.Pettable)
         {

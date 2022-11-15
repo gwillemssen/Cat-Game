@@ -16,6 +16,7 @@ public class Interactable : MonoBehaviour
     /// <summary>
     /// Called every frame as you hold left mouse on the object
     /// </summary>
+    /// <param name="controller">Reference to the player controller</param>
     public virtual void InteractHold(FirstPersonController controller)
     {
 
@@ -23,9 +24,18 @@ public class Interactable : MonoBehaviour
     /// <summary>
     /// Called when the player clicks on the object
     /// </summary>
-    /// <param name="controller"></param>
-    public virtual void InteractDown(FirstPersonController controller)
+    /// <param name="controller">Reference to the player controller</param>
+    public virtual void Interact(FirstPersonController controller)
     {
         OnInteract?.Invoke();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="withInteractable">Interactable that the player is holding when they clicked on this one.  Useful for keys / tools</param>
+    public virtual void InteractWith(FirstPersonController controller, Interactable withInteractable)
+    {
+
     }
 }

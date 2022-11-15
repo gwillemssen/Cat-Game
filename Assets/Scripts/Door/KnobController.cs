@@ -21,23 +21,21 @@ public class KnobController : Interactable
        
     }
 
-    public override void InteractDown(FirstPersonController controller)
+    public override void InteractWith(FirstPersonController controller, Interactable withInteractable)
     {
-        //AudioManager.instance.Play("Door");
-       
-        if (Locked && !parent.open)
+        if(withInteractable as KeyPickup != null && ((KeyPickup)controller.Interaction.Pickup).KeyName == KeyName)
         {
-            if (controller.Interaction.Pickup != null && //there is a pickup
-                controller.Interaction.Pickup as KeyPickup != null && //it is a key
-                ((KeyPickup)controller.Interaction.Pickup).KeyName == KeyName) //keys match
-            {
-                Debug.Log($"Opening {gameObject.name} with {KeyName}");
-            }
-            else
-            {
-                FirstPersonController.instance.UI.SetInfoText("It's Locked! There might be a key somewhere...");
-                return;
-            }
+            Debug.Log($"Opening {gameObject.name} with {KeyName}");
+            Locked = false;
+        }
+    }
+
+    public override void Interact(FirstPersonController controller)
+    {
+        if(Locked)
+        {
+            FirstPersonController.instance.UI.SetInfoText("It's Locked! There might be a key somewhere...");
+            return;
         }
         parent.open = !parent.open;
         LevelManager.instance.MakeNoise(transform.position, NoiseAmt);
