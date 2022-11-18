@@ -27,7 +27,6 @@ public class Cat : Interactable
     private Animator anim;
     private AudioSource audioSource;
     private ParticleSystem effects;
-    //private ShakePosition shake;
 
     //events
     public static event Action CompletedPetting;
@@ -70,8 +69,6 @@ public class Cat : Interactable
 
     private void Update()
     {
-        var em = effects.emission.rateOverTime;
-
         anim.SetBool("Excited", LookingAt && state == CatState.Pettable);
 
         if (state == CatState.PettingMinigame || state == CatState.DonePetting)
@@ -97,15 +94,6 @@ public class Cat : Interactable
             if (audioSource.volume <= 0f)
             { audioSource.Stop(); }
         }
-
-        if (effects.isPlaying && state != CatState.PettingMinigame)
-        {
-
-            em.constant -= Time.deltaTime;
-            if (em.constant <= 25f)
-            { effects.Stop(); }
-        }
-
     }
 
     public override void Interact(FirstPersonController controller)
@@ -202,17 +190,15 @@ public class Cat : Interactable
         pettingAmount = 0f;
         audioSource.volume = 0f;
         audioSource.Play();
-        effects.Play();
-
     }
 
     private void UpdateMinigame()
     {
-  
-        var em = effects.emission.rateOverTime;
-        bool decay = Time.time - lastTimePet > PettingDecayDelay;
 
-        em.constant = 25f;
+        //var em effects.emission.rateOverTime;
+        //em.constant = 25f;
+
+        bool decay = Time.time - lastTimePet > PettingDecayDelay;
 
         if (playerController.Input.interactedOnce)
         { 
@@ -222,8 +208,6 @@ public class Cat : Interactable
 
         if (playerController.Input.interacting)
         {
-            
-           
             mouseDelta = playerController.Input.look;
             mouseSpeed = mouseDelta / Time.deltaTime; //speed = distance / time
 
@@ -247,13 +231,16 @@ public class Cat : Interactable
             pettingAmount -= Time.deltaTime * PettingDecayRate;
             //audio.volume -= Time.deltaTime;
             audioSource.volume = 0f;
-            em.constant = 0f;
         }
         else
         {
             audioSource.volume += Time.deltaTime;
-            em.constant += Time.deltaTime * 2;
         }
+
+        if(!decay && !effects.isPlaying)
+        { effects.Play(); }
+        if(decay && effects.isPlaying)
+        { effects.Stop(); }
 
         if (!playerController.Input.interacting)
         {
