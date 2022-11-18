@@ -20,11 +20,13 @@ public class Cat : Interactable
     public float PettingDecayRate = 0.75f;
     public float PettingDecayDelay = 0.5f;
 
+
     //general
     private enum CatState { Pettable, Unpettable, PettingMinigame, DonePetting };
     private CatState state;
     private Animator anim;
     private AudioSource audioSource;
+    private ParticleSystem effects;
     //private ShakePosition shake;
 
     //events
@@ -58,6 +60,7 @@ public class Cat : Interactable
 
     private void Start()
     {
+        effects = GetComponent<ParticleSystem>();  
         state = (CatState)StartState;
         anim = GetComponentInChildren<Animator>();
         audioSource = GetComponent<AudioSource>();
@@ -67,6 +70,8 @@ public class Cat : Interactable
 
     private void Update()
     {
+        var em = effects.emission.rateOverTime;
+
         anim.SetBool("Excited", LookingAt && state == CatState.Pettable);
 
         if (state == CatState.PettingMinigame || state == CatState.DonePetting)
@@ -76,19 +81,31 @@ public class Cat : Interactable
             if (state == CatState.PettingMinigame) //PET THE CAT
             {
                 UpdateMinigame();
+                
                 if (playerController.Input.throwing)
                 {
                     EndMinigame();
+                   
                     base.CanInteract = true;
                 }
             }
         }
         if (audioSource.isPlaying && state != CatState.PettingMinigame)
         {
+           
             audioSource.volume -= Time.deltaTime;
             if (audioSource.volume <= 0f)
             { audioSource.Stop(); }
         }
+
+        if (effects.isPlaying && state != CatState.PettingMinigame)
+        {
+
+            em.constant -= Time.deltaTime;
+            if (em.constant <= 250f)
+            { effects.Stop(); }
+        }
+
     }
 
     public override void Interact(FirstPersonController controller)
@@ -185,12 +202,17 @@ public class Cat : Interactable
         pettingAmount = 0f;
         audioSource.volume = 0f;
         audioSource.Play();
-        
+        effects.Play();
+
     }
 
     private void UpdateMinigame()
     {
+  
+        var em = effects.emission.rateOverTime;
         bool decay = Time.time - lastTimePet > PettingDecayDelay;
+
+        em.constant = 250f;
 
         if (playerController.Input.interactedOnce)
         { 
@@ -200,6 +222,8 @@ public class Cat : Interactable
 
         if (playerController.Input.interacting)
         {
+            
+           
             mouseDelta = playerController.Input.look;
             mouseSpeed = mouseDelta / Time.deltaTime; //speed = distance / time
 
@@ -223,10 +247,12 @@ public class Cat : Interactable
             pettingAmount -= Time.deltaTime * PettingDecayRate;
             //audio.volume -= Time.deltaTime;
             audioSource.volume = 0f;
+            em.constant = 0f;
         }
         else
         {
             audioSource.volume += Time.deltaTime;
+            em.constant += Time.deltaTime * 2;
         }
 
         if (!playerController.Input.interacting)
