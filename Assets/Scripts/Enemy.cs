@@ -184,6 +184,20 @@ public class Enemy : MonoBehaviour
     {
         SeesPlayer = false;
         Alertness = Mathf.Clamp(Alertness - Time.deltaTime, 0f, AlertnessRequired);
+        EyeballUI();
+    }
+
+    void EyeballUI()
+    {
+        //WARNING
+        //this will only work with one enemy
+        float t = Alertness / AlertnessRequired;
+        if(t > .66 || (state != EnemyState.Patrolling && state != EnemyState.SearchingForNoise))
+        { PlayerUI.instance.SetEyeballUI(PlayerUI.EyeState.Open); }
+        else if (t > .33)
+        { PlayerUI.instance.SetEyeballUI(PlayerUI.EyeState.Half); }
+        else
+        { PlayerUI.instance.SetEyeballUI(PlayerUI.EyeState.Closed); }
     }
 
     void IncreaseAlertness()
@@ -196,6 +210,8 @@ public class Enemy : MonoBehaviour
             SpotPlayer();
             Alertness = AlertnessRequired;
         }
+
+        EyeballUI();
     }
     void FootstepAudio()
     {

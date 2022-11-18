@@ -162,6 +162,9 @@ public class FirstPersonController : MonoBehaviour
         }
         Interaction.UpdateInteraction();
         CameraFOVLerp();
+
+        //this belongs in the player UI script.  Need to refactor later
+        PlayerUI.instance.SetCrouchUI(Input.crouch);
     }
 
     private void Audio()
