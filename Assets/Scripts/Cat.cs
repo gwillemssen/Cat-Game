@@ -102,7 +102,7 @@ public class Cat : Interactable
         {
 
             em.constant -= Time.deltaTime;
-            if (em.constant <= 250f)
+            if (em.constant <= 25f)
             { effects.Stop(); }
         }
 
@@ -212,7 +212,7 @@ public class Cat : Interactable
         var em = effects.emission.rateOverTime;
         bool decay = Time.time - lastTimePet > PettingDecayDelay;
 
-        em.constant = 250f;
+        em.constant = 25f;
 
         if (playerController.Input.interactedOnce)
         { 
