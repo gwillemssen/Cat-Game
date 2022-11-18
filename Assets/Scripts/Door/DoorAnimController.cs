@@ -1,55 +1,71 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoorAnimController : MonoBehaviour
+public class DoorAnimController : Interactable
 {
-    public bool open;
-
-    private GameObject doorHinge;
+    public bool _open;
 
     private Collider doorCollider;
 
-    private float lastTime;
-   
-    public float Cooldown;
+    private float openRot = -90;
+    private float closedRot = 0;
 
-    private Quaternion startRot;
-    private Quaternion endRot;
-    private Quaternion target;
-
+    private GameObject doorHinge;
+    
     // Start is called before the first frame update
     void Start()
     {
-        doorHinge = transform.GetChild(3).GetChild(0).gameObject;
-        doorCollider = doorHinge.GetComponent<Collider>();
-        startRot = doorHinge.transform.rotation;
-        endRot = Quaternion.Euler(new Vector3(doorHinge.transform.rotation.eulerAngles.x, doorHinge.transform.rotation.eulerAngles.y, doorHinge.transform.rotation.eulerAngles.z + 100f));
-        target = startRot;
+        doorHinge = transform.parent.gameObject;
+        doorCollider = GetComponent<Collider>();
     }
 
-    public void Open(bool open)
+    private void FixedUpdate()
     {
-        if (open)
+        if (doorHinge.transform.localRotation.y == openRot || doorHinge.transform.localRotation.y == closedRot)
         {
-            //doorHinge.LeanRotateY(-90,0.2f);
-            target = endRot;
-            doorCollider.enabled = false;
+            if (!doorCollider.enabled)
+            {
+                doorCollider.enabled = true;
+            }
         }
         else
         {
-            //doorHinge.LeanRotateY(0,0.2f);
-            target = startRot;
-            doorCollider.enabled = true;
+            if (doorCollider.enabled)
+            {
+                doorCollider.enabled = false;
+            }
         }
+    }
+
+    public void OpenDoor(bool open)
+    {
+        if (open)
+        {
+            doorHinge.LeanRotateY(openRot,0.2f);
+        }
+        else
+        {
+            doorHinge.LeanRotateY(closedRot,0.2f);
+        }
+
+        _open = open;
     }
 
     private void Update()
     {
-        doorHinge.transform.rotation = Quaternion.Lerp(doorHinge.transform.rotation, target, Time.deltaTime * 5f);
+        
     }
 
+    public override void Interact(FirstPersonController controller)
+    {
+        _open = !_open;
+        OpenDoor(_open);
+    }
 
-
-
+    public bool IsOpen()
+    {
+        return _open;
+    }
 }

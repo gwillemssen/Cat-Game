@@ -89,7 +89,7 @@ public class Enemy : MonoBehaviour
     private float lastTimeAtWaypoint = -420f;
     private bool atWaypoint;
     private float lastTimeOpenedDoor = -420f;
-    private KnobController lastDoor;
+    private DoorAnimController lastDoor;
     private float sqrShootDistance;
     private float sqrMoveSpeed;
     private Vector2 pos2D;
@@ -273,7 +273,7 @@ public class Enemy : MonoBehaviour
         {
             ai.isStopped = false;
             if(lastDoor != null && (Time.time - lastTimeOpenedDoor > OpenDoorStopTime + 1f))
-            { lastDoor.Close(); }
+            { lastDoor.OpenDoor(false); }
         }
 
 
@@ -287,13 +287,13 @@ public class Enemy : MonoBehaviour
         if (Physics.Raycast(eyes.position, eyes.forward, out hit, 2f, InteractableLayerMask, QueryTriggerInteraction.Collide))
         {
             interactable = hit.collider.GetComponent<Interactable>();
-            if (interactable != null && interactable is KnobController)
+            if (interactable != null && interactable is DoorAnimController)
             {
-                if(!(interactable as KnobController).IsOpen())
+                if(!(interactable as DoorAnimController).IsOpen())
                 {
                     lastTimeOpenedDoor = Time.time;
-                    lastDoor = (interactable as KnobController);
-                    lastDoor.Open();
+                    lastDoor = (interactable as DoorAnimController);
+                    lastDoor.OpenDoor(true);
                 }
             }
         }
