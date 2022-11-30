@@ -10,7 +10,6 @@ public class EnemyDebug : MonoBehaviour
     private TextMesh outputText;
     private float val;
     private Vector3 lineDir;
-    private string alertnessBar;
     private float alertnessPercentage;
 
     private void OnEnable()
@@ -21,14 +20,17 @@ public class EnemyDebug : MonoBehaviour
 
     string GetDebugStatus()
     {
-        alertnessPercentage = Mathf.Lerp(0f, 100f, (Enemy.Alertness / Enemy.AlertnessRequired));
-        alertnessBar = "";
+        alertnessPercentage = Mathf.Lerp(0f, 100f, (Enemy.Alertness / 1f));
+        string alertnessBar = "";
         for (int i = 0; i < 20; i++)
         {
             if(alertnessPercentage >= 5f * i)
             { alertnessBar += "|"; }
         }
-        return $"{Enemy.State.ToString()}\nSees Player: {Enemy.SeesPlayer}\nALERTNESS: {alertnessBar}";
+        return $"{Enemy.State.ToString()}\n" +
+            $"Sees Player: {Enemy.SeesPlayer}\n" +
+            $"Noise: {Enemy.Noise}\n" +
+            $"Alertness : {alertnessBar}";
     }
 
     void Update()

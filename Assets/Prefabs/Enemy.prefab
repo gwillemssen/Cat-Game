@@ -249,7 +249,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6234930927336056527}
-  - component: {fileID: 6234930927336056526}
   - component: {fileID: 6234930927336056525}
   - component: {fileID: 6234930927336056513}
   - component: {fileID: 6234930927336056512}
@@ -284,14 +283,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &6234930927336056526
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6234930927336056523}
-  m_Mesh: {fileID: 0}
 --- !u!23 &6234930927336056525
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -438,18 +429,14 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   PhoneWaypoint: {fileID: 0}
   GunWaypoint: {fileID: 0}
   eyes: {fileID: 8272336163191410661}
   anim: {fileID: -1981050854719233473}
   FieldOfView: 90
+  AlertnessRate: 0.75
   SightDistance: 12
   HearingRadius: 20
-  AlertnessRequired: 0.5
   ChaseTime: 5.14
   LostTargetTime: 10
   ShootDistance: 5
@@ -460,8 +447,10 @@ MonoBehaviour:
   InteractableLayerMask:
     serializedVersion: 2
     m_Bits: 1024
-  DebugMode: 0
+  DebugMode: 1
   EnemyDebugObject: {fileID: 883035380}
+  NoiseDecay: 4
+  MaxNoise: 30
   FootstepSounds:
   - {fileID: 11400000, guid: 1c8c0e6e5f39a08418064a8224c2fd07, type: 2}
   - {fileID: 11400000, guid: e0fa032fb2e9b4c4b8ce35b3537001c6, type: 2}

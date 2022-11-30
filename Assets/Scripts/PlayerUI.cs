@@ -121,7 +121,7 @@ public class PlayerUI : MonoBehaviour
 
     private void Update()
     {
-        noiseMeter.value = LevelManager.instance.Noise / LevelManager.instance.MaxNoise;
+        noiseMeter.value = Enemy.instance.Noise / Enemy.instance.MaxNoise;
 
         debugOutput = "";
         //debugOutput += $"Noise : {(int)LevelManager.instance.Noise} / {LevelManager.instance.MaxNoise}\n";

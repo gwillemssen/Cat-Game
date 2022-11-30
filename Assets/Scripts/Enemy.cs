@@ -9,6 +9,8 @@ using System;
 [RequireComponent(typeof(AudioPlayer))]
 public class Enemy : MonoBehaviour
 {
+    public static Enemy instance;
+
     public enum EnemyState { Patrolling, SearchingForNoise, Chasing, CallingCops, GrabbingGun, PatrollingWithGun }
 
     [Header("References")]
@@ -21,11 +23,9 @@ public class Enemy : MonoBehaviour
     [Header("Alertness")]
     [Range(45f, 180f)]
     public float FieldOfView = 90f;
+    public float AlertnessRate = .75f;
     public float SightDistance = 12f;
     public float HearingRadius = 20f;
-    [Tooltip("Higher value = more time / noise is neeeded to alert the enemy")]
-    [Range(0f, 8f)]
-    public float AlertnessRequired = 2f;
 
     [Header("Chasing")]
     [Range(1f, 10f)]
@@ -43,34 +43,20 @@ public class Enemy : MonoBehaviour
     public TextMesh EnemyDebugObject;
 
     [Header("Sound")]
+    public float NoiseDecay = 4f;
+    public float Noise { get; private set; }
+    public float MaxNoise = 30f;
     AudioPlayer audioPlayer;
     public Sound[] FootstepSounds;
     public float StepCooldownWalk = .5f;
     public float StepCooldownChase = .25f;
 
-    //events
-    public static event Action<Enemy.EnemyState> EnemyChangedState;
-    public static event Action<Enemy> EnemySpawned;
 
-    public EnemyState State
-    {
-        get
-        {
-            return state;
-        }
-        private set
-        {
-            if (state != value)
-            {
-                state = value;
-                EnemyChangedState?.Invoke(state);
-            }
-        }
-    }
+    public EnemyState State { get { return state; } private set { state = value; } }
     public bool SeesPlayer { get; private set; }
+    public float Alertness { get; private set; } //increases as the player is within the sight of the enemy
     public bool InFOV { get; private set; }
     public RaycastHit Hit { get; private set; }
-    public float Alertness { get; private set; }
 
     private IAstarAI ai;
     private Transform target;
@@ -95,6 +81,16 @@ public class Enemy : MonoBehaviour
     private Vector2 pos2D;
     private Vector2 waypointPos2D;
 
+    private void Awake()
+    {
+        if (instance != null)
+        {
+            Destroy(this);
+            return;
+        }
+        instance = this;
+    }
+
     void Start()
     {
         ai = GetComponent<IAstarAI>();
@@ -115,51 +111,62 @@ public class Enemy : MonoBehaviour
             g.transform.rotation = transform.rotation;
             PatrollingRoute.Add(g);
         }
-
-        EnemySpawned?.Invoke(this);
-
     }
 
     void Update()
     {
-        if (FirstPersonController.instance.Hiding && IsPlayerWithinFieldOfView() && RaycastToPlayer()) 
-        { FirstPersonController.instance.Hiding = false; } //CAUGHT while going into a hiding spot
-
-        if (IsPlayerWithinFieldOfView() && RaycastToPlayer() && !FirstPersonController.instance.Hiding)
-        { IncreaseAlertness(); }
-        else
-        { DecreaseAlertness(); }
-
-        if(state == EnemyState.Chasing && SeesPlayer)
-        {
-            if(Vector3.SqrMagnitude(transform.position - target.position) <= sqrShootDistance)
-            {
-                GameManager.instance.GameOver(GameManager.LoseState.Shot);
-            }
-        }
-
+        CheckPlayerVisibility();
         Move();
         Interact();
         FootstepAudio();
         UpdateAnimationState();
+        DecayNoise();
+    }
+
+    public void CheckPlayerVisibility()
+    {
+        if (FirstPersonController.instance.Hiding && IsPlayerWithinFieldOfView() && RaycastToPlayer())
+        { FirstPersonController.instance.Hiding = false; } //CAUGHT while going into a hiding spot
+
+        SeesPlayer = IsPlayerWithinFieldOfView() && RaycastToPlayer() && !FirstPersonController.instance.Hiding;
+
+        if (SeesPlayer)
+        {
+            if (Alertness >= 1f)
+            { SpotPlayer(); }
+            Alertness = Mathf.Clamp01(Alertness + Time.deltaTime * AlertnessRate);
+        }
+        else
+        {
+            Alertness = Mathf.Clamp01(Alertness - Time.deltaTime * AlertnessRate);
+        }
+
+        if (state == EnemyState.Chasing && SeesPlayer)
+        {
+            if (Vector3.SqrMagnitude(transform.position - target.position) <= sqrShootDistance)
+            {
+                //GLEEK GLACK and SHOOT, dont do this instantly
+                //GLEEK GLACK is longer, but then next time you are spotted, she will shoot quickly
+                if (Alertness >= 1f) //temp
+                { GameManager.instance.GameOver(GameManager.LoseState.Shot); }
+            }
+        }
+    }
+
+    public void DecayNoise()
+    {
+        Noise = Mathf.Clamp(Noise - Time.deltaTime * NoiseDecay, 0f, MaxNoise);
     }
 
     public void UpdateAnimationState()
     {
         anim.SetBool("isWalking", ai.velocity.sqrMagnitude > sqrMoveSpeed);
-        if(State == EnemyState.PatrollingWithGun)
+        if (State == EnemyState.PatrollingWithGun)
         { anim.SetBool("isRifleRunning", ai.velocity.sqrMagnitude > sqrMoveSpeed); }
         //anim.SetBool("isWalking", true);
     }
 
-
-    public void OnMaxNoise()
-    {
-        State = EnemyState.SearchingForNoise;
-        lastTimeLostTarget = Time.time;
-    }
-
-    public float OnMadeNoise(Vector3 pos, float amt)
+    public float OnNoise(Vector3 pos, float amt)
     {
         //returns how much noise it made to the enemy
         localNoise = Vector3.Distance(pos, transform.position) / HearingRadius;
@@ -167,6 +174,13 @@ public class Enemy : MonoBehaviour
         localNoise = 1f - Mathf.Pow(1f - localNoise, 5f); //easeOutQuint
         localNoise *= amt;
         lastNoisePosition = pos;
+
+        Noise += localNoise;
+        if (Noise >= MaxNoise && state == EnemyState.Patrolling)  //if we add in an idle state, add it here
+        {
+            state = EnemyState.SearchingForNoise;
+            Debug.Log("Should be searching for noise");
+        }
 
         return localNoise;
     }
@@ -176,21 +190,15 @@ public class Enemy : MonoBehaviour
         lastTimeSighted = Time.time;
         if (State == EnemyState.PatrollingWithGun)
         { State = EnemyState.Chasing; }
-        else if(State == EnemyState.Patrolling)
+        else if (State == EnemyState.Patrolling)
         { State = EnemyState.CallingCops; }
-    }
-
-    void DecreaseAlertness()
-    {
-        SeesPlayer = false;
-        Alertness = Mathf.Clamp(Alertness - Time.deltaTime, 0f, AlertnessRequired);
-        EyeballUI();
     }
 
     void EyeballUI()
     {
         //WARNING
         //this will only work with one enemy
+        /*
         float t = Alertness / AlertnessRequired;
         if(t > .66 || (state != EnemyState.Patrolling && state != EnemyState.SearchingForNoise))
         { PlayerUI.instance.SetEyeballUI(PlayerUI.EyeState.Open); }
@@ -198,40 +206,39 @@ public class Enemy : MonoBehaviour
         { PlayerUI.instance.SetEyeballUI(PlayerUI.EyeState.Half); }
         else
         { PlayerUI.instance.SetEyeballUI(PlayerUI.EyeState.Closed); }
+        */
     }
 
-    void IncreaseAlertness()
-    {
-        SeesPlayer = true;
-        Alertness = Mathf.Clamp(Alertness + (Time.deltaTime * (FirstPersonController.instance.IsCrouching ? 0.5f : 1f)), 0f, AlertnessRequired);
-
-        if (Alertness >= AlertnessRequired)
-        {
-            SpotPlayer();
-            Alertness = AlertnessRequired;
-        }
-
-        EyeballUI();
-    }
     void FootstepAudio()
     {
-        if(ai.velocity.sqrMagnitude < 0.05f)
+        stepCooldown = StepCooldownChase;
+        if (ai.velocity.sqrMagnitude < 0.05f)
         { return; }
         if (Time.time > lastTimeStep + stepCooldown)
         {
             lastTimeStep = Time.time;
-           // audioPlayer.Play(FootstepSounds[UnityEngine.Random.Range(0, FootstepSounds.Length)]);
+            // audioPlayer.Play(FootstepSounds[UnityEngine.Random.Range(0, FootstepSounds.Length)]);
         }
     }
 
     void Move()
     {
+        if (Time.time - lastTimeOpenedDoor < OpenDoorStopTime)
+        {
+            ai.isStopped = true;
+        }
+        else
+        {
+            ai.isStopped = false;
+            if (lastDoor != null && (Time.time - lastTimeOpenedDoor > OpenDoorStopTime + 1f))
+            { lastDoor.OpenDoor(false); } //close the door behind us
+        }
+
         switch (State)
         {
             case EnemyState.Chasing:
                 ai.destination = target.position;
                 lastNoisePosition = target.position;
-                stepCooldown = StepCooldownChase;
                 break;
 
             case EnemyState.SearchingForNoise:
@@ -242,12 +249,17 @@ public class Enemy : MonoBehaviour
 
             case EnemyState.Patrolling:
             case EnemyState.PatrollingWithGun:
-                stepCooldown = StepCooldownWalk;
                 if (NavigateToWaypoint(PatrollingRoute[waypointIndex]))
                 {
                     waypointIndex++;
                     if (waypointIndex >= PatrollingRoute.Count)
                     { waypointIndex = 0; }
+                }
+                if (SeesPlayer && Alertness < 1f)
+                {
+                    //stop and rotate to face the player
+                    ai.isStopped = true;
+                    ai.rotation = Quaternion.LookRotation(new Vector3(target.position.x, 0f, target.position.z) - new Vector3(transform.position.x, 0f, transform.position.z));
                 }
                 break;
 
@@ -260,20 +272,9 @@ public class Enemy : MonoBehaviour
                 break;
 
             case EnemyState.GrabbingGun:
-                if(NavigateToWaypoint(GunWaypoint))
-                { state = EnemyState.PatrollingWithGun; }
+                if (NavigateToWaypoint(GunWaypoint))
+                { State = EnemyState.PatrollingWithGun; }
                 break;
-        }
-
-        if(Time.time - lastTimeOpenedDoor < OpenDoorStopTime)
-        {
-            ai.isStopped = true;
-        }
-        else
-        {
-            ai.isStopped = false;
-            if(lastDoor != null && (Time.time - lastTimeOpenedDoor > OpenDoorStopTime + 1f))
-            { lastDoor.OpenDoor(false); }
         }
 
 
@@ -289,7 +290,7 @@ public class Enemy : MonoBehaviour
             interactable = hit.collider.GetComponent<Interactable>();
             if (interactable != null && interactable is DoorAnimController)
             {
-                if(!(interactable as DoorAnimController).IsOpen())
+                if (!(interactable as DoorAnimController).IsOpen())
                 {
                     lastTimeOpenedDoor = Time.time;
                     lastDoor = (interactable as DoorAnimController);
@@ -307,7 +308,7 @@ public class Enemy : MonoBehaviour
         waypointPos2D.y = waypoint.transform.position.z;
 
         ai.destination = waypoint.transform.position;
-        if (Vector2.SqrMagnitude(pos2D - waypointPos2D) < 0.5f)
+        if (Vector2.SqrMagnitude(pos2D - waypointPos2D) < 0.1f)
         {
             if (!atWaypoint)
             {
