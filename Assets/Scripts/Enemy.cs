@@ -308,7 +308,7 @@ public class Enemy : MonoBehaviour
         waypointPos2D.y = waypoint.transform.position.z;
 
         ai.destination = waypoint.transform.position;
-        if (Vector2.SqrMagnitude(pos2D - waypointPos2D) < 0.1f)
+        if (Vector2.SqrMagnitude(pos2D - waypointPos2D) < 0.5f)
         {
             if (!atWaypoint)
             {
