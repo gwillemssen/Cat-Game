@@ -41,13 +41,14 @@ public class DoorAnimController : Interactable
 
     public void OpenDoor(bool open)
     {
+        //LeanTween.cancel(doorHinge);
         if (open)
         {
-            doorHinge.LeanRotateY(openRot,0.2f);
+            doorHinge.LeanRotateY(openRot,0.2f).setRotateLocal();
         }
         else
         {
-            doorHinge.LeanRotateY(closedRot,0.2f);
+            doorHinge.LeanRotateY(closedRot,0.2f).setRotateLocal();
         }
 
         _open = open;

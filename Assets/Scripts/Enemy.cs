@@ -315,7 +315,6 @@ public class Enemy : MonoBehaviour
         waypointPos2D.y = waypoint.transform.position.z;
 
         ai.destination = waypoint.transform.position;
-        Debug.Log(Vector2.SqrMagnitude(pos2D - waypointPos2D));
         if (Vector2.SqrMagnitude(pos2D - waypointPos2D) < (0.5f + timeStuck)) //add timeStuck onto the threshold to get more generous as the enemy is stuck
         {
             if (!atWaypoint)
