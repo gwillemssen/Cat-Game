@@ -41,6 +41,8 @@ public class Enemy : MonoBehaviour
     public LayerMask InteractableLayerMask;
     public bool DebugMode = false;
     public TextMesh EnemyDebugObject;
+    [Tooltip("How long the enemy will be stuck until the game gets them unstuck")]
+    public float StuckFixTime = 2f;
 
     [Header("Sound")]
     public float NoiseDecay = 4f;
@@ -80,6 +82,8 @@ public class Enemy : MonoBehaviour
     private float sqrMoveSpeed;
     private Vector2 pos2D;
     private Vector2 waypointPos2D;
+    private Waypoint noiseWaypoint;
+    private float timeStuck; //how long has the AI been stuck for?
 
     private void Awake()
     {
@@ -111,6 +115,8 @@ public class Enemy : MonoBehaviour
             g.transform.rotation = transform.rotation;
             PatrollingRoute.Add(g);
         }
+
+        noiseWaypoint = new GameObject().AddComponent<Waypoint>();
     }
 
     void Update()
@@ -179,7 +185,6 @@ public class Enemy : MonoBehaviour
         if (Noise >= MaxNoise && state == EnemyState.Patrolling)  //if we add in an idle state, add it here
         {
             state = EnemyState.SearchingForNoise;
-            Debug.Log("Should be searching for noise");
         }
 
         return localNoise;
@@ -242,9 +247,11 @@ public class Enemy : MonoBehaviour
                 break;
 
             case EnemyState.SearchingForNoise:
-                ai.destination = lastNoisePosition;
-                if (Vector3.SqrMagnitude(transform.position - lastNoisePosition) <= 1f)
-                { State = EnemyState.Patrolling; } //investigated the noise, going back to normal
+                noiseWaypoint.transform.position = lastNoisePosition;
+                if(NavigateToWaypoint(noiseWaypoint))
+                {
+                    State = EnemyState.Patrolling; //investigated the noise, going back to normal
+                }
                 break;
 
             case EnemyState.Patrolling:
@@ -308,7 +315,8 @@ public class Enemy : MonoBehaviour
         waypointPos2D.y = waypoint.transform.position.z;
 
         ai.destination = waypoint.transform.position;
-        if (Vector2.SqrMagnitude(pos2D - waypointPos2D) < 0.5f)
+        Debug.Log(Vector2.SqrMagnitude(pos2D - waypointPos2D));
+        if (Vector2.SqrMagnitude(pos2D - waypointPos2D) < (0.5f + timeStuck)) //add timeStuck onto the threshold to get more generous as the enemy is stuck
         {
             if (!atWaypoint)
             {
@@ -324,6 +332,17 @@ public class Enemy : MonoBehaviour
         else
         {
             atWaypoint = false;
+            
+            if(ai.velocity.sqrMagnitude < 0.25f && ai.isStopped == false) //the ai is stuck somehow
+            { timeStuck += Time.deltaTime; }
+            else
+            { timeStuck = 0f; }
+
+            if(timeStuck >= StuckFixTime)
+            {
+                LeanTween.cancel(gameObject);
+                LeanTween.move(gameObject, AstarPath.active.GetNearest(transform.position).position, 1f);
+            }
         }
         return false;
     }
