@@ -272,5 +272,6 @@ public class Cat : Interactable
         Cursor.lockState = CursorLockMode.Locked;
         PlayerUI.instance.PettingMeter.gameObject.SetActive(false);
         playerController.Interaction.HideCrosshair = false;
+        effects.Stop();
     }
 }
