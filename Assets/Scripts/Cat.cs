@@ -273,5 +273,6 @@ public class Cat : Interactable
         PlayerUI.instance.PettingMeter.gameObject.SetActive(false);
         playerController.Interaction.HideCrosshair = false;
         effects.Stop();
+        Enemy.instance.CatPetted();
     }
 }
