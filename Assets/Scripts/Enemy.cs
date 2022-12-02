@@ -69,7 +69,7 @@ public class Enemy : MonoBehaviour
     private RaycastHit hit;
     private float sqrHearingRadius;
     private float localNoise;
-    private Vector3 lastNoisePosition;
+    private Vector3 lastLoudNoisePosition;
     private float stepCooldown;
     private float lastTimeStep;
     private bool isPlaying;
@@ -179,12 +179,12 @@ public class Enemy : MonoBehaviour
         localNoise = Mathf.Lerp(1, 0, localNoise);
         localNoise = 1f - Mathf.Pow(1f - localNoise, 5f); //easeOutQuint
         localNoise *= amt;
-        lastNoisePosition = pos;
 
         Noise += localNoise;
         if (Noise >= MaxNoise && (state == EnemyState.Patrolling || state == EnemyState.Idle))  //if we add in an idle state, add it here
         {
             state = EnemyState.SearchingForNoise;
+            lastLoudNoisePosition = pos;
         }
 
         return localNoise;
@@ -257,11 +257,11 @@ public class Enemy : MonoBehaviour
 
             case EnemyState.Chasing:
                 ai.destination = target.position;
-                lastNoisePosition = target.position;
+                lastLoudNoisePosition = target.position;
                 break;
 
             case EnemyState.SearchingForNoise:
-                noiseWaypoint.transform.position = lastNoisePosition;
+                noiseWaypoint.transform.position = lastLoudNoisePosition;
                 if (NavigateToWaypoint(noiseWaypoint))
                 {
                     State = EnemyState.Patrolling; //investigated the noise, going back to normal
