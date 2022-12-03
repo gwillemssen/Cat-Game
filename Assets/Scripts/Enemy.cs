@@ -11,7 +11,7 @@ public class Enemy : MonoBehaviour
 {
     public static Enemy instance;
 
-    public enum EnemyState { Patrolling, SearchingForNoise, Chasing, CallingCops, GrabbingGun, PatrollingWithGun }
+    public enum EnemyState { Patrolling, SearchingForNoise, Chasing, CallingCops, GrabbingGun, PatrollingWithGun, Idle }
 
     [Header("References")]
     public List<Waypoint> PatrollingRoute;
@@ -69,7 +69,7 @@ public class Enemy : MonoBehaviour
     private RaycastHit hit;
     private float sqrHearingRadius;
     private float localNoise;
-    private Vector3 lastNoisePosition;
+    private Vector3 lastLoudNoisePosition;
     private float stepCooldown;
     private float lastTimeStep;
     private bool isPlaying;
@@ -100,7 +100,7 @@ public class Enemy : MonoBehaviour
         ai = GetComponent<IAstarAI>();
         audioPlayer = GetComponent<AudioPlayer>();
         target = FirstPersonController.instance.MainCamera.transform;
-        State = EnemyState.Patrolling;
+        State = EnemyState.Idle;
 
         EnemyDebugObject.gameObject.SetActive(DebugMode);
         fov = Mathf.InverseLerp(180, 0, FieldOfView);
@@ -179,12 +179,12 @@ public class Enemy : MonoBehaviour
         localNoise = Mathf.Lerp(1, 0, localNoise);
         localNoise = 1f - Mathf.Pow(1f - localNoise, 5f); //easeOutQuint
         localNoise *= amt;
-        lastNoisePosition = pos;
 
         Noise += localNoise;
-        if (Noise >= MaxNoise && state == EnemyState.Patrolling)  //if we add in an idle state, add it here
+        if (Noise >= MaxNoise && (state == EnemyState.Patrolling || state == EnemyState.Idle))  //if we add in an idle state, add it here
         {
             state = EnemyState.SearchingForNoise;
+            lastLoudNoisePosition = pos;
         }
 
         return localNoise;
@@ -195,7 +195,7 @@ public class Enemy : MonoBehaviour
         lastTimeSighted = Time.time;
         if (State == EnemyState.PatrollingWithGun)
         { State = EnemyState.Chasing; }
-        else if (State == EnemyState.Patrolling)
+        else if (State == EnemyState.Patrolling || State == EnemyState.Idle)
         { State = EnemyState.CallingCops; }
     }
 
@@ -239,16 +239,30 @@ public class Enemy : MonoBehaviour
             { lastDoor.OpenDoor(false); } //close the door behind us
         }
 
+        if(state == EnemyState.Idle || state == EnemyState.Patrolling || state == EnemyState.PatrollingWithGun)
+        {
+            if (SeesPlayer && Alertness < 1f)
+            {
+                //stop and rotate to face the player
+                ai.isStopped = true;
+                ai.rotation = Quaternion.Lerp(ai.rotation, Quaternion.LookRotation(new Vector3(target.position.x, 0f, target.position.z) - new Vector3(transform.position.x, 0f, transform.position.z)), Time.deltaTime * 8f);
+            }
+        }
+
         switch (State)
         {
+            case EnemyState.Idle:
+                ai.destination = transform.position;
+                break;
+
             case EnemyState.Chasing:
                 ai.destination = target.position;
-                lastNoisePosition = target.position;
+                lastLoudNoisePosition = target.position;
                 break;
 
             case EnemyState.SearchingForNoise:
-                noiseWaypoint.transform.position = lastNoisePosition;
-                if(NavigateToWaypoint(noiseWaypoint))
+                noiseWaypoint.transform.position = lastLoudNoisePosition;
+                if (NavigateToWaypoint(noiseWaypoint))
                 {
                     State = EnemyState.Patrolling; //investigated the noise, going back to normal
                 }
@@ -261,12 +275,6 @@ public class Enemy : MonoBehaviour
                     waypointIndex++;
                     if (waypointIndex >= PatrollingRoute.Count)
                     { waypointIndex = 0; }
-                }
-                if (SeesPlayer && Alertness < 1f)
-                {
-                    //stop and rotate to face the player
-                    ai.isStopped = true;
-                    ai.rotation = Quaternion.LookRotation(new Vector3(target.position.x, 0f, target.position.z) - new Vector3(transform.position.x, 0f, transform.position.z));
                 }
                 break;
 
@@ -331,13 +339,13 @@ public class Enemy : MonoBehaviour
         else
         {
             atWaypoint = false;
-            
-            if(ai.velocity.sqrMagnitude < 0.25f && ai.isStopped == false) //the ai is stuck somehow
+
+            if (ai.velocity.sqrMagnitude < 0.25f && ai.isStopped == false) //the ai is stuck somehow
             { timeStuck += Time.deltaTime; }
             else
             { timeStuck = 0f; }
 
-            if(timeStuck >= StuckFixTime)
+            if (timeStuck >= StuckFixTime)
             {
                 LeanTween.cancel(gameObject);
                 LeanTween.move(gameObject, AstarPath.active.GetNearest(transform.position).position, 1f);
@@ -364,6 +372,15 @@ public class Enemy : MonoBehaviour
         else
         {
             return false;
+        }
+    }
+
+    public void CatPetted()
+    {
+        if (state == EnemyState.Idle)
+        {
+            state = EnemyState.Patrolling;
+            Debug.Log("First cat petted, starting patrol");
         }
     }
 
