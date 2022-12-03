@@ -10,7 +10,8 @@ public class Break : MonoBehaviour
 
     private void OnMouseDown()
     {
-        Instantiate(prefab);
+        Instantiate(prefab,transform.position,transform.rotation);
+        prefab.GetComponent<Rigidbody>().velocity = this.GetComponent<Rigidbody>().velocity;
         Destroy(this.GameObject());
     }
 }

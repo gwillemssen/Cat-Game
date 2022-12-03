@@ -2,10 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class DoorAnimController : Interactable
 {
     public bool _open;
+    private bool storedOpen;
 
     private Collider doorCollider;
 
@@ -23,46 +25,51 @@ public class DoorAnimController : Interactable
 
     private void FixedUpdate()
     {
-        if (doorHinge.transform.localRotation.y == openRot || doorHinge.transform.localRotation.y == closedRot)
+        if (_open != storedOpen)
         {
-            if (!doorCollider.enabled)
-            {
-                doorCollider.enabled = true;
-            }
+            OpenDoor(_open);
         }
-        else
-        {
-            if (doorCollider.enabled)
-            {
-                doorCollider.enabled = false;
-            }
-        }
+
+        doorCollider.enabled = !LeanTween.isTweening(doorHinge);
     }
+    
+    
 
     public void OpenDoor(bool open)
     {
+        LeanTween.cancel(doorHinge);
+        int dude = Random.Range(0, 1001);
         //LeanTween.cancel(doorHinge);
         if (open)
         {
-            doorHinge.LeanRotateY(openRot,0.2f).setRotateLocal();
+            if (dude < 1000)
+            {
+                LeanTween.rotateLocal(doorHinge.gameObject,new Vector3(0,openRot,0),1.5f).setRotateLocal().setEaseOutElastic();
+            }
+            else
+            {
+                LeanTween.rotateLocal(doorHinge.gameObject,new Vector3(closedRot,0,0),1.5f).setRotateLocal().setEaseOutElastic();
+            }
         }
         else
         {
-            doorHinge.LeanRotateY(closedRot,0.2f).setRotateLocal();
+            if (dude < 1000)
+            {
+                LeanTween.rotateLocal(doorHinge.gameObject,new Vector3(0,closedRot,0),1.5f).setRotateLocal().setEaseOutElastic();
+            }
+            else
+            {
+                LeanTween.rotateLocal(doorHinge.gameObject,new Vector3(closedRot,0,0),1.5f).setRotateLocal().setEaseOutElastic();
+            }
         }
 
         _open = open;
-    }
-
-    private void Update()
-    {
-        
+        storedOpen = _open;
     }
 
     public override void Interact(FirstPersonController controller)
     {
         _open = !_open;
-        OpenDoor(_open);
     }
 
     public bool IsOpen()
