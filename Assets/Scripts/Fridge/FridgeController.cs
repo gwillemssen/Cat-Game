@@ -46,7 +46,7 @@ namespace Fridge
             topLight = transform.GetChild(3).GetComponent<Light>();
             bottomLight = transform.GetChild(2).GetComponent<Light>();
             initialized = true;
-            Debug.Log($"{gameObject.name} initialized.");
+            //Debug.Log($"{gameObject.name} initialized.");
 
         }
 

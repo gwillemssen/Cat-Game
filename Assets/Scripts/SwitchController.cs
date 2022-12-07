@@ -70,7 +70,7 @@ public class SwitchController : Interactable
         //sound loading
         sounds[0] = Resources.Load("Sound/LightSwitch/So_SwitchOn") as AudioClip;
         sounds[1] = Resources.Load("Sound/LightSwitch/So_SwitchOff") as AudioClip;
-        Debug.Log($"{gameObject.name} sounds loaded");
+        //Debug.Log($"{gameObject.name} sounds loaded");
         
         //initialization
         lightSwitchPlayer = GetComponent<AudioSource>();
@@ -78,7 +78,7 @@ public class SwitchController : Interactable
         switchLerp = this.AddComponent<LerpScript>();
         switchLerp.typeOfLerp = LerpScript.LerpType.Vector3;
         switchLerp.lerpSpeed = 8;
-        Debug.Log($"{gameObject.name} Initialized");
+        //Debug.Log($"{gameObject.name} Initialized");
     }
 
     private void PlaySound(int clip)

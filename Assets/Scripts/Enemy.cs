@@ -11,7 +11,7 @@ public class Enemy : MonoBehaviour
 {
     public static Enemy instance;
 
-    public enum EnemyState { Patrolling, SearchingForNoise, Chasing, CallingCops, GrabbingGun, PatrollingWithGun, Idle }
+    public enum EnemyState { Patrolling, SearchingForNoise, Chasing, GoingToCallThePolice, GrabbingGun, PatrollingWithGun, Idle, CallingPolice }
 
     public bool DebugMode = false;
 
@@ -53,9 +53,25 @@ public class Enemy : MonoBehaviour
     public Sound[] FootstepSounds;
     public float StepCooldownWalk = .5f;
     public float StepCooldownChase = .25f;
+    public Sound[] SpotPlayerSounds;
+    public Sound[] GoingToCallThePoliceSounds;
+    public Sound[] CallingPoliceSounds;
+    public Sound[] ChasingSounds;
 
 
-    public EnemyState State { get { return state; } private set { state = value; } }
+    public EnemyState State 
+    {   
+        get 
+        { return state_dontUse; } 
+
+        private set 
+        {
+            state_dontUse = value;
+            if (lastState != value)
+            { OnChangedState(); }
+            lastState = state_dontUse;
+        }
+    }
     public bool SeesPlayer { get; private set; }
     public float Alertness { get; private set; } //increases as the player is within the sight of the enemy
     public bool InFOV { get; private set; }
@@ -63,7 +79,8 @@ public class Enemy : MonoBehaviour
 
     private IAstarAI ai;
     private Transform target;
-    private EnemyState state;
+    private EnemyState state_dontUse; //use the State property, not this field
+    private EnemyState lastState;
     private float lastTimeSighted = -420f;
     private float lastTimeLostTarget = -420f;
     private float fov;
@@ -85,6 +102,13 @@ public class Enemy : MonoBehaviour
     private Vector2 waypointPos2D;
     private Waypoint noiseWaypoint;
     private float timeStuck; //how long has the AI been stuck for?
+    private enum VoiceLine {  SpotPlayer, GoingToCallThePolice, CallingPolice, Chasing }
+    private NonRepeatingSound chasingRandomSound;
+    private NonRepeatingSound callingPoliceRandomSound;
+    private NonRepeatingSound goingToCallThePoliceRandomSound;
+    private NonRepeatingSound spotPlayerRandomSound;
+    private float lastTimePlayedVoiceline = -420f;
+    private float voiceLineDuration;
 
     private void Awake()
     {
@@ -101,6 +125,7 @@ public class Enemy : MonoBehaviour
         ai = GetComponent<IAstarAI>();
         audioPlayer = GetComponent<AudioPlayer>();
         target = FirstPersonController.instance.MainCamera.transform;
+        
         State = EnemyState.Idle;
 
         EnemyDebugObject.gameObject.SetActive(DebugMode);
@@ -117,6 +142,11 @@ public class Enemy : MonoBehaviour
             PatrollingRoute.Add(g);
         }
 
+        chasingRandomSound = new NonRepeatingSound(ChasingSounds);
+        callingPoliceRandomSound = new NonRepeatingSound(CallingPoliceSounds);
+        goingToCallThePoliceRandomSound = new NonRepeatingSound(GoingToCallThePoliceSounds);
+        spotPlayerRandomSound = new NonRepeatingSound(SpotPlayerSounds);
+
         noiseWaypoint = new GameObject().AddComponent<Waypoint>();
     }
 
@@ -130,7 +160,7 @@ public class Enemy : MonoBehaviour
         DecayNoise();
     }
 
-    public void CheckPlayerVisibility()
+    void CheckPlayerVisibility()
     {
         if (FirstPersonController.instance.Hiding && IsPlayerWithinFieldOfView() && RaycastToPlayer())
         { FirstPersonController.instance.Hiding = false; } //CAUGHT while going into a hiding spot
@@ -148,7 +178,7 @@ public class Enemy : MonoBehaviour
             Alertness = Mathf.Clamp01(Alertness - Time.deltaTime * AlertnessRate);
         }
 
-        if (state == EnemyState.Chasing && SeesPlayer)
+        if (State == EnemyState.Chasing && SeesPlayer)
         {
             if (Vector3.SqrMagnitude(transform.position - target.position) <= sqrShootDistance)
             {
@@ -160,19 +190,70 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void DecayNoise()
+    void DecayNoise()
     {
         Noise = Mathf.Clamp(Noise - Time.deltaTime * NoiseDecay, 0f, MaxNoise);
     }
 
-    public void UpdateAnimationState()
+    void PlayVoiceline(VoiceLine voiceLine)
+    {
+        if(Time.time - lastTimePlayedVoiceline < voiceLineDuration) //make sure we dont overlap voicelines
+        {
+            //TODO: add voiceline to queue
+            return;
+        }
+
+        NonRepeatingSound randomSound = null;
+        switch(voiceLine)
+        {
+            case VoiceLine.SpotPlayer:
+                randomSound = spotPlayerRandomSound;
+                break;
+            case VoiceLine.GoingToCallThePolice:
+                randomSound = goingToCallThePoliceRandomSound;
+                break;
+            case VoiceLine.CallingPolice:
+                randomSound = callingPoliceRandomSound;
+                break;
+            case VoiceLine.Chasing:
+                randomSound = chasingRandomSound;
+                break;
+        }
+
+        if(randomSound == null)
+        { Debug.LogError("Random Sound null"); return; }
+
+        Sound sound = randomSound.Random();
+        audioPlayer.Play(sound);
+        voiceLineDuration = sound.Clip.length;
+
+        lastTimePlayedVoiceline = Time.time;
+    }
+
+    void UpdateAnimationState()
     {
         anim.SetBool("isWalking", ai.velocity.sqrMagnitude > sqrMoveSpeed);
         if (State == EnemyState.PatrollingWithGun)
         { anim.SetBool("isRifleRunning", ai.velocity.sqrMagnitude > sqrMoveSpeed); }
         //anim.SetBool("isWalking", true);
     }
-
+    
+    void OnChangedState()
+    {
+        Debug.Log("Changed State to " + State);
+        switch(State)
+        {
+            case EnemyState.GoingToCallThePolice:
+                PlayVoiceline(VoiceLine.GoingToCallThePolice);
+                break;
+            case EnemyState.CallingPolice:
+                PlayVoiceline(VoiceLine.CallingPolice);
+                break;
+            case EnemyState.GrabbingGun:
+                PlayVoiceline(VoiceLine.Chasing);
+                break;
+        }
+    }
     public float OnNoise(Vector3 pos, float amt)
     {
         //returns how much noise it made to the enemy
@@ -182,9 +263,9 @@ public class Enemy : MonoBehaviour
         localNoise *= amt;
 
         Noise += localNoise;
-        if (Noise >= MaxNoise && (state == EnemyState.Patrolling || state == EnemyState.Idle))  //if we add in an idle state, add it here
+        if (Noise >= MaxNoise && (State == EnemyState.Patrolling || State == EnemyState.Idle))  //if we add in an idle State, add it here
         {
-            state = EnemyState.SearchingForNoise;
+            State = EnemyState.SearchingForNoise;
             lastLoudNoisePosition = pos;
         }
 
@@ -197,7 +278,7 @@ public class Enemy : MonoBehaviour
         if (State == EnemyState.PatrollingWithGun)
         { State = EnemyState.Chasing; }
         else if (State == EnemyState.Patrolling || State == EnemyState.Idle)
-        { State = EnemyState.CallingCops; }
+        { State = EnemyState.GoingToCallThePolice; }
     }
 
     void EyeballUI()
@@ -206,7 +287,7 @@ public class Enemy : MonoBehaviour
         //this will only work with one enemy
         /*
         float t = Alertness / AlertnessRequired;
-        if(t > .66 || (state != EnemyState.Patrolling && state != EnemyState.SearchingForNoise))
+        if(t > .66 || (State != EnemyState.Patrolling && State != EnemyState.SearchingForNoise))
         { PlayerUI.instance.SetEyeballUI(PlayerUI.EyeState.Open); }
         else if (t > .33)
         { PlayerUI.instance.SetEyeballUI(PlayerUI.EyeState.Half); }
@@ -237,10 +318,10 @@ public class Enemy : MonoBehaviour
         {
             ai.isStopped = false;
             if (lastDoor != null && (Time.time - lastTimeOpenedDoor > OpenDoorStopTime + 1f))
-            { lastDoor.OpenDoor(false); } //close the door behind us
+            { lastDoor.OpenDoor(false); lastDoor = null; } //close the door behind us
         }
 
-        if(state == EnemyState.Idle || state == EnemyState.Patrolling || state == EnemyState.PatrollingWithGun)
+        if(State == EnemyState.Idle || State == EnemyState.Patrolling || State == EnemyState.PatrollingWithGun)
         {
             if (SeesPlayer && Alertness < 1f)
             {
@@ -279,11 +360,16 @@ public class Enemy : MonoBehaviour
                 }
                 break;
 
-            case EnemyState.CallingCops:
+            case EnemyState.GoingToCallThePolice:
+            case EnemyState.CallingPolice:
                 if (NavigateToWaypoint(PhoneWaypoint))
                 {
                     LevelManager.instance.CallCops();
                     State = EnemyState.GrabbingGun;
+                }
+                if (Vector2.SqrMagnitude(pos2D - waypointPos2D) < 0.5f && atWaypoint)
+                {
+                    State = EnemyState.CallingPolice;
                 }
                 break;
 
@@ -378,9 +464,9 @@ public class Enemy : MonoBehaviour
 
     public void CatPetted()
     {
-        if (state == EnemyState.Idle)
+        if (State == EnemyState.Idle)
         {
-            state = EnemyState.Patrolling;
+            State = EnemyState.Patrolling;
             Debug.Log("First cat petted, starting patrol");
         }
     }
