@@ -13,6 +13,8 @@ public class Enemy : MonoBehaviour
 
     public enum EnemyState { Patrolling, SearchingForNoise, Chasing, CallingCops, GrabbingGun, PatrollingWithGun, Idle }
 
+    public bool DebugMode = false;
+
     [Header("References")]
     public List<Waypoint> PatrollingRoute;
     public Waypoint PhoneWaypoint;
@@ -39,7 +41,6 @@ public class Enemy : MonoBehaviour
     public float OpenDoorStopTime = 1f;
     public LayerMask EverythingExceptEnemy;
     public LayerMask InteractableLayerMask;
-    public bool DebugMode = false;
     public TextMesh EnemyDebugObject;
     [Tooltip("How long the enemy will be stuck until the game gets them unstuck")]
     public float StuckFixTime = 2f;
