@@ -14,6 +14,9 @@ public class DoorAnimController : Interactable
     private float openRot = -90;
     private float closedRot = 0;
 
+    public float openTime = 1.5f;
+    public float closeTime = 0.5f;
+
     private GameObject doorHinge;
     
     // Start is called before the first frame update
@@ -44,22 +47,22 @@ public class DoorAnimController : Interactable
         {
             if (dude < 1000)
             {
-                LeanTween.rotateLocal(doorHinge.gameObject,new Vector3(0,openRot,0),1.5f).setRotateLocal().setEaseOutElastic();
+                LeanTween.rotateLocal(doorHinge.gameObject,new Vector3(0,openRot,0),openTime).setRotateLocal().setEaseOutElastic();
             }
             else
             {
-                LeanTween.rotateLocal(doorHinge.gameObject,new Vector3(closedRot,0,0),1.5f).setRotateLocal().setEaseOutElastic();
+                LeanTween.rotateLocal(doorHinge.gameObject,new Vector3(openRot,0,0),openTime).setRotateLocal().setEaseOutElastic();
             }
         }
         else
         {
             if (dude < 1000)
             {
-                LeanTween.rotateLocal(doorHinge.gameObject,new Vector3(0,closedRot,0),1.5f).setRotateLocal().setEaseOutElastic();
+                LeanTween.rotateLocal(doorHinge.gameObject,new Vector3(0,closedRot,0),closeTime).setRotateLocal().setEaseOutBounce();
             }
             else
             {
-                LeanTween.rotateLocal(doorHinge.gameObject,new Vector3(closedRot,0,0),1.5f).setRotateLocal().setEaseOutElastic();
+                LeanTween.rotateLocal(doorHinge.gameObject,new Vector3(closedRot,0,0),closeTime).setRotateLocal().setEaseOutBounce();
             }
         }
 
