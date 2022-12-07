@@ -249,7 +249,7 @@ public class Enemy : MonoBehaviour
             case EnemyState.CallingPolice:
                 PlayVoiceline(VoiceLine.CallingPolice);
                 break;
-            case EnemyState.GrabbingGun:
+            case EnemyState.PatrollingWithGun:
                 PlayVoiceline(VoiceLine.Chasing);
                 break;
         }
