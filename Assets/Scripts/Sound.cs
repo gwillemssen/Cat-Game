@@ -6,7 +6,7 @@ using UnityEngine;
 public class Sound : ScriptableObject
 {
     public AudioClip Clip;
-    [Range(0f, 1f)]
+    [Range(0f, 3f)]
     public float Volume = 1f;
     [Range(-3f, 3f)]
     public float Pitch = 1f;
