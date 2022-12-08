@@ -57,6 +57,7 @@ public class Enemy : MonoBehaviour
     public Sound[] GoingToCallThePoliceSounds;
     public Sound[] CallingPoliceSounds;
     public Sound[] ChasingSounds;
+    public Sound[] Weaponry;
 
 
     public EnemyState State 
@@ -146,6 +147,7 @@ public class Enemy : MonoBehaviour
         callingPoliceRandomSound = new NonRepeatingSound(CallingPoliceSounds);
         goingToCallThePoliceRandomSound = new NonRepeatingSound(GoingToCallThePoliceSounds);
         spotPlayerRandomSound = new NonRepeatingSound(SpotPlayerSounds);
+        
 
         noiseWaypoint = new GameObject().AddComponent<Waypoint>();
     }
@@ -185,7 +187,9 @@ public class Enemy : MonoBehaviour
                 //GLEEK GLACK and SHOOT, dont do this instantly
                 //GLEEK GLACK is longer, but then next time you are spotted, she will shoot quickly
                 if (Alertness >= 1f) //temp
-                { GameManager.instance.GameOver(GameManager.LoseState.Shot); }
+                { GameManager.instance.GameOver(GameManager.LoseState.Shot);
+                    //audioPlayer.Play(Weaponry[1]);  trying to have a gunshot play when the Lose Screen happens
+                }
             }
         }
     }
@@ -217,15 +221,17 @@ public class Enemy : MonoBehaviour
                 break;
             case VoiceLine.Chasing:
                 randomSound = chasingRandomSound;
+             
                 break;
         }
-
-        if(randomSound == null)
+      
+        if (randomSound == null)
         { Debug.LogError("Random Sound null"); return; }
 
         Sound sound = randomSound.Random();
         audioPlayer.Play(sound);
         voiceLineDuration = sound.Clip.length;
+       
 
         lastTimePlayedVoiceline = Time.time;
     }
@@ -244,6 +250,7 @@ public class Enemy : MonoBehaviour
         switch(State)
         {
             case EnemyState.GoingToCallThePolice:
+                audioPlayer.Play(Weaponry[3]);
                 PlayVoiceline(VoiceLine.GoingToCallThePolice);
                 break;
             case EnemyState.CallingPolice:
@@ -251,6 +258,8 @@ public class Enemy : MonoBehaviour
                 break;
             case EnemyState.PatrollingWithGun:
                 PlayVoiceline(VoiceLine.Chasing);
+                audioPlayer.Play(Weaponry[0]);
+                audioPlayer.Play(Weaponry[4]);
                 break;
         }
     }
