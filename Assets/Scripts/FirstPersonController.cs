@@ -113,7 +113,7 @@ public class FirstPersonController : MonoBehaviour
     private const bool isCurrentDeviceMouse = true;
     private const bool useAnalogMovement = false; //enable this if we want to use a controller
     private float crouchAmount;
-
+    private int lastRng;
 
     private void Awake()
     {
@@ -176,8 +176,26 @@ public class FirstPersonController : MonoBehaviour
 
         if (Time.time > lastTimeStep + stepCooldown)
         {
+            int rng = Random.Range(0, FootstepSounds.Length);
+
+            lastRng = rng;
             lastTimeStep = Time.time;
-            audioPlayer.Play(FootstepSounds[Random.Range(0, FootstepSounds.Length)]);
+            audioPlayer.Play(FootstepSounds[rng]);
+
+
+
+            //if (lastRng == rng && rng! >= FootstepSounds.Length)
+            //{
+            //    // rng ++;
+
+            //    audioPlayer.Play(FootstepSounds[rng + 1]);
+
+            //}
+            //if (lastRng > FootstepSounds.Length)
+            //{
+            //    lastRng = 0;
+            //    audioPlayer.Play(FootstepSounds[rng - 1]);
+            //}
         }
     }
 

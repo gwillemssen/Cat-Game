@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 /*
  * I am aware this code needs refactoring
@@ -19,6 +20,8 @@ public class Cat : Interactable
     public int PetsRequired = 12;
     public float PettingDecayRate = 0.75f;
     public float PettingDecayDelay = 0.5f;
+    public Sound[] Catsounds;
+    public Sound[] firewhoosh;
 
 
     //general
@@ -27,6 +30,8 @@ public class Cat : Interactable
     private Animator anim;
     private AudioSource audioSource;
     private ParticleSystem effects;
+
+
 
     //events
     public static event Action CompletedPetting;
@@ -70,10 +75,11 @@ public class Cat : Interactable
     private void Update()
     {
         anim.SetBool("Excited", LookingAt && state == CatState.Pettable);
-
+        
         if (state == CatState.PettingMinigame || state == CatState.DonePetting)
         {
             MoveCat();
+          //  AudioPlayer.Play((Catsounds[Random.Range(0, 2)]);
 
             if (state == CatState.PettingMinigame) //PET THE CAT
             {
@@ -194,6 +200,7 @@ public class Cat : Interactable
 
     private void UpdateMinigame()
     {
+        float efSize = 1f;
 
         //var em effects.emission.rateOverTime;
         //em.constant = 25f;
@@ -232,15 +239,26 @@ public class Cat : Interactable
             //audio.volume -= Time.deltaTime;
             audioSource.volume = 0f;
         }
+      
         else
         {
             audioSource.volume += Time.deltaTime;
         }
 
         if(!decay && !effects.isPlaying)
-        { effects.Play(); }
+        { effects.Play();
+            var efmain = effects.main;
+      
+
+            efmain.startSize = efSize += Time.deltaTime;
+           // audioSource.PlayOneShot(firewhoosh);
+        }
         if(decay && effects.isPlaying)
-        { effects.Stop(); }
+
+        { //effects.Stop();
+            var efmain = effects.main;
+            efmain.startSize = efSize -= Time.deltaTime; ;
+        }
 
         if (!playerController.Input.interacting)
         {
@@ -272,5 +290,7 @@ public class Cat : Interactable
         Cursor.lockState = CursorLockMode.Locked;
         PlayerUI.instance.PettingMeter.gameObject.SetActive(false);
         playerController.Interaction.HideCrosshair = false;
+        effects.Stop();
+        Enemy.instance.CatPetted();
     }
 }

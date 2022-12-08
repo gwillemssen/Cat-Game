@@ -65,7 +65,7 @@ public class FirstPersonInteraction : MonoBehaviour
             Pickup.transform.position = controller.MainCamera.transform.position;
         }*/
         //throw from same position if its not through a wall
-        Pickup.Rigidbody.AddForce(transform.forward * Mathf.Lerp(ThrowForceMin, ThrowForceMax, throwForce), ForceMode.VelocityChange);
+        Pickup.Rigidbody.AddForce(controller.MainCamera.transform.forward * Mathf.Lerp(ThrowForceMin, ThrowForceMax, throwForce), ForceMode.VelocityChange);
         throwForce = 0f;
         Pickup = null;
     }

@@ -33,6 +33,7 @@ public class AudioPlayer : MonoBehaviour
             Debug.LogError("SOUND IS NULL");
             return;
         }
+        au.spatialBlend = sound.SpatialBlend;
         au.pitch = sound.Pitch; //Doesnt work with multiple sounds playing at the same time.  Pitch affects all currently playing sounds
         au.PlayOneShot(sound.Clip, sound.Volume);
         if (sound.IncreasesNoiseMeter && sound.NoiseAmt > 0)

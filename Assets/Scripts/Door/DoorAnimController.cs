@@ -2,15 +2,20 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class DoorAnimController : Interactable
 {
     public bool _open;
+    private bool storedOpen;
 
     private Collider doorCollider;
 
     private float openRot = -90;
     private float closedRot = 0;
+
+    public float openTime = 1.5f;
+    public float closeTime = 0.5f;
 
     private GameObject doorHinge;
     
@@ -23,45 +28,51 @@ public class DoorAnimController : Interactable
 
     private void FixedUpdate()
     {
-        if (doorHinge.transform.localRotation.y == openRot || doorHinge.transform.localRotation.y == closedRot)
+        if (_open != storedOpen)
         {
-            if (!doorCollider.enabled)
-            {
-                doorCollider.enabled = true;
-            }
+            OpenDoor(_open);
         }
-        else
-        {
-            if (doorCollider.enabled)
-            {
-                doorCollider.enabled = false;
-            }
-        }
+
+        doorCollider.enabled = !LeanTween.isTweening(doorHinge);
     }
+    
+    
 
     public void OpenDoor(bool open)
     {
+        LeanTween.cancel(doorHinge);
+        int dude = Random.Range(0, 1001);
+        //LeanTween.cancel(doorHinge);
         if (open)
         {
-            doorHinge.LeanRotateY(openRot,0.2f);
+            if (dude < 1000)
+            {
+                LeanTween.rotateLocal(doorHinge.gameObject,new Vector3(0,openRot,0),openTime).setRotateLocal().setEaseOutElastic();
+            }
+            else
+            {
+                LeanTween.rotateLocal(doorHinge.gameObject,new Vector3(openRot,0,0),openTime).setRotateLocal().setEaseOutElastic();
+            }
         }
         else
         {
-            doorHinge.LeanRotateY(closedRot,0.2f);
+            if (dude < 1000)
+            {
+                LeanTween.rotateLocal(doorHinge.gameObject,new Vector3(0,closedRot,0),closeTime).setRotateLocal().setEaseOutBounce();
+            }
+            else
+            {
+                LeanTween.rotateLocal(doorHinge.gameObject,new Vector3(closedRot,0,0),closeTime).setRotateLocal().setEaseOutBounce();
+            }
         }
 
         _open = open;
-    }
-
-    private void Update()
-    {
-        
+        storedOpen = _open;
     }
 
     public override void Interact(FirstPersonController controller)
     {
         _open = !_open;
-        OpenDoor(_open);
     }
 
     public bool IsOpen()

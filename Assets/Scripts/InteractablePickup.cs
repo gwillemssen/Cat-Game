@@ -7,7 +7,7 @@ using UnityEngine;
 public class InteractablePickup : Interactable
 {
     public Rigidbody Rigidbody { get; private set; }
-    public float ImpactVelocity = 1f;
+    public float ImpactVelocity = 0.5f;
 
     public Sound ImpactSound;
 

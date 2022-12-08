@@ -267,8 +267,8 @@ MonoBehaviour:
   SprintSpeed: 5
   RotationSpeed: 1
   Smoothing: 0.08
-  crouchSmoothSpeed: 0.5
-  crouchSpeed: 1
+  CrouchSpeed: 2
+  CrouchTransitionSpeed: 8
   JumpHeight: 1.2
   Gravity: -15
   JumpTimeout: 0.1
@@ -313,7 +313,7 @@ MonoBehaviour:
   ThrowWindupSpeed: 0.75
   InteractableLayerMask:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 2147483647
   CrosshairSprite_Normal: {fileID: 2800000, guid: d7a4717a485a217468fee482fc9156d9,
     type: 3}
   CrosshairSprite_Interactable: {fileID: 2800000, guid: 57e50823218bbf34381f8aac53e53e3a,
