@@ -49,7 +49,7 @@ public class Enemy : MonoBehaviour
     public float NoiseDecay = 4f;
     public float Noise { get; private set; }
     public float MaxNoise = 30f;
-    AudioPlayer audioPlayer;
+   public AudioPlayer audioPlayer;
     public Sound[] FootstepSounds;
     public float StepCooldownWalk = .5f;
     public float StepCooldownChase = .25f;
@@ -58,6 +58,7 @@ public class Enemy : MonoBehaviour
     public Sound[] CallingPoliceSounds;
     public Sound[] ChasingSounds;
     public Sound[] Weaponry;
+    public Sound[] Fire;
 
 
     public EnemyState State 
@@ -110,6 +111,7 @@ public class Enemy : MonoBehaviour
     private NonRepeatingSound spotPlayerRandomSound;
     private float lastTimePlayedVoiceline = -420f;
     private float voiceLineDuration;
+    private NonRepeatingSound Gunshot;
 
     private void Awake()
     {
@@ -147,6 +149,7 @@ public class Enemy : MonoBehaviour
         callingPoliceRandomSound = new NonRepeatingSound(CallingPoliceSounds);
         goingToCallThePoliceRandomSound = new NonRepeatingSound(GoingToCallThePoliceSounds);
         spotPlayerRandomSound = new NonRepeatingSound(SpotPlayerSounds);
+        Gunshot = new NonRepeatingSound(Fire);
         
 
         noiseWaypoint = new GameObject().AddComponent<Waypoint>();
@@ -188,7 +191,7 @@ public class Enemy : MonoBehaviour
                 //GLEEK GLACK is longer, but then next time you are spotted, she will shoot quickly
                 if (Alertness >= 1f) //temp
                 { GameManager.instance.GameOver(GameManager.LoseState.Shot);
-                    //audioPlayer.Play(Weaponry[1]);  trying to have a gunshot play when the Lose Screen happens
+                    
                 }
             }
         }
@@ -221,7 +224,6 @@ public class Enemy : MonoBehaviour
                 break;
             case VoiceLine.Chasing:
                 randomSound = chasingRandomSound;
-             
                 break;
         }
       
