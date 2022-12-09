@@ -16,6 +16,7 @@ public class PlayerUI : MonoBehaviour
 
     [Header("References")]
     public GameObject FPSCamPrefab;
+   
     [HideInInspector]
     public Slider PettingMeter;
     private Slider noiseMeter;

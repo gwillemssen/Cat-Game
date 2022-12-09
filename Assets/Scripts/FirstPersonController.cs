@@ -179,25 +179,27 @@ public class FirstPersonController : MonoBehaviour
         {
             int rng = Random.Range(0, FootstepSounds.Length);
 
-            lastRng = rng;
+            
             lastTimeStep = Time.time;
             audioPlayer.Play(FootstepSounds[rng]);
 
 
 
-            //if (lastRng == rng && rng! >= FootstepSounds.Length)
-            //{
-            //    // rng ++;
+            if (lastRng == rng && rng! >= FootstepSounds.Length)
+            {
+                // rng ++;
 
-            //    audioPlayer.Play(FootstepSounds[rng + 1]);
+                audioPlayer.Play(FootstepSounds[rng + 1]);
 
-            //}
-            //if (lastRng > FootstepSounds.Length)
-            //{
-            //    lastRng = 0;
-            //    audioPlayer.Play(FootstepSounds[rng - 1]);
-            //}
+            }
+            if (lastRng > FootstepSounds.Length)
+            {
+                lastRng = 0;
+                audioPlayer.Play(FootstepSounds[rng - 1]);
+            }
+            lastRng = rng;
         }
+
     }
 
 
