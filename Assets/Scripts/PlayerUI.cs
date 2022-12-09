@@ -33,9 +33,12 @@ public class PlayerUI : MonoBehaviour
     private Text infoText;
     private Animation catTimerAnim;
     private Animation infoTextFade;
+    private Image hamd;
     public GameObject WinScreen { get; private set; }
     public GameObject LoseScreen { get; private set; }
     public GameObject LoseCopsScreen { get; private set; }
+    public Image Hamd { get { return hamd; } private set { hamd = value; } }
+    public Canvas Canvas { get { return canvas; } private set { canvas = value; } }
 
     private float lastTimeShownSpeaker = -420f;
     string debugOutput = "";
@@ -106,6 +109,9 @@ public class PlayerUI : MonoBehaviour
                 case "Speaker":
                     speakerUI = g.GetComponent<Image>();
                     break;
+                case "Hamd":
+                    hamd = g.GetComponent<Image>();
+                    break;
             }
         }
         PettingMeter.gameObject.SetActive(false);
@@ -114,6 +120,7 @@ public class PlayerUI : MonoBehaviour
         LoseCopsScreen.SetActive(false);
         catTimerUI.gameObject.SetActive(false);
         throwStrengthMeter.gameObject.SetActive(false);
+        hamd.enabled = false;
         speakerColor = new Color(1, 1, 1, 0);
         speakerUI.color = speakerColor;
         SetCrouchUI(false);
