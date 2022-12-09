@@ -100,6 +100,12 @@ public class Cat : Interactable
             if (audioSource.volume <= 0f)
             { audioSource.Stop(); }
         }
+
+        if(state == CatState.PettingMinigame)
+        {
+            playerController.UI.Hamd.enabled = true;
+            playerController.UI.Hamd.transform.position = Input.mousePosition;
+        }
     }
 
     public override void Interact(FirstPersonController controller)
@@ -187,7 +193,7 @@ public class Cat : Interactable
         timeStartedMovingCat = Time.time;
         state = CatState.PettingMinigame;
         playerController.DisableMovement = true;
-        Cursor.visible = true;
+        Cursor.visible = false;
         Cursor.lockState = CursorLockMode.None;
         PlayerUI.instance.PettingMeter.gameObject.SetActive(true);
         PlayerUI.instance.PettingMeter.value = 0f;
@@ -292,5 +298,6 @@ public class Cat : Interactable
         playerController.Interaction.HideCrosshair = false;
         effects.Stop();
         Enemy.instance.CatPetted();
+        playerController.UI.Hamd.enabled = false;
     }
 }
