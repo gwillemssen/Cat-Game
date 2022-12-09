@@ -137,12 +137,19 @@ public class PlayerUI : MonoBehaviour
         speakerUI.color = speakerColor;
     }
 
-    public void SetInfoText(string text)
+    public void SetInfoText(string text) 
+    { 
+        SetInfoText(text, 64, true); 
+    }
+
+    public void SetInfoText(string text, int size, bool italics)
     {
         infoTextFade.Stop();
         infoTextFade.Play();
         infoText.color = Color.white;
         infoText.text = text;
+        infoText.fontSize = size;
+        infoText.fontStyle = italics ? FontStyle.Italic : FontStyle.Bold;
     }
 
     public void SetEyeballUI(EyeState eyeState)
