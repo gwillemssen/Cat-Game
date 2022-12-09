@@ -99,7 +99,7 @@ public class FirstPersonController : MonoBehaviour
     public Transform PickupPosition;
     public Transform PickupPositionWindup;
     [HideInInspector]
-    public float TargetFOV = 90f; //changed by the cat minigame for visual effect
+    public float TargetFOV = 70f; //changed by the cat minigame for visual effect
     [HideInInspector]
     public bool DisableMovement = false;
     [HideInInspector]
@@ -136,6 +136,7 @@ public class FirstPersonController : MonoBehaviour
         Interaction.Init(this);
         UI = GetComponent<PlayerUI>();
         UI.Init(this);
+        TargetFOV = MainCamera.fieldOfView;
     }
 
     private void Start()

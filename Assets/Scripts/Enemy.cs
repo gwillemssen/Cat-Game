@@ -110,6 +110,8 @@ public class Enemy : MonoBehaviour
     private NonRepeatingSound spotPlayerRandomSound;
     private float lastTimePlayedVoiceline = -420f;
     private float voiceLineDuration;
+    private float lastTimePlayedChasingVoiceline = -420f;
+    private float chasingVoicelineDuration;
 
     private void Awake()
     {
@@ -160,6 +162,7 @@ public class Enemy : MonoBehaviour
         FootstepAudio();
         UpdateAnimationState();
         DecayNoise();
+        PlayRandomVoicelines();
     }
 
     void CheckPlayerVisibility()
@@ -260,6 +263,9 @@ public class Enemy : MonoBehaviour
                 PlayVoiceline(VoiceLine.Chasing);
                 audioPlayer.Play(Weaponry[0]);
                 audioPlayer.Play(Weaponry[4]);
+                break;
+            case EnemyState.Chasing:
+                Alertness = 0f; //reset alertness so we dont get instantly shot
                 break;
         }
     }
@@ -387,8 +393,22 @@ public class Enemy : MonoBehaviour
                 { State = EnemyState.PatrollingWithGun; }
                 break;
         }
+    }
 
-
+    private void PlayRandomVoicelines()
+    {
+        switch(State)
+        {
+            case EnemyState.PatrollingWithGun:
+            case EnemyState.Chasing:
+                if (Time.time - lastTimePlayedChasingVoiceline > chasingVoicelineDuration)
+                {
+                    PlayVoiceline(VoiceLine.Chasing);
+                    chasingVoicelineDuration = voiceLineDuration * 2f;
+                    lastTimePlayedChasingVoiceline = Time.time;
+                }
+                break;
+        }
     }
 
     private void Interact()

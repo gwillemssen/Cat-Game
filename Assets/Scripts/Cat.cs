@@ -59,8 +59,8 @@ public class Cat : Interactable
     private static float petStretchCatAmt = 0.007f;
     private static float petPushLerpSmoothing = .5f;
     private static float petStretchLerpSmoothing = 8f;
-    private static float petCameraFOVNormal = 90f;
-    private static float petCameraFOVZoomed = 80f;
+    private static float petCameraFOVNormal = 70f;
+    private static float petCameraFOVZoomed = 50f;
 
     private void Start()
     {

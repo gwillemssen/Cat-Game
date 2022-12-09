@@ -30,6 +30,7 @@ public class PlayerUI : MonoBehaviour
     private Image speakerUI;
     private Text debugText;
     private Text infoText;
+    private Animation catTimerAnim;
     private Animation infoTextFade;
     public GameObject WinScreen { get; private set; }
     public GameObject LoseScreen { get; private set; }
@@ -87,6 +88,7 @@ public class PlayerUI : MonoBehaviour
                 case "CatTimer":
                     catTimerUI = g.gameObject;
                     timeUI = g.GetChild(3).GetComponent<Image>();
+                    catTimerAnim = catTimerUI.GetComponent<Animation>();
                     break;
                 case "LOSECops":
                     LoseCopsScreen = g.gameObject;
@@ -167,6 +169,8 @@ public class PlayerUI : MonoBehaviour
     {
         timeUI.fillAmount = p;
         catTimerUI.gameObject.SetActive(p != 0f);
+        if(!catTimerAnim.isPlaying)
+        { catTimerAnim.Play(); }
     }
 
     public void ShowSpeaker()
