@@ -20,6 +20,7 @@ public class Cat : Interactable
     public int PetsRequired = 12;
     public float PettingDecayRate = 0.75f;
     public float PettingDecayDelay = 0.5f;
+    public float MaxVolume = 0.2f;
     public Sound[] Catsounds;
     public Sound[] firewhoosh;
 
@@ -245,10 +246,10 @@ public class Cat : Interactable
             //audio.volume -= Time.deltaTime;
             audioSource.volume = 0f;
         }
-      
         else
         {
-            audioSource.volume += Time.deltaTime;
+            audioSource.volume += Time.deltaTime * MaxVolume;
+            audioSource.volume = Mathf.Clamp(audioSource.volume, 0f, MaxVolume);
         }
 
         if(!decay && !effects.isPlaying)

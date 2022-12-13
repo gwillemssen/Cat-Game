@@ -34,11 +34,14 @@ public class PlayerUI : MonoBehaviour
     private Animation catTimerAnim;
     private Animation infoTextFade;
     private Image hamd;
+    private GameObject spottedGradient_Left;
+    private GameObject spottedGradient_Right;
     public GameObject WinScreen { get; private set; }
     public GameObject LoseScreen { get; private set; }
     public GameObject LoseCopsScreen { get; private set; }
     public Image Hamd { get { return hamd; } private set { hamd = value; } }
     public Canvas Canvas { get { return canvas; } private set { canvas = value; } }
+    public bool EnemyOnScreen { get; private set; }
 
     private float lastTimeShownSpeaker = -420f;
     string debugOutput = "";
@@ -60,57 +63,63 @@ public class PlayerUI : MonoBehaviour
         FPSCamPrefab = Resources.Load("Prefab/FpsCam") as GameObject;
         
         canvas = Instantiate<GameObject>(FPSCamPrefab, Vector3.down * 100f, Quaternion.identity).GetComponentInChildren<Canvas>();
-        Transform g;
+        Transform t;
         for(int i = 0; i < canvas.transform.childCount; i++)
         {
-            g = canvas.transform.GetChild(i);
+            t = canvas.transform.GetChild(i);
 
-            switch(g.gameObject.name)
+            switch(t.gameObject.name)
             {
                 case "NoiseMeter":
-                    noiseMeter = g.GetComponent<Slider>();
+                    noiseMeter = t.GetComponent<Slider>();
                     break;
                 case "PettingMeter":
-                    PettingMeter = g.GetComponent<Slider>();
+                    PettingMeter = t.GetComponent<Slider>();
                     break;
                 case "DebugText":
-                    debugText = g.GetComponent<Text>();
+                    debugText = t.GetComponent<Text>();
                     break;
                 case "WIN":
-                    WinScreen = g.gameObject;
+                    WinScreen = t.gameObject;
                     break;
                 case "LOSE":
-                    LoseScreen = g.gameObject;
+                    LoseScreen = t.gameObject;
                     break;
                 case "INFO":
-                    infoText = g.GetComponent<Text>();
-                    infoTextFade = g.GetComponent<Animation>();
+                    infoText = t.GetComponent<Text>();
+                    infoTextFade = t.GetComponent<Animation>();
                     break;
                 case "ThrowStrengthMeter":
-                    throwStrengthMeter = g.GetComponent<Slider>();
+                    throwStrengthMeter = t.GetComponent<Slider>();
                     break;
                 case "CatTimer":
-                    catTimerUI = g.gameObject;
-                    timeUI = g.GetChild(3).GetComponent<Image>();
+                    catTimerUI = t.gameObject;
+                    timeUI = t.GetChild(3).GetComponent<Image>();
                     catTimerAnim = catTimerUI.GetComponent<Animation>();
                     break;
                 case "LOSECops":
-                    LoseCopsScreen = g.gameObject;
+                    LoseCopsScreen = t.gameObject;
                     break;
                 case "CrouchUI":
-                    catStandingUI = g.GetChild(0).GetComponent<Image>();
-                    catCrouchUI = g.GetChild(1).GetComponent<Image>();
+                    catStandingUI = t.GetChild(0).GetComponent<Image>();
+                    catCrouchUI = t.GetChild(1).GetComponent<Image>();
                     break;
                 case "EyeUI":
-                    eyeOpenUI = g.GetChild(0).GetComponent<Image>();
-                    eyeHalfUI = g.GetChild(1).GetComponent<Image>();
-                    eyeClosedUI = g.GetChild(2).GetComponent<Image>();
+                    eyeOpenUI = t.GetChild(0).GetComponent<Image>();
+                    eyeHalfUI = t.GetChild(1).GetComponent<Image>();
+                    eyeClosedUI = t.GetChild(2).GetComponent<Image>();
                     break;
                 case "Speaker":
-                    speakerUI = g.GetComponent<Image>();
+                    speakerUI = t.GetComponent<Image>();
                     break;
                 case "Hamd":
-                    hamd = g.GetComponent<Image>();
+                    hamd = t.GetComponent<Image>();
+                    break;
+                case "SpottedGradient_Left":
+                    spottedGradient_Left = t.gameObject;
+                    break;
+                case "SpottedGradient_Right":
+                    spottedGradient_Right = t.gameObject;
                     break;
             }
         }
@@ -126,6 +135,8 @@ public class PlayerUI : MonoBehaviour
         SetCrouchUI(false);
         //debugText.enabled = false;
         debugText.text = "";
+        spottedGradient_Left.SetActive(false);
+        spottedGradient_Right.SetActive(false);
     }
 
 
@@ -144,11 +155,18 @@ public class PlayerUI : MonoBehaviour
         speakerUI.color = speakerColor;
     }
 
-    public void SetInfoText(string text) 
-    { 
-        SetInfoText(text, 64, true); 
+    public void SetSpottedGradient(bool enable, Vector3 pos)
+    {
+        EnemyOnScreen = Vector3.Dot(transform.TransformDirection(Vector3.forward), (pos - transform.position)) >= .65;
+        //enable both if enemy is on the screen
+        bool onRightSide = Vector3.Cross(transform.TransformDirection(Vector3.forward), (pos - transform.position)).y > 0;
+
+        spottedGradient_Left.SetActive(enable && EnemyOnScreen || enable && !onRightSide);
+        spottedGradient_Right.SetActive(enable && EnemyOnScreen || enable && onRightSide);
     }
 
+    public void SetInfoText(string text) { SetInfoText(text, 64, true); }
+    public void SetInfoText(string text, int size) { SetInfoText(text, size, true); }
     public void SetInfoText(string text, int size, bool italics)
     {
         infoTextFade.Stop();

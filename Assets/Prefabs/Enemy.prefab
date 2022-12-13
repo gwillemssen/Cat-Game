@@ -434,8 +434,8 @@ MonoBehaviour:
   GunWaypoint: {fileID: 0}
   eyes: {fileID: 8272336163191410661}
   anim: {fileID: -1981050854719233473}
-  FieldOfView: 90
-  AlertnessRate: 0.75
+  AlertnessRate: 0.65
+  AlertnessModifierBackTurned: 0.4
   SightDistance: 12
   HearingRadius: 20
   ChaseTime: 5.14
@@ -453,9 +453,9 @@ MonoBehaviour:
   NoiseDecay: 4
   MaxNoise: 30
   FootstepSounds:
-  - {fileID: 11400000, guid: 1c8c0e6e5f39a08418064a8224c2fd07, type: 2}
-  - {fileID: 11400000, guid: e0fa032fb2e9b4c4b8ce35b3537001c6, type: 2}
-  - {fileID: 11400000, guid: 637de8e099b9e0549aff6373c74da66c, type: 2}
+  - {fileID: 11400000, guid: 5f6f2c6f7e716e445881cb40d33dc6e3, type: 2}
+  - {fileID: 11400000, guid: 77f5eac21769a0349bb9aeaf17fb873f, type: 2}
+  - {fileID: 11400000, guid: 1756fde38bc64df42afa3e263ded8880, type: 2}
   StepCooldownWalk: 0.5
   StepCooldownChase: 0.25
   SpotPlayerSounds:
@@ -478,7 +478,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2987aa12bbfa53b4d968b71eff510b1a, type: 2}
   - {fileID: 11400000, guid: b495965c6c971ce4b9e7cacb5a1b9072, type: 2}
   - {fileID: 11400000, guid: f5e6ad40d6e6c794aa068e57dc86c4c7, type: 2}
-  Weaponry: []
+  Weaponry:
+  - {fileID: 11400000, guid: 761ee1c254a14d74e8514a07cc9ba798, type: 2}
+  - {fileID: 11400000, guid: f41c9301b5072434d98bdeb4cdc354d2, type: 2}
+  - {fileID: 11400000, guid: 199af8c0650922a45b0d450e6e218642, type: 2}
+  - {fileID: 11400000, guid: 34b80b392f264ac449283e74596c6993, type: 2}
+  - {fileID: 11400000, guid: 4355bbc5400bc6c41b6e2e169afc8e63, type: 2}
 --- !u!82 &820578986273975116
 AudioSource:
   m_ObjectHideFlags: 0
