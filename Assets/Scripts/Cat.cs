@@ -76,6 +76,7 @@ public class Cat : Interactable
     private void Update()
     {
         anim.SetBool("Excited", LookingAt && state == CatState.Pettable);
+        anim.SetBool("DonePetting", state == CatState.DonePetting);
         
         if (state == CatState.PettingMinigame || state == CatState.DonePetting)
         {

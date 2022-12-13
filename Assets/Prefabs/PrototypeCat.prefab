@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8298208050333102606}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.213, y: 0, z: 0}
+  m_LocalPosition: {x: -0.213, y: 0.19241087, z: -0.1991539}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -127,6 +127,9 @@ MonoBehaviour:
   PetsRequired: 25
   PettingDecayRate: 0.75
   PettingDecayDelay: 0.5
+  MaxVolume: 0.2
+  Catsounds: []
+  firewhoosh: []
 --- !u!82 &8298208050539112813
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5116,7 +5119,7 @@ Transform:
   - {fileID: 8298208050664259030}
   m_Father: {fileID: 8298208050333102607}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: -2.2458775, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8298208051695113240
 GameObject:
   m_ObjectHideFlags: 0
@@ -5181,7 +5184,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8298208051695113241}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -0.021696417, y: -0.14042719, z: -8.697159}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8298208052038955784
 MeshFilter:
   m_ObjectHideFlags: 0
