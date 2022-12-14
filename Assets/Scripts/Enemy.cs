@@ -23,9 +23,9 @@ public class Enemy : MonoBehaviour
     public Animator anim;
 
     [Header("Alertness")]
-    [Range(45f, 180f)]
-    public float FieldOfView = 90f;
-    public float AlertnessRate = .75f;
+    public float AlertnessRate = 1.08f;
+    [Tooltip("Multiplied with the alertnessRate to slow down being spotted from behind")]
+    public float AlertnessModifierBackTurned = .4f;
     public float SightDistance = 12f;
     public float HearingRadius = 20f;
 
@@ -132,7 +132,6 @@ public class Enemy : MonoBehaviour
         State = EnemyState.Idle;
 
         EnemyDebugObject.gameObject.SetActive(DebugMode);
-        fov = Mathf.InverseLerp(180, 0, FieldOfView);
         sqrHearingRadius = HearingRadius * HearingRadius;
         sqrShootDistance = ShootDistance * ShootDistance;
         sqrMoveSpeed = Mathf.Pow((ai.maxSpeed / 2f), 2);
@@ -163,6 +162,7 @@ public class Enemy : MonoBehaviour
         UpdateAnimationState();
         DecayNoise();
         PlayRandomVoicelines();
+        UpdateUI();
     }
 
     void CheckPlayerVisibility()
@@ -176,7 +176,10 @@ public class Enemy : MonoBehaviour
         {
             if (Alertness >= 1f)
             { SpotPlayer(); }
-            Alertness = Mathf.Clamp01(Alertness + Time.deltaTime * AlertnessRate);
+            float alertnessModifier = 1f;
+            if(!PlayerUI.instance.EnemyOnScreen)
+            { alertnessModifier = AlertnessModifierBackTurned; }
+            Alertness = Mathf.Clamp01(Alertness + Time.deltaTime * AlertnessRate * alertnessModifier);
         }
         else
         {
@@ -278,7 +281,7 @@ public class Enemy : MonoBehaviour
         localNoise *= amt;
 
         Noise += localNoise;
-        if (Noise >= MaxNoise && (State == EnemyState.Patrolling || State == EnemyState.Idle))  //if we add in an idle State, add it here
+        if (Noise >= MaxNoise && (State == EnemyState.Patrolling || State == EnemyState.Idle) && Alertness < 0.1f)  //if we add in an idle State, add it here
         {
             State = EnemyState.SearchingForNoise;
             lastLoudNoisePosition = pos;
@@ -296,19 +299,21 @@ public class Enemy : MonoBehaviour
         { State = EnemyState.GoingToCallThePolice; }
     }
 
-    void EyeballUI()
+    void UpdateUI()
     {
         //WARNING
         //this will only work with one enemy
-        /*
-        float t = Alertness / AlertnessRequired;
-        if(t > .66 || (State != EnemyState.Patrolling && State != EnemyState.SearchingForNoise))
+        float t = Alertness / 1f;
+        if(State == EnemyState.CallingPolice || State == EnemyState.PatrollingWithGun || State == EnemyState.Chasing || State == EnemyState.GrabbingGun || State == EnemyState.GoingToCallThePolice)
+        { PlayerUI.instance.SetEyeballUI(PlayerUI.EyeState.Open); }
+        else if(t > .66)
         { PlayerUI.instance.SetEyeballUI(PlayerUI.EyeState.Open); }
         else if (t > .33)
         { PlayerUI.instance.SetEyeballUI(PlayerUI.EyeState.Half); }
         else
         { PlayerUI.instance.SetEyeballUI(PlayerUI.EyeState.Closed); }
-        */
+
+        PlayerUI.instance.SetSpottedGradient(SeesPlayer, transform.position);
     }
 
     void FootstepAudio()
@@ -336,8 +341,10 @@ public class Enemy : MonoBehaviour
             { lastDoor.OpenDoor(false); lastDoor = null; } //close the door behind us
         }
 
-        if(State == EnemyState.Idle || State == EnemyState.Patrolling || State == EnemyState.PatrollingWithGun)
+        if(State == EnemyState.Idle || State == EnemyState.Patrolling || State == EnemyState.PatrollingWithGun || State == EnemyState.SearchingForNoise)
         {
+            if(State == EnemyState.SearchingForNoise)
+            { State = EnemyState.Patrolling; }
             if (SeesPlayer && Alertness < 1f)
             {
                 //stop and rotate to face the player
@@ -472,7 +479,7 @@ public class Enemy : MonoBehaviour
 
     bool IsPlayerWithinFieldOfView()
     {
-        InFOV = Vector3.Dot(transform.TransformDirection(Vector3.forward), (target.position - transform.position)) >= fov;
+        InFOV = Vector3.Dot(transform.TransformDirection(Vector3.forward), (target.position - transform.position).normalized) >= .15;
         return InFOV;
     }
 

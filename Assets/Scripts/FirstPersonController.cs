@@ -217,20 +217,16 @@ public class FirstPersonController : MonoBehaviour
 
     private void CameraRotation()
     {
-        // if there is an input
-        if (Input.look.sqrMagnitude >= _threshold)
-        {
-            //Don't multiply mouse input by Time.deltaTime
-            float deltaTimeMultiplier = isCurrentDeviceMouse ? 1.0f : Time.deltaTime;
-            _cinemachineTargetPitch += Input.look.y * RotationSpeed * deltaTimeMultiplier;
-            rotationVelocity = Input.look.x * RotationSpeed * deltaTimeMultiplier;
-            // clamp our pitch rotation
-            _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
-            // Update Cinemachine camera target pitch
-            CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, 0.0f, 0.0f);
-            // rotate the player left and right
-            transform.Rotate(Vector3.up * rotationVelocity);
-        }
+        //Don't multiply mouse input by Time.deltaTime
+        float deltaTimeMultiplier = isCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+        _cinemachineTargetPitch += Input.look.y * RotationSpeed * deltaTimeMultiplier;
+        rotationVelocity = Input.look.x * RotationSpeed * deltaTimeMultiplier;
+        // clamp our pitch rotation
+        _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
+        // Update Cinemachine camera target pitch
+        CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, 0.0f, 0.0f);
+        // rotate the player left and right
+        transform.Rotate(Vector3.up * rotationVelocity);
     }
 
     private void Move()
