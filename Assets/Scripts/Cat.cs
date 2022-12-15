@@ -21,7 +21,7 @@ public class Cat : Interactable
     public float PettingDecayRate = 0.75f;
     public float PettingDecayDelay = 0.5f;
     public float MaxVolume = 0.2f;
-    public Sound[] Catsounds;
+    public AudioClip[] Catsounds;
     public Sound[] firewhoosh;
 
 
@@ -30,7 +30,9 @@ public class Cat : Interactable
     private CatState state;
     private Animator anim;
     private AudioSource audioSource;
-    private ParticleSystem effects;
+    private AudioSource audioSource2;
+    //public ParticleSystem effects;
+    public ParticleSystem[] effects;
 
 
 
@@ -63,32 +65,41 @@ public class Cat : Interactable
     private static float petCameraFOVNormal = 70f;
     private static float petCameraFOVZoomed = 50f;
 
+   // audioPlayer.Play(Catsounds[Random.Range(0, 2)]); No idea where to put this. It either plays the cat sounds or doesn't
     private void Start()
     {
-        effects = GetComponent<ParticleSystem>();  
+        //audioPlayer = GetComponent<AudioPlayer>();
+        //effects = GetComponentInChildren<ParticleSystem>();
+        effects = GetComponentsInChildren<ParticleSystem>();
         state = (CatState)StartState;
         anim = GetComponentInChildren<Animator>();
         audioSource = GetComponent<AudioSource>();
         audioSource.loop = true;
         lastPetMousePos = new Vector2(-420f, -420f);
+        audioSource2 = GetComponentInChildren<AudioSource>();
+        
     }
 
     private void Update()
     {
+        
         anim.SetBool("Excited", LookingAt && state == CatState.Pettable);
         anim.SetBool("DonePetting", state == CatState.DonePetting);
         
         if (state == CatState.PettingMinigame || state == CatState.DonePetting)
         {
+            
             MoveCat();
-          //  AudioPlayer.Play((Catsounds[Random.Range(0, 2)]);
+           
 
             if (state == CatState.PettingMinigame) //PET THE CAT
             {
+                
                 UpdateMinigame();
                 
                 if (playerController.Input.throwing)
                 {
+                
                     EndMinigame();
                    
                     base.CanInteract = true;
@@ -113,12 +124,14 @@ public class Cat : Interactable
     public override void Interact(FirstPersonController controller)
     {
         if (state == CatState.Pettable)
-        {
+        {        
             catHoldingPos = controller.CatHoldingPosition.position;
             catHoldingRot = controller.CatHoldingPosition.rotation;
             playerController = controller;
             StartMinigame();
         }
+        
+            
     }
 
     Vector3 startPos, targetPos, offsetPos, offsetScale;
@@ -197,6 +210,7 @@ public class Cat : Interactable
         playerController.DisableMovement = true;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.None;
+        
         PlayerUI.instance.PettingMeter.gameObject.SetActive(true);
         PlayerUI.instance.PettingMeter.value = 0f;
         playerController.Interaction.HideCrosshair = true;
@@ -253,25 +267,28 @@ public class Cat : Interactable
             audioSource.volume = Mathf.Clamp(audioSource.volume, 0f, MaxVolume);
         }
 
-        if(!decay && !effects.isPlaying)
-        { effects.Play();
-            var efmain = effects.main;
-      
+        if(!decay && !effects[0].isPlaying||!decay && !effects[1].isPlaying)
+        { effects[0].Play();
+          effects[1].Play();
+            var efmain = effects[0].emission.rateOverDistance.constant;
 
-            efmain.startSize = efSize += Time.deltaTime;
-           // audioSource.PlayOneShot(firewhoosh);
+            efmain = 7f;
+
+          efmain += Time.deltaTime;
+          //audioSource.PlayOneShot(firewhoosh);
         }
-        if(decay && effects.isPlaying)
+        if (decay && effects[0].isPlaying || decay && effects[1].isPlaying)
 
         { //effects.Stop();
-            var efmain = effects.main;
-            efmain.startSize = efSize -= Time.deltaTime; ;
+            var efmain = effects[1].emission.rateOverDistance.constant;
+            efmain -= Time.deltaTime;
         }
 
         if (!playerController.Input.interacting)
         {
             mouseSpeed = Vector2.zero;
             mouseDelta = Vector2.zero;
+            
         }
 
         PlayerUI.instance.PettingMeter.value = pettingAmount;
@@ -280,8 +297,10 @@ public class Cat : Interactable
         if (pettingAmount == 1f)                         //win
         {
             EndMinigame();
+           
             base.CanInteract = false;
             CompletedPetting?.Invoke();
+          
             //maybe play an audio clip when the minigame is done?
             // I'm thinking that the player desn't know if a cat has been finished petting or if they've already pet one.
         }
@@ -289,6 +308,7 @@ public class Cat : Interactable
 
     private void EndMinigame()
     {
+        audioSource2.PlayOneShot(Catsounds[Random.Range(0, 2)], 1);
         playerController.TargetFOV = petCameraFOVNormal;
         transform.localScale = catOriginalScale;
         state = CatState.DonePetting;
@@ -298,7 +318,8 @@ public class Cat : Interactable
         Cursor.lockState = CursorLockMode.Locked;
         PlayerUI.instance.PettingMeter.gameObject.SetActive(false);
         playerController.Interaction.HideCrosshair = false;
-        effects.Stop();
+        effects[0].Stop();
+        effects[1].Stop();
         Enemy.instance.CatPetted();
         playerController.UI.Hamd.enabled = false;
     }

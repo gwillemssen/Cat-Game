@@ -49,7 +49,7 @@ public class Enemy : MonoBehaviour
     public float NoiseDecay = 4f;
     public float Noise { get; private set; }
     public float MaxNoise = 30f;
-    AudioPlayer audioPlayer;
+    public AudioPlayer audioPlayer;
     public Sound[] FootstepSounds;
     public float StepCooldownWalk = .5f;
     public float StepCooldownChase = .25f;
