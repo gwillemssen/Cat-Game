@@ -64,6 +64,8 @@ public class Cat : Interactable
     private static float petStretchLerpSmoothing = 8f;
     private static float petCameraFOVNormal = 70f;
     private static float petCameraFOVZoomed = 50f;
+    public float colorDampener;
+    public float colorAmplifier;
 
    // audioPlayer.Play(Catsounds[Random.Range(0, 2)]); No idea where to put this. It either plays the cat sounds or doesn't
     private void Start()
@@ -271,10 +273,12 @@ public class Cat : Interactable
         { effects[0].Play();
           effects[1].Play();
             var efmain = effects[0].emission.rateOverDistance.constant;
-
+            //  var efsubMain = effects[0].colorOverLifetime.color.gradient.alphaKeys[Random.Range(2,4)];
+            FadeinParticles();
             efmain = 7f;
 
           efmain += Time.deltaTime;
+        //    efsubMain += Time.deltaTime;
           //audioSource.PlayOneShot(firewhoosh);
         }
         if (decay && effects[0].isPlaying || decay && effects[1].isPlaying)
@@ -282,6 +286,7 @@ public class Cat : Interactable
         { //effects.Stop();
             var efmain = effects[1].emission.rateOverDistance.constant;
             efmain -= Time.deltaTime;
+            FadeoutParticles();
         }
 
         if (!playerController.Input.interacting)
@@ -308,7 +313,7 @@ public class Cat : Interactable
 
     private void EndMinigame()
     {
-        audioSource2.PlayOneShot(Catsounds[Random.Range(0, 2)], 1);
+        audioSource2.PlayOneShot(Catsounds[Random.Range(0, 2)], 500);
         playerController.TargetFOV = petCameraFOVNormal;
         transform.localScale = catOriginalScale;
         state = CatState.DonePetting;
@@ -322,5 +327,51 @@ public class Cat : Interactable
         effects[1].Stop();
         Enemy.instance.CatPetted();
         playerController.UI.Hamd.enabled = false;
+
+        if (audioSource2.isPlaying)
+        {
+            Debug.Log("It works but the sound doesn't");
+            Debug.Log(audioSource2.volume);
+        }
+    }
+
+    private void FadeinParticles()
+    {
+        //FIRE
+        var colorChange = effects[0].main.startColor.color;
+        Color col = colorChange;
+        Debug.Log("Initial Color: " + col.a);
+        col.a += col.a *colorAmplifier* Time.deltaTime;
+        Debug.Log("Color: " + col.a);
+         colorChange = col;
+
+        //LIGHTNING
+
+        //LIGHTNING
+        var colorChange2 = effects[1].main.startColor.color;
+        Color col2 = colorChange2;
+        Debug.Log("Initial Color: " + col.a);
+        col2.a += col2.a * colorAmplifier * Time.deltaTime;
+        Debug.Log("Color: " + col.a);
+        colorChange2 = col;
+
+    }
+    private void FadeoutParticles()
+    {
+        //FIRE
+        var colorChange = effects[0].main.startColor.color;
+        Color col = colorChange;
+        Debug.Log("Initial Color: " + col.a);
+        col.a -= col.a * colorDampener * Time.deltaTime;
+        Debug.Log("Color: " + col.a);
+
+        //LIGHTNING
+        var colorChange2 = effects[1].main.startColor.color;
+        Color col2 = colorChange2;
+        Debug.Log("Initial Color: " + col2.a);
+        col2.a -= col2.a * colorDampener * Time.deltaTime;
+        Debug.Log("Color: " + col2.a);
+
+
     }
 }
