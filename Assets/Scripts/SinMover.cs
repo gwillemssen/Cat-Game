@@ -23,7 +23,7 @@ public class SinMover : MonoBehaviour
         departurePosition = transform.parent.GetChild(1).transform.position;
         destinationPosition = transform.parent.GetChild(2).transform.position;
         timer += Time.deltaTime;
-        moveAmt = (Mathf.Sin(timer / (timeToLoop / 4)) + 1) / 2;
+        moveAmt = (Mathf.Sin(timer / (timeToLoop / 4)) + 1) /2;
     }
     void FixedUpdate()
     {
