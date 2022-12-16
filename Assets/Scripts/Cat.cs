@@ -21,8 +21,9 @@ public class Cat : Interactable
     public float PettingDecayRate = 0.75f;
     public float PettingDecayDelay = 0.5f;
     public float MaxVolume = 0.2f;
-    public AudioClip[] Catsounds;
-    public Sound[] firewhoosh;
+   // public AudioClip[] Catsounds;
+    public AudioClip firewhoosh;
+    private Meow Catsound;
 
 
     //general
@@ -78,12 +79,13 @@ public class Cat : Interactable
         audioSource = GetComponent<AudioSource>();
         audioSource.loop = true;
         lastPetMousePos = new Vector2(-420f, -420f);
-        audioSource2 = GetComponentInChildren<AudioSource>();
-        
+        //audioSource2 = GetComponentInChildren<AudioSource>();
+       
     }
 
     private void Update()
     {
+       // audioSource2.volume = 1f;
         
         anim.SetBool("Excited", LookingAt && state == CatState.Pettable);
         anim.SetBool("DonePetting", state == CatState.DonePetting);
@@ -270,7 +272,9 @@ public class Cat : Interactable
         }
 
         if(!decay && !effects[0].isPlaying||!decay && !effects[1].isPlaying)
-        { effects[0].Play();
+        {
+            audioSource.PlayOneShot(firewhoosh);
+            effects[0].Play();
           effects[1].Play();
             var efmain = effects[0].emission.rateOverDistance.constant;
             //  var efsubMain = effects[0].colorOverLifetime.color.gradient.alphaKeys[Random.Range(2,4)];
@@ -302,7 +306,8 @@ public class Cat : Interactable
         if (pettingAmount == 1f)                         //win
         {
             EndMinigame();
-           
+            Meow.instance.PlayMeow();
+
             base.CanInteract = false;
             CompletedPetting?.Invoke();
           
@@ -311,9 +316,10 @@ public class Cat : Interactable
         }
     }
 
-    private void EndMinigame()
+    public void EndMinigame()
     {
-        audioSource2.PlayOneShot(Catsounds[Random.Range(0, 2)], 500);
+        
+       // audioSource2.PlayOneShot(Catsounds[Random.Range(0, Catsounds.Length)]);
         playerController.TargetFOV = petCameraFOVNormal;
         transform.localScale = catOriginalScale;
         state = CatState.DonePetting;
