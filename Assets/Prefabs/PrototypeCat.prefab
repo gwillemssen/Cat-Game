@@ -4850,6 +4850,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7410303620816360335}
   - component: {fileID: 21531439445676362}
+  - component: {fileID: 908187528027503443}
   m_Layer: 0
   m_Name: Meows
   m_TagString: Untagged
@@ -4968,6 +4969,26 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &908187528027503443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7135674978359410011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dce78ba4eaace97449d4a76812cd6aad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Catsounds:
+  - {fileID: 8300000, guid: bbc417ffe06757e42906f72b8c30aed1, type: 3}
+  - {fileID: 8300000, guid: 3740dbbe100fa4f4290632f533c96986, type: 3}
+  - {fileID: 8300000, guid: 4741bb3647a12c5499291efc4d7bf6ba, type: 3}
+  - {fileID: 8300000, guid: d6150d390b2d6bf4ca66c26071f916ee, type: 3}
+  - {fileID: 8300000, guid: 267124103ba57ba45ae7af3a13f93cd3, type: 3}
+  - {fileID: 8300000, guid: df5ebf8210168c040834f82a132a63fd, type: 3}
+  - {fileID: 8300000, guid: 8d55b9b3921dc4e439760ca79041c65b, type: 3}
 --- !u!1 &8298208050333102606
 GameObject:
   m_ObjectHideFlags: 0
