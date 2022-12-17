@@ -334,11 +334,11 @@ public class Cat : Interactable
         Enemy.instance.CatPetted();
         playerController.UI.Hamd.enabled = false;
 
-        if (audioSource2.isPlaying)
+        /*if (audioSource2.isPlaying)
         {
             Debug.Log("It works but the sound doesn't");
             Debug.Log(audioSource2.volume);
-        }
+        }*/
     }
 
     private void FadeinParticles()
