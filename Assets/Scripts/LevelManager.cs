@@ -26,6 +26,11 @@ public class LevelManager : MonoBehaviour
 
     private void Awake()
     {
+        if(instance != null)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
         instance = this;
         Cat.CompletedPetting += OnCompletedPettingCat;
         State = LevelState.Normal;

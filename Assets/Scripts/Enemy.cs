@@ -140,6 +140,7 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
+        return;
         //TODO: calculate stuff before we update the state
         //stuff
         //SeesPlayer
@@ -150,7 +151,7 @@ public class Enemy : MonoBehaviour
     }
 
     private void OnNoiseCallback(Vector3 pos)
-    { State.OnNoise(this, pos);  }
+    { return; State.OnNoise(this, pos);  }
 
     private void CompletedPettingCallback()
     {
