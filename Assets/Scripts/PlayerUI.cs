@@ -19,7 +19,6 @@ public class PlayerUI : MonoBehaviour
    
     [HideInInspector]
     public Slider PettingMeter;
-    private Slider noiseMeter;
     private Slider throwStrengthMeter;
     private Image timeUI;
     private GameObject catTimerUI;
@@ -70,9 +69,6 @@ public class PlayerUI : MonoBehaviour
 
             switch(t.gameObject.name)
             {
-                case "NoiseMeter":
-                    noiseMeter = t.GetComponent<Slider>();
-                    break;
                 case "PettingMeter":
                     PettingMeter = t.GetComponent<Slider>();
                     break;
@@ -142,9 +138,6 @@ public class PlayerUI : MonoBehaviour
 
     private void Update()
     {
-        if (Enemy.instance != null)
-        { noiseMeter.value = Enemy.instance.Noise / Enemy.instance.MaxNoise; }
-
         debugOutput = "";
         //debugOutput += $"Noise : {(int)LevelManager.instance.Noise} / {LevelManager.instance.MaxNoise}\n";
         //debugOutput += $"Most Alert Enemy State : {LevelManager.instance.MostAlertEnemyState}\n";

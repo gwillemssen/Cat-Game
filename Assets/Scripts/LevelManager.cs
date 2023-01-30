@@ -17,6 +17,7 @@ public class LevelManager : MonoBehaviour
 
     //events
     public static event Action AllCatsPetted;
+    public static event Action<Vector3> OnNoise;
 
     private float lastTimeCalledCops = -420f;
     private float lastTimeNoise = -420f;
@@ -47,12 +48,12 @@ public class LevelManager : MonoBehaviour
         }       
     }
 
-    public void MakeNoise(Vector3 pos, float noiseAmt) //add Vector3 LastNoise so the enemy AI investigates it
+    public void MakeNoise(Vector3 pos) //add Vector3 LastNoise so the enemy AI investigates it
     {
         lastTimeNoise = Time.time;
         PlayerUI.instance.ShowSpeaker();
 
-        Enemy.instance.OnNoise(pos, noiseAmt);
+        OnNoise?.Invoke(pos);
     }
 
 

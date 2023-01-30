@@ -75,7 +75,6 @@ public class GameManager : MonoBehaviour
         switch(loseState)
         {
             case LoseState.Shot:
-                Enemy.instance.audioPlayer.Play(Enemy.instance.Weaponry[1]);
                 PlayerUI.instance.LoseScreen.SetActive(true);
                 
                 break;

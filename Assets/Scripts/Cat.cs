@@ -331,7 +331,6 @@ public class Cat : Interactable
         playerController.Interaction.HideCrosshair = false;
         effects[0].Stop();
         effects[1].Stop();
-        Enemy.instance.CatPetted();
         playerController.UI.Hamd.enabled = false;
 
         /*if (audioSource2.isPlaying)

@@ -94,7 +94,6 @@ public class FirstPersonController : MonoBehaviour
     private float lastTimeStep = -420f;
 
     [Header("Other")]
-    public float NoiseAmt_Sprinting = 10f;
     public Transform CatHoldingPosition;
     public Transform PickupPosition;
     public Transform PickupPositionWindup;
@@ -259,7 +258,7 @@ public class FirstPersonController : MonoBehaviour
         
 
         if (controller.velocity.sqrMagnitude > 2 && Input.sprint)
-        { LevelManager.instance.MakeNoise(transform.position, Time.deltaTime * NoiseAmt_Sprinting);  }
+        { LevelManager.instance.MakeNoise(transform.position);  }
 
         moveDir.y = verticalVelocity;
         controller.Move(moveDir * Time.deltaTime);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
+[RequireComponent(typeof(TextMesh))]
 public class EnemyDebug : MonoBehaviour
 {
     [HideInInspector]
@@ -15,22 +16,22 @@ public class EnemyDebug : MonoBehaviour
     private void OnEnable()
     {
         Enemy = transform.GetComponentInParent<Enemy>();
-        outputText = Enemy.EnemyDebugObject;
+        outputText = GetComponent<TextMesh>();
     }
 
     string GetDebugStatus()
     {
-        alertnessPercentage = Mathf.Lerp(0f, 100f, (Enemy.Alertness / 1f));
+        /*alertnessPercentage = Mathf.Lerp(0f, 100f, (Enemy.Alertness / 1f));
         string alertnessBar = "";
         for (int i = 0; i < 20; i++)
         {
             if(alertnessPercentage >= 5f * i)
             { alertnessBar += "|"; }
-        }
+        }*/
         return $"{Enemy.State.ToString()}\n" +
-            $"Sees Player: {Enemy.SeesPlayer}\n" +
-            $"Noise: {Enemy.Noise}\n" +
-            $"Alertness : {alertnessBar}";
+            $"Sees Player: {Enemy.SeesPlayer}\n"; // +
+            //$"Noise: {Enemy.Noise}\n" +
+            //$"Alertness : {alertnessBar}";
     }
 
     void Update()
@@ -40,7 +41,7 @@ public class EnemyDebug : MonoBehaviour
 
         outputText.text = GetDebugStatus();
 
-        Debug.DrawLine(Enemy.eyes.position, Enemy.eyes.position + Enemy.eyes.transform.forward * 2f, Color.white);
-        Debug.DrawLine(Enemy.eyes.position, Enemy.Hit.point, Enemy.State == Enemy.EnemyState.Chasing ? Color.red : Color.green);
+        //Debug.DrawLine(Enemy.eyes.position, Enemy.eyes.position + Enemy.eyes.transform.forward * 2f, Color.white);
+        //Debug.DrawLine(Enemy.eyes.position, Enemy.Hit.point, Enemy.State == Enemy.EnemyState.Chasing ? Color.red : Color.green);
     }
 }

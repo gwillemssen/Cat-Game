@@ -37,7 +37,7 @@ public class AudioPlayer : MonoBehaviour
         au.pitch = sound.Pitch; //Doesnt work with multiple sounds playing at the same time.  Pitch affects all currently playing sounds
         au.PlayOneShot(sound.Clip, sound.Volume);
         if (sound.IncreasesNoiseMeter && sound.NoiseAmt > 0)
-        { LevelManager.instance.MakeNoise(transform.position, sound.NoiseAmt); }
+        { LevelManager.instance.MakeNoise(transform.position); }
     }
 
     /*public void Play(string sound)
