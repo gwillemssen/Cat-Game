@@ -65,7 +65,7 @@ public class FirstPersonController : MonoBehaviour
     public float StepCooldownWalk = .5f;
     public float StepCooldownChase = .25f;
 
-    //Public References
+    //Public Properties
     [HideInInspector]
     public Camera MainCamera { get; private set; }
     [HideInInspector]
@@ -76,6 +76,7 @@ public class FirstPersonController : MonoBehaviour
     public PlayerUI UI { get; private set; }
     [HideInInspector]
     public bool IsCrouching { get; private set; }
+
 
     // player
     private Vector2 wishMove;
@@ -94,6 +95,7 @@ public class FirstPersonController : MonoBehaviour
     private float lastTimeStep = -420f;
 
     [Header("Other")]
+    public Transform[] VisibilityCheckPoints;
     public Transform CatHoldingPosition;
     public Transform PickupPosition;
     public Transform PickupPositionWindup;

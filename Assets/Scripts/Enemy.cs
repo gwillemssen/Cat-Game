@@ -60,9 +60,6 @@ public class PatrollingWithGunState : PatrollingState
         base.Update(enemy, ai);
         //gun shooty stuff
     }
-
-    public override void OnNoise(Enemy enemy, Vector3 noisePos)
-    { /*do nothing*/ }
 }
 
 public class SearchingForNoiseState : EnemyState
@@ -74,6 +71,9 @@ public class SearchingForNoiseState : EnemyState
         //Movement
         ai.isStopped = false;
         ai.destination = NoisePosition;
+
+        if(enemy.ArrivedAtDestinationOrStuck)
+        { enemy.SetState(enemy.LastState); }
 
         //Spotting
         if(enemy.SpottedPlayer)
@@ -101,7 +101,7 @@ public class CallingCopsGrabbingGunState : EnemyState
             case State.GrabbingGun:
                 ai.destination = enemy.GunWaypoint.transform.position;
 
-                if(enemy.ArrivedAtDestination)
+                if(enemy.ArrivedAtDestinationOrStuck)
                 { enemy.SetState(PatrollingWithGunState); }
 
                 break;
@@ -114,16 +114,22 @@ public class CallingCopsGrabbingGunState : EnemyState
 public class Enemy : MonoBehaviour
 {
     public bool DebugMode;
+    public Transform eyePosition;
     public List<Waypoint> PatrollingRoute { get; private set; }
     public Waypoint PhoneWaypoint;
     public Waypoint GunWaypoint;
-    [HideInInspector] public EnemyState State { get; private set; }
-    [HideInInspector] public EnemyState LastState { get; private set; }
+
+    public float SightDistance = 12f;
+    [SerializeField] private LayerMask everythingBesidesEnemy;
+
+    [HideInInspector] public EnemyState State { get; private set; } = EnemyState.SittingState;
+    [HideInInspector] public EnemyState LastState { get; private set; } = EnemyState.SittingState;
     public bool SeesPlayer { get; private set; }
     public bool SpottedPlayer { get; private set; }
-    public bool ArrivedAtDestination { get; private set; }
+    public bool ArrivedAtDestinationOrStuck { get; private set; }
 
     private IAstarAI ai;
+    private Transform playerTransform;
 
     private void Awake()
     {
@@ -138,16 +144,78 @@ public class Enemy : MonoBehaviour
         Cat.CompletedPetting -= CompletedPettingCallback;
     }
 
+    private void Start()
+    {
+        playerTransform = FirstPersonController.instance.transform;
+    }
+
     private void Update()
     {
-        return;
+
         //TODO: calculate stuff before we update the state
-        //stuff
+
+        //SeesPlayer =
         //SeesPlayer
         //SpottedPlayer
         //ArrivedAtDestination
 
         State.Update(this, ai);
+    }
+
+    private void FixedUpdate()
+    {
+        RaycastToPlayer();
+    }
+
+    bool IsPlayerWithinFieldOfView()
+    {
+        return Vector3.Dot(transform.TransformDirection(Vector3.forward), (playerTransform.position - transform.position).normalized) >= .15;
+    }
+
+    bool RaycastToPlayer()
+    {
+        if(!IsPlayerWithinFieldOfView())
+        { return false; }
+
+        for (int i = 0; i < FirstPersonController.instance.VisibilityCheckPoints.Length; i++)
+        {
+            if (RaycastToPoint(FirstPersonController.instance.VisibilityCheckPoints[i].position))
+            {
+                SeesPlayer = true;
+
+                if (!DebugMode)
+                { return true; }
+            }
+        }
+
+        SeesPlayer = false;
+        return false;
+    }
+
+    RaycastHit hit;
+    bool RaycastToPoint(Vector3 point)
+    {
+        bool hitPlayer = false;
+        Vector3 direction = (point - eyePosition.position);
+        if (Physics.Raycast(eyePosition.position, direction, out hit, SightDistance, everythingBesidesEnemy, QueryTriggerInteraction.Collide))
+        {
+            hitPlayer = hit.collider.CompareTag("Player");
+            if (DebugMode)
+            { print("Version 1"); Debug.DrawLine(eyePosition.position, hit.point, hitPlayer? Color.green : Color.red, 0.25f); }
+
+            if (!hitPlayer)
+            { return false; }
+        }
+        else
+        {
+            if(!DebugMode)
+            { return false; }
+
+            print("Version 2");
+            Debug.DrawLine(eyePosition.position, eyePosition.position + direction * SightDistance, Color.red, 0.25f);
+        }
+
+        return hitPlayer;
     }
 
     private void OnNoiseCallback(Vector3 pos)
@@ -170,6 +238,7 @@ public class Enemy : MonoBehaviour
     //Editor Gizmo stuff
     private void OnDrawGizmosSelected()
     {
+        return;
         if (PatrollingRoute == null || PatrollingRoute.Count == 0)
         { return; }
         for (int i = 0; i < PatrollingRoute.Count; i++)

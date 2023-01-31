@@ -150,7 +150,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1259454154897087313}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.711, z: 0}
+  m_LocalPosition: {x: 0, y: 1.543, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -425,65 +425,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9414aabddf48aa14ea1ad77e2da5cb37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DebugMode: 0
-  PatrollingRoute:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  DebugMode: 1
+  eyePosition: {fileID: 8272336163191410661}
   PhoneWaypoint: {fileID: 0}
   GunWaypoint: {fileID: 0}
-  eyes: {fileID: 8272336163191410661}
-  anim: {fileID: -1981050854719233473}
-  AlertnessRate: 0.65
-  AlertnessModifierBackTurned: 0.4
   SightDistance: 12
-  HearingRadius: 20
-  ChaseTime: 5.14
-  LostTargetTime: 10
-  ShootDistance: 5
-  OpenDoorStopTime: 1
-  EverythingExceptEnemy:
+  everythingBesidesEnemy:
     serializedVersion: 2
-    m_Bits: 12087
-  InteractableLayerMask:
-    serializedVersion: 2
-    m_Bits: 1024
-  EnemyDebugObject: {fileID: 883035380}
-  StuckFixTime: 2
-  NoiseDecay: 4
-  MaxNoise: 30
-  FootstepSounds:
-  - {fileID: 11400000, guid: 5f6f2c6f7e716e445881cb40d33dc6e3, type: 2}
-  - {fileID: 11400000, guid: 77f5eac21769a0349bb9aeaf17fb873f, type: 2}
-  - {fileID: 11400000, guid: 1756fde38bc64df42afa3e263ded8880, type: 2}
-  StepCooldownWalk: 0.5
-  StepCooldownChase: 0.25
-  SpotPlayerSounds:
-  - {fileID: 11400000, guid: 33339637a616ba2409928c3cb0de52bf, type: 2}
-  - {fileID: 11400000, guid: fbce45537db9a1b47b7c9fea0c2b2cce, type: 2}
-  - {fileID: 11400000, guid: d33eb43a2df357c408dc2fa19377ca67, type: 2}
-  - {fileID: 11400000, guid: 6f5e7cec3e5e791458773d9863605811, type: 2}
-  - {fileID: 11400000, guid: b8667339de8c06c4a989fb46297eb63b, type: 2}
-  - {fileID: 11400000, guid: 007418af252786a42b4a940b90537dad, type: 2}
-  GoingToCallThePoliceSounds:
-  - {fileID: 11400000, guid: ead38ef5b585d2b49b21c916edd1ef72, type: 2}
-  - {fileID: 11400000, guid: e49289f7d10833942be102c5a2a75a2b, type: 2}
-  CallingPoliceSounds:
-  - {fileID: 11400000, guid: 00359332b89fbe74a803f241b7cb20b9, type: 2}
-  - {fileID: 11400000, guid: 20c3de1c58b8a6545bd3c48344f9b835, type: 2}
-  ChasingSounds:
-  - {fileID: 11400000, guid: 6e37e8b85c6659848aa18e378d59a36b, type: 2}
-  - {fileID: 11400000, guid: a061a090232481c49bb06594dea42055, type: 2}
-  - {fileID: 11400000, guid: ea7f162dd3c1af5468f41bf1bc6aa14e, type: 2}
-  - {fileID: 11400000, guid: 2987aa12bbfa53b4d968b71eff510b1a, type: 2}
-  - {fileID: 11400000, guid: b495965c6c971ce4b9e7cacb5a1b9072, type: 2}
-  - {fileID: 11400000, guid: f5e6ad40d6e6c794aa068e57dc86c4c7, type: 2}
-  Weaponry:
-  - {fileID: 11400000, guid: 761ee1c254a14d74e8514a07cc9ba798, type: 2}
-  - {fileID: 11400000, guid: f41c9301b5072434d98bdeb4cdc354d2, type: 2}
-  - {fileID: 11400000, guid: 199af8c0650922a45b0d450e6e218642, type: 2}
-  - {fileID: 11400000, guid: 34b80b392f264ac449283e74596c6993, type: 2}
-  - {fileID: 11400000, guid: 4355bbc5400bc6c41b6e2e169afc8e63, type: 2}
+    m_Bits: 12095
 --- !u!82 &820578986273975116
 AudioSource:
   m_ObjectHideFlags: 0
