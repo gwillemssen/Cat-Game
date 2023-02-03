@@ -5,7 +5,6 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(FirstPersonInput))]
 [RequireComponent(typeof(FirstPersonInteraction))]
-[RequireComponent(typeof(PlayerUI))]
 [RequireComponent(typeof(AudioPlayer))]
 
 public class FirstPersonController : MonoBehaviour
@@ -72,8 +71,7 @@ public class FirstPersonController : MonoBehaviour
     public FirstPersonInput Input { get; private set; }
     [HideInInspector]
     public FirstPersonInteraction Interaction { get; private set; }
-    [HideInInspector]
-    public PlayerUI UI { get; private set; }
+    public PlayerUI UI;
     [HideInInspector]
     public bool IsCrouching { get; private set; }
 
@@ -135,7 +133,6 @@ public class FirstPersonController : MonoBehaviour
         audioPlayer = GetComponent<AudioPlayer>();
         Interaction = GetComponent<FirstPersonInteraction>();
         Interaction.Init(this);
-        UI = GetComponent<PlayerUI>();
         UI.Init(this);
         TargetFOV = MainCamera.fieldOfView;
     }
@@ -164,9 +161,6 @@ public class FirstPersonController : MonoBehaviour
         }
         Interaction.UpdateInteraction();
         CameraFOVLerp();
-
-        //this belongs in the player UI script.  Need to refactor later
-        PlayerUI.instance.SetCrouchUI(Input.crouch);
     }
 
     private void Audio()

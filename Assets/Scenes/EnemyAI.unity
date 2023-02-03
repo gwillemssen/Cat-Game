@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1179,10 +1179,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 8616685848737228371, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
+    - target: {fileID: 3637489063502811109, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
         type: 3}
-      propertyPath: crouchSpeed
-      value: 8
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3637489063502811109, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7345384114804529024, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7345384114804529024, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8616685848737228372, guid: c5efc39a8aaf6e64ea40e9ad573e9b47,
         type: 3}
@@ -2348,6 +2363,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1716421313}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1835806359 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6234930925431052522, guid: afdc863829524324688a1af37dc6c8bd,
+    type: 3}
+  m_PrefabInstance: {fileID: 6234930925431052520}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19004f4bba894cb48aa63d95e0610196, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1884976391
 GameObject:
   m_ObjectHideFlags: 0
@@ -2517,7 +2544,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1959072138}
   m_LocalRotation: {x: 0.36520845, y: -0.60549384, z: -0.36520842, w: 0.6054939}
-  m_LocalPosition: {x: -3.39, y: -0.01, z: -3.07}
+  m_LocalPosition: {x: -3.39, y: -0.32, z: -1.67}
   m_LocalScale: {x: 3.198752, y: 1.0960349, z: 0.86437345}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3126,6 +3153,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 820578986273975116, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: panLevelCustomCurve.m_Curve.Array.data[0].value
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6234930927336056515, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: maxSpeed
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: DebugObject
+      value: 
+      objectReference: {fileID: 1835806359}
     - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
         type: 3}
       propertyPath: GunWaypoint
@@ -3136,6 +3178,57 @@ PrefabInstance:
       propertyPath: PhoneWaypoint
       value: 
       objectReference: {fileID: 2018760199}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: ChasingSounds.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: PatrollingRoute.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: ChasingSounds.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 6e37e8b85c6659848aa18e378d59a36b,
+        type: 2}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: ChasingSounds.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: a061a090232481c49bb06594dea42055,
+        type: 2}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: ChasingSounds.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: ea7f162dd3c1af5468f41bf1bc6aa14e,
+        type: 2}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: ChasingSounds.Array.data[3]
+      value: 
+      objectReference: {fileID: 11400000, guid: 2987aa12bbfa53b4d968b71eff510b1a,
+        type: 2}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: ChasingSounds.Array.data[4]
+      value: 
+      objectReference: {fileID: 11400000, guid: b495965c6c971ce4b9e7cacb5a1b9072,
+        type: 2}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: ChasingSounds.Array.data[5]
+      value: 
+      objectReference: {fileID: 11400000, guid: f5e6ad40d6e6c794aa068e57dc86c4c7,
+        type: 2}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: SpotPlayerSounds.Array.size
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
         type: 3}
       propertyPath: PatrollingRoute.Array.data[0]
@@ -3151,6 +3244,76 @@ PrefabInstance:
       propertyPath: PatrollingRoute.Array.data[2]
       value: 
       objectReference: {fileID: 1289986265}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: CallingPoliceSounds.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: SpotPlayerSounds.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 33339637a616ba2409928c3cb0de52bf,
+        type: 2}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: SpotPlayerSounds.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: fbce45537db9a1b47b7c9fea0c2b2cce,
+        type: 2}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: SpotPlayerSounds.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: d33eb43a2df357c408dc2fa19377ca67,
+        type: 2}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: SpotPlayerSounds.Array.data[3]
+      value: 
+      objectReference: {fileID: 11400000, guid: 6f5e7cec3e5e791458773d9863605811,
+        type: 2}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: SpotPlayerSounds.Array.data[4]
+      value: 
+      objectReference: {fileID: 11400000, guid: b8667339de8c06c4a989fb46297eb63b,
+        type: 2}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: SpotPlayerSounds.Array.data[5]
+      value: 
+      objectReference: {fileID: 11400000, guid: 007418af252786a42b4a940b90537dad,
+        type: 2}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: CallingPoliceSounds.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 00359332b89fbe74a803f241b7cb20b9,
+        type: 2}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: CallingPoliceSounds.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 20c3de1c58b8a6545bd3c48344f9b835,
+        type: 2}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: GoingToCallThePoliceSounds.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: GoingToCallThePoliceSounds.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: ead38ef5b585d2b49b21c916edd1ef72,
+        type: 2}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: GoingToCallThePoliceSounds.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: e49289f7d10833942be102c5a2a75a2b,
+        type: 2}
     - target: {fileID: 6234930927336056523, guid: afdc863829524324688a1af37dc6c8bd,
         type: 3}
       propertyPath: m_Name
@@ -3164,7 +3327,7 @@ PrefabInstance:
     - target: {fileID: 6234930927336056527, guid: afdc863829524324688a1af37dc6c8bd,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -5.17
+      value: -0.29
       objectReference: {fileID: 0}
     - target: {fileID: 6234930927336056527, guid: afdc863829524324688a1af37dc6c8bd,
         type: 3}
@@ -3174,7 +3337,7 @@ PrefabInstance:
     - target: {fileID: 6234930927336056527, guid: afdc863829524324688a1af37dc6c8bd,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.41
+      value: -3.91
       objectReference: {fileID: 0}
     - target: {fileID: 6234930927336056527, guid: afdc863829524324688a1af37dc6c8bd,
         type: 3}

@@ -12,18 +12,15 @@ public class PlayerUI : MonoBehaviour
 
     public static PlayerUI instance;
 
-    public enum EyeState { Closed, Half, Open}
+    public enum EyeState { Closed, Half, Open }
 
-    [Header("References")]
-    public GameObject FPSCamPrefab;
-   
+    public Canvas Canvas;
+
     [HideInInspector]
     public Slider PettingMeter;
     private Slider throwStrengthMeter;
     private Image timeUI;
     private GameObject catTimerUI;
-    private Image catStandingUI;
-    private Image catCrouchUI;
     private Image eyeOpenUI;
     private Image eyeHalfUI;
     private Image eyeClosedUI;
@@ -39,13 +36,11 @@ public class PlayerUI : MonoBehaviour
     public GameObject LoseScreen { get; private set; }
     public GameObject LoseCopsScreen { get; private set; }
     public Image Hamd { get { return hamd; } private set { hamd = value; } }
-    public Canvas Canvas { get { return canvas; } private set { canvas = value; } }
     public bool EnemyOnScreen { get; private set; }
 
     private float lastTimeShownSpeaker = -420f;
     string debugOutput = "";
     Color speakerColor;
-    private Canvas canvas;
 
     private void Awake()
     {
@@ -58,14 +53,11 @@ public class PlayerUI : MonoBehaviour
     }
 
     public void Init(FirstPersonController controller)
-    {
-        FPSCamPrefab = Resources.Load("Prefab/FpsCam") as GameObject;
-        
-        canvas = Instantiate<GameObject>(FPSCamPrefab, Vector3.down * 100f, Quaternion.identity).GetComponentInChildren<Canvas>();
+    {        
         Transform t;
-        for(int i = 0; i < canvas.transform.childCount; i++)
+        for(int i = 0; i < Canvas.transform.childCount; i++)
         {
-            t = canvas.transform.GetChild(i);
+            t = Canvas.transform.GetChild(i);
 
             switch(t.gameObject.name)
             {
@@ -96,10 +88,6 @@ public class PlayerUI : MonoBehaviour
                 case "LOSECops":
                     LoseCopsScreen = t.gameObject;
                     break;
-                case "CrouchUI":
-                    catStandingUI = t.GetChild(0).GetComponent<Image>();
-                    catCrouchUI = t.GetChild(1).GetComponent<Image>();
-                    break;
                 case "EyeUI":
                     eyeOpenUI = t.GetChild(0).GetComponent<Image>();
                     eyeHalfUI = t.GetChild(1).GetComponent<Image>();
@@ -128,7 +116,6 @@ public class PlayerUI : MonoBehaviour
         hamd.enabled = false;
         speakerColor = new Color(1, 1, 1, 0);
         speakerUI.color = speakerColor;
-        SetCrouchUI(false);
         //debugText.enabled = false;
         debugText.text = "";
         spottedGradient_Left.SetActive(false);
@@ -150,6 +137,8 @@ public class PlayerUI : MonoBehaviour
 
     public void SetSpottedGradient(bool enable, Vector3 pos)
     {
+        if(!enable)
+        { return; }
         EnemyOnScreen = Vector3.Dot(transform.TransformDirection(Vector3.forward), (pos - transform.position)) >= .65;
         //enable both if enemy is on the screen
         bool onRightSide = Vector3.Cross(transform.TransformDirection(Vector3.forward), (pos - transform.position)).y > 0;
@@ -177,12 +166,6 @@ public class PlayerUI : MonoBehaviour
         eyeOpenUI.enabled = (eyeState == EyeState.Open);
         eyeHalfUI.enabled = (eyeState == EyeState.Half);
         eyeClosedUI.enabled = (eyeState == EyeState.Closed);
-    }
-
-    public void SetCrouchUI(bool crouching)
-    {
-        catCrouchUI.enabled = crouching;
-        catStandingUI.enabled = !crouching;
     }
 
     public void SetThrowStrengthMeter(float p)

@@ -387,7 +387,7 @@ MonoBehaviour:
   radius: 1
   height: 2
   canMove: 1
-  maxSpeed: 2.5
+  maxSpeed: 1.5
   gravity: {x: NaN, y: NaN, z: NaN}
   groundMask:
     serializedVersion: 2
@@ -426,13 +426,41 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DebugMode: 1
-  eyePosition: {fileID: 8272336163191410661}
+  EyePosition: {fileID: 8272336163191410661}
+  PatrollingRoute:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   PhoneWaypoint: {fileID: 0}
   GunWaypoint: {fileID: 0}
+  DebugObject: {fileID: 6234930925431052522}
+  Anim: {fileID: -1981050854719233473}
   SightDistance: 12
+  AwarenessRate: 0.5
+  AwarenessMultiplierBackTurned: 0.5
   everythingBesidesEnemy:
     serializedVersion: 2
     m_Bits: 12095
+  SpotPlayerSounds:
+  - {fileID: 11400000, guid: 33339637a616ba2409928c3cb0de52bf, type: 2}
+  - {fileID: 11400000, guid: fbce45537db9a1b47b7c9fea0c2b2cce, type: 2}
+  - {fileID: 11400000, guid: d33eb43a2df357c408dc2fa19377ca67, type: 2}
+  - {fileID: 11400000, guid: 6f5e7cec3e5e791458773d9863605811, type: 2}
+  - {fileID: 11400000, guid: b8667339de8c06c4a989fb46297eb63b, type: 2}
+  - {fileID: 11400000, guid: 007418af252786a42b4a940b90537dad, type: 2}
+  GoingToCallThePoliceSounds:
+  - {fileID: 11400000, guid: ead38ef5b585d2b49b21c916edd1ef72, type: 2}
+  - {fileID: 11400000, guid: e49289f7d10833942be102c5a2a75a2b, type: 2}
+  CallingPoliceSounds:
+  - {fileID: 11400000, guid: 00359332b89fbe74a803f241b7cb20b9, type: 2}
+  - {fileID: 11400000, guid: 20c3de1c58b8a6545bd3c48344f9b835, type: 2}
+  ChasingSounds:
+  - {fileID: 11400000, guid: 6e37e8b85c6659848aa18e378d59a36b, type: 2}
+  - {fileID: 11400000, guid: a061a090232481c49bb06594dea42055, type: 2}
+  - {fileID: 11400000, guid: ea7f162dd3c1af5468f41bf1bc6aa14e, type: 2}
+  - {fileID: 11400000, guid: 2987aa12bbfa53b4d968b71eff510b1a, type: 2}
+  - {fileID: 11400000, guid: b495965c6c971ce4b9e7cacb5a1b9072, type: 2}
+  - {fileID: 11400000, guid: f5e6ad40d6e6c794aa068e57dc86c4c7, type: 2}
 --- !u!82 &820578986273975116
 AudioSource:
   m_ObjectHideFlags: 0
@@ -489,7 +517,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 0.5
       inSlope: 0
       outSlope: 0
       tangentMode: 0

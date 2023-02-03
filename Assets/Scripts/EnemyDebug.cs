@@ -21,27 +21,25 @@ public class EnemyDebug : MonoBehaviour
 
     string GetDebugStatus()
     {
-        /*alertnessPercentage = Mathf.Lerp(0f, 100f, (Enemy.Alertness / 1f));
+        alertnessPercentage = Mathf.Lerp(0f, 100f, (Enemy.Awareness / 1f));
         string alertnessBar = "";
         for (int i = 0; i < 20; i++)
         {
             if(alertnessPercentage >= 5f * i)
             { alertnessBar += "|"; }
-        }*/
+        }
         return $"{Enemy.State.ToString()}\n" +
-            $"Sees Player: {Enemy.SeesPlayer}\n"; // +
-            //$"Noise: {Enemy.Noise}\n" +
-            //$"Alertness : {alertnessBar}";
+            $"Sees Player: {Enemy.SeesPlayer}\n" +
+            $"Awareness : {alertnessBar}\n" +
+            $"Moving : {Enemy.Moving}\n" +
+            $"ArrivedAtDestination : {Enemy.ArrivedAtDestinationOrStuck}";
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (!Enemy.DebugMode)
             return;
 
         outputText.text = GetDebugStatus();
-
-        //Debug.DrawLine(Enemy.eyes.position, Enemy.eyes.position + Enemy.eyes.transform.forward * 2f, Color.white);
-        //Debug.DrawLine(Enemy.eyes.position, Enemy.Hit.point, Enemy.State == Enemy.EnemyState.Chasing ? Color.red : Color.green);
     }
 }
