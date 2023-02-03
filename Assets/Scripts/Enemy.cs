@@ -13,6 +13,8 @@ public class EnemyState
     public static EnemyState CallingCopsGrabbingGunState = new CallingCopsGrabbingGunState();
     public static EnemyState PatrollingWithGunState = new PatrollingWithGunState();
 
+    public virtual void Init(Enemy enemy, IAstarAI ai) 
+    { enemy.GunObject.SetActive(false); }
     public virtual void Update(Enemy enemy, IAstarAI ai) { }
     public virtual void OnNoise(Enemy enemy, Vector3 noisePos) { }
     public virtual void SetAnimationState(Enemy enemy, Animator anim)
@@ -79,6 +81,11 @@ public class PatrollingState : EnemyState
 
 public class PatrollingWithGunState : PatrollingState
 {
+    public override void Init(Enemy enemy, IAstarAI ai)
+    {
+        enemy.GunObject.SetActive(true);
+    }
+
     public override void Update(Enemy enemy, IAstarAI ai)
     {
         base.Update(enemy, ai);
@@ -87,9 +94,9 @@ public class PatrollingWithGunState : PatrollingState
 
     public override void SetAnimationState(Enemy enemy, Animator anim)
     {
-        base.SetAnimationState(enemy, anim);
+        anim.SetBool("isWalking", true);
         anim.SetBool("isRifleRunning", true);
-        anim.SetBool("isRifleIdling", !enemy.Moving);
+        //anim.SetBool("isRifleIdling", !enemy.Moving);
     }
 
     public override void OnSpotted(Enemy enemy) { }
@@ -157,6 +164,7 @@ public class Enemy : MonoBehaviour
     public List<Waypoint> PatrollingRoute;
     public Waypoint PhoneWaypoint;
     public Waypoint GunWaypoint;
+    public GameObject GunObject;
     public EnemyDebug DebugObject;
     public Animator Anim;
     public float SightDistance = 12f;
@@ -203,6 +211,8 @@ public class Enemy : MonoBehaviour
         callingPoliceRandomSound = new NonRepeatingSound(CallingPoliceSounds);
         goingToCallThePoliceRandomSound = new NonRepeatingSound(GoingToCallThePoliceSounds);
         spotPlayerRandomSound = new NonRepeatingSound(SpotPlayerSounds);
+
+        State.Init(this, ai);
     }
 
     Vector2 enemyPos2D, destinationPos2D;
@@ -309,6 +319,7 @@ public class Enemy : MonoBehaviour
         { return; }
         LastState = State;
         State = newState;
+        State.Init(this, ai);
         Awareness = 0f;
     }
 
