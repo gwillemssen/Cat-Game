@@ -15,6 +15,17 @@ public class EnemyState
 
     public virtual void Update(Enemy enemy, IAstarAI ai) { }
     public virtual void OnNoise(Enemy enemy, Vector3 noisePos) { }
+    public virtual void SetAnimationState(Enemy enemy, Animator anim)
+    { anim.SetBool("isWalking", enemy.Moving); }
+    protected void RotateToFacePlayerIfVisible(Enemy enemy, IAstarAI ai)
+    {
+        if (enemy.SeesPlayer)
+        {
+            //stop and rotate to face the player
+            ai.isStopped = true;
+            ai.rotation = Quaternion.Lerp(ai.rotation, Quaternion.LookRotation(new Vector3(enemy.PlayerTransform.position.x, 0f, enemy.PlayerTransform.position.z) - new Vector3(enemy.transform.position.x, 0f, enemy.transform.position.z)), Time.deltaTime* 3f);
+        }
+    }
 }
 
 public class SittingState : EnemyState
@@ -27,7 +38,9 @@ public class SittingState : EnemyState
 
         //Spotting
         if(enemy.SpottedPlayer)
-        { enemy.SetState(PatrollingState); }
+        { enemy.SetState(CallingCopsGrabbingGunState); }
+
+        base.RotateToFacePlayerIfVisible(enemy, ai);
     }
 
     public override void OnNoise(Enemy enemy, Vector3 noisePos)
@@ -44,10 +57,21 @@ public class PatrollingState : EnemyState
         ai.isStopped = false;
         ai.destination = enemy.PatrollingRoute[currentWaypointIndex].transform.position;
 
+        //Patrolling
+        if(enemy.ArrivedAtDestinationOrStuck)
+        { currentWaypointIndex++; }
+        if(currentWaypointIndex >= enemy.PatrollingRoute.Count)
+        { currentWaypointIndex = 0; }
+
         //Spotting
         if (enemy.SpottedPlayer)
-        { enemy.SetState(PatrollingState); }
+        { OnSpotted(enemy); }
+
+        base.RotateToFacePlayerIfVisible(enemy, ai);
     }
+
+    public virtual void OnSpotted(Enemy enemy)
+    { enemy.SetState(CallingCopsGrabbingGunState); }
 
     public override void OnNoise(Enemy enemy, Vector3 noisePos)
     { enemy.SetState(SearchingForNoiseState); }
@@ -60,6 +84,15 @@ public class PatrollingWithGunState : PatrollingState
         base.Update(enemy, ai);
         //gun shooty stuff
     }
+
+    public override void SetAnimationState(Enemy enemy, Animator anim)
+    {
+        base.SetAnimationState(enemy, anim);
+        anim.SetBool("isRifleRunning", true);
+        anim.SetBool("isRifleIdling", !enemy.Moving);
+    }
+
+    public override void OnSpotted(Enemy enemy) { }
 }
 
 public class SearchingForNoiseState : EnemyState
@@ -78,6 +111,8 @@ public class SearchingForNoiseState : EnemyState
         //Spotting
         if(enemy.SpottedPlayer)
         { enemy.SetState(CallingCopsGrabbingGunState); }
+
+        base.RotateToFacePlayerIfVisible(enemy, ai);
     }
 
     public override void OnNoise(Enemy enemy, Vector3 noisePos)
@@ -97,6 +132,10 @@ public class CallingCopsGrabbingGunState : EnemyState
         {
             case State.GoingToPhone:
                 ai.destination = enemy.PhoneWaypoint.transform.position;
+
+                if(enemy.ArrivedAtDestinationOrStuck)
+                { state = State.GrabbingGun; }
+
                 break;
             case State.GrabbingGun:
                 ai.destination = enemy.GunWaypoint.transform.position;
@@ -114,22 +153,33 @@ public class CallingCopsGrabbingGunState : EnemyState
 public class Enemy : MonoBehaviour
 {
     public bool DebugMode;
-    public Transform eyePosition;
-    public List<Waypoint> PatrollingRoute { get; private set; }
+    public Transform EyePosition;
+    public List<Waypoint> PatrollingRoute;
     public Waypoint PhoneWaypoint;
     public Waypoint GunWaypoint;
-
+    public EnemyDebug DebugObject;
+    public Animator Anim;
     public float SightDistance = 12f;
+    public float AwarenessRate = 0.5f;
+    public float AwarenessMultiplierBackTurned = 0.5f;
     [SerializeField] private LayerMask everythingBesidesEnemy;
+    public Sound[] SpotPlayerSounds;
+    public Sound[] GoingToCallThePoliceSounds;
+    public Sound[] CallingPoliceSounds;
+    public Sound[] ChasingSounds;
 
     [HideInInspector] public EnemyState State { get; private set; } = EnemyState.SittingState;
     [HideInInspector] public EnemyState LastState { get; private set; } = EnemyState.SittingState;
     public bool SeesPlayer { get; private set; }
     public bool SpottedPlayer { get; private set; }
     public bool ArrivedAtDestinationOrStuck { get; private set; }
+    public bool Moving { get; private set; }
+    public float Awareness { get; private set; }
+    public Transform PlayerTransform { get; private set; }
 
     private IAstarAI ai;
-    private Transform playerTransform;
+    private bool raycastedToPlayer;
+    private AudioPlayer audioPlayer;
 
     private void Awake()
     {
@@ -146,30 +196,57 @@ public class Enemy : MonoBehaviour
 
     private void Start()
     {
-        playerTransform = FirstPersonController.instance.transform;
+        PlayerTransform = FirstPersonController.instance.transform;
+        DebugObject.gameObject.SetActive(DebugMode);
+        audioPlayer = GetComponent<AudioPlayer>();
+        chasingRandomSound = new NonRepeatingSound(ChasingSounds);
+        callingPoliceRandomSound = new NonRepeatingSound(CallingPoliceSounds);
+        goingToCallThePoliceRandomSound = new NonRepeatingSound(GoingToCallThePoliceSounds);
+        spotPlayerRandomSound = new NonRepeatingSound(SpotPlayerSounds);
     }
 
+    Vector2 enemyPos2D, destinationPos2D;
     private void Update()
     {
+        if(raycastedToPlayer)
+        {
+            float awarenessAmt = Time.deltaTime;
+            awarenessAmt *= AwarenessRate;
+            if (!PlayerUI.instance.EnemyOnScreen)
+            { awarenessAmt *= AwarenessMultiplierBackTurned; }
+            Awareness += awarenessAmt;
+        }
+        else
+        { Awareness = 0f; }
 
-        //TODO: calculate stuff before we update the state
+        SpottedPlayer = Awareness >= .99f;
 
-        //SeesPlayer =
-        //SeesPlayer
-        //SpottedPlayer
-        //ArrivedAtDestination
+        enemyPos2D.x = transform.position.x;
+        enemyPos2D.y = transform.position.z;
+        destinationPos2D.x = ai.destination.x;
+        destinationPos2D.y = ai.destination.z;
+
+        ArrivedAtDestinationOrStuck = false;
+        if(Vector2.SqrMagnitude(enemyPos2D - destinationPos2D) <= 0.2f)
+        { ArrivedAtDestinationOrStuck = true; }
+
+        Moving = !ai.isStopped && ai.velocity.sqrMagnitude > .1f;
+
+        //TODO: stuck prevention
 
         State.Update(this, ai);
+        State.SetAnimationState(this, Anim);
     }
 
     private void FixedUpdate()
     {
-        RaycastToPlayer();
+        raycastedToPlayer = RaycastToPlayer();
+        PlayerUI.instance.SetSpottedGradient(SeesPlayer, transform.position);
     }
 
     bool IsPlayerWithinFieldOfView()
     {
-        return Vector3.Dot(transform.TransformDirection(Vector3.forward), (playerTransform.position - transform.position).normalized) >= .15;
+        return Vector3.Dot(transform.TransformDirection(Vector3.forward), (PlayerTransform.position - transform.position).normalized) >= .15;
     }
 
     bool RaycastToPlayer()
@@ -177,6 +254,7 @@ public class Enemy : MonoBehaviour
         if(!IsPlayerWithinFieldOfView())
         { return false; }
 
+        SeesPlayer = false;
         for (int i = 0; i < FirstPersonController.instance.VisibilityCheckPoints.Length; i++)
         {
             if (RaycastToPoint(FirstPersonController.instance.VisibilityCheckPoints[i].position))
@@ -188,20 +266,19 @@ public class Enemy : MonoBehaviour
             }
         }
 
-        SeesPlayer = false;
-        return false;
+        return SeesPlayer;
     }
 
     RaycastHit hit;
     bool RaycastToPoint(Vector3 point)
     {
         bool hitPlayer = false;
-        Vector3 direction = (point - eyePosition.position);
-        if (Physics.Raycast(eyePosition.position, direction, out hit, SightDistance, everythingBesidesEnemy, QueryTriggerInteraction.Collide))
+        Vector3 direction = (point - EyePosition.position);
+        if (Physics.Raycast(EyePosition.position, direction, out hit, SightDistance, everythingBesidesEnemy, QueryTriggerInteraction.Collide))
         {
             hitPlayer = hit.collider.CompareTag("Player");
             if (DebugMode)
-            { print("Version 1"); Debug.DrawLine(eyePosition.position, hit.point, hitPlayer? Color.green : Color.red, 0.25f); }
+            { Debug.DrawLine(EyePosition.position, hit.point, hitPlayer? Color.green : Color.red, 0.25f); }
 
             if (!hitPlayer)
             { return false; }
@@ -211,8 +288,7 @@ public class Enemy : MonoBehaviour
             if(!DebugMode)
             { return false; }
 
-            print("Version 2");
-            Debug.DrawLine(eyePosition.position, eyePosition.position + direction * SightDistance, Color.red, 0.25f);
+            Debug.DrawLine(EyePosition.position, EyePosition.position + direction * SightDistance, Color.red, 0.25f);
         }
 
         return hitPlayer;
@@ -230,9 +306,57 @@ public class Enemy : MonoBehaviour
     public void SetState(EnemyState newState)
     {
         if(State == newState)
-        { Debug.LogWarning("Setting the same state twice"); return; }
+        { return; }
         LastState = State;
         State = newState;
+        Awareness = 0f;
+    }
+
+    private enum VoiceLine { SpotPlayer, GoingToCallThePolice, CallingPolice, Chasing }
+    private float lastTimePlayedVoiceline = -420f;
+    private float voiceLineDuration;
+    private float lastTimePlayedChasingVoiceline = -420f;
+    private float chasingVoicelineDuration;
+    private NonRepeatingSound chasingRandomSound;
+    private NonRepeatingSound callingPoliceRandomSound;
+    private NonRepeatingSound goingToCallThePoliceRandomSound;
+    private NonRepeatingSound spotPlayerRandomSound;
+
+    void PlayVoiceline(VoiceLine voiceLine)
+    {
+        if (Time.time - lastTimePlayedVoiceline < voiceLineDuration) //make sure we dont overlap voicelines
+        {
+            //TODO: add voiceline to queue
+            return;
+        }
+
+        NonRepeatingSound randomSound = null;
+        switch (voiceLine)
+        {
+            case VoiceLine.SpotPlayer:
+                randomSound = spotPlayerRandomSound;
+                break;
+            case VoiceLine.GoingToCallThePolice:
+                randomSound = goingToCallThePoliceRandomSound;
+                break;
+            case VoiceLine.CallingPolice:
+                randomSound = callingPoliceRandomSound;
+                break;
+            case VoiceLine.Chasing:
+                randomSound = chasingRandomSound;
+
+                break;
+        }
+
+        if (randomSound == null)
+        { Debug.LogError("Random Sound null"); return; }
+
+        Sound sound = randomSound.Random();
+        audioPlayer.Play(sound);
+        voiceLineDuration = sound.Clip.length;
+
+
+        lastTimePlayedVoiceline = Time.time;
     }
 
     //Editor Gizmo stuff
