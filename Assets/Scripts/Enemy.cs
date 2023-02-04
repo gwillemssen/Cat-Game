@@ -36,7 +36,7 @@ public class SittingState : EnemyState
     {
         //Movement
         ai.isStopped = true;
-        ai.destination = enemy.transform.position;
+        enemy.NavigateToPosition(enemy.transform.position);
 
         //Spotting
         if(enemy.SpottedPlayer)
@@ -57,7 +57,7 @@ public class PatrollingState : EnemyState
     {
         //Movement
         ai.isStopped = false;
-        ai.destination = enemy.PatrollingRoute[currentWaypointIndex].transform.position;
+        enemy.SetWaypoint(enemy.PatrollingRoute[currentWaypointIndex]);
 
         //Patrolling
         if(enemy.ArrivedAtDestinationOrStuck)
@@ -110,7 +110,7 @@ public class SearchingForNoiseState : EnemyState
     {
         //Movement
         ai.isStopped = false;
-        ai.destination = NoisePosition;
+        enemy.NavigateToPosition(NoisePosition);
 
         if(enemy.ArrivedAtDestinationOrStuck)
         { enemy.SetState(enemy.LastState); }
@@ -138,14 +138,14 @@ public class CallingCopsGrabbingGunState : EnemyState
         switch(state)
         {
             case State.GoingToPhone:
-                ai.destination = enemy.PhoneWaypoint.transform.position;
+                enemy.SetWaypoint(enemy.PhoneWaypoint);
 
                 if(enemy.ArrivedAtDestinationOrStuck)
                 { state = State.GrabbingGun; }
 
                 break;
             case State.GrabbingGun:
-                ai.destination = enemy.GunWaypoint.transform.position;
+                enemy.SetWaypoint(enemy.GunWaypoint);
 
                 if(enemy.ArrivedAtDestinationOrStuck)
                 { enemy.SetState(PatrollingWithGunState); }
@@ -188,6 +188,7 @@ public class Enemy : MonoBehaviour
     private IAstarAI ai;
     private bool raycastedToPlayer;
     private AudioPlayer audioPlayer;
+    private Waypoint currentWaypoint;
 
     private void Awake()
     {
@@ -215,7 +216,6 @@ public class Enemy : MonoBehaviour
         State.Init(this, ai);
     }
 
-    Vector2 enemyPos2D, destinationPos2D;
     private void Update()
     {
         if(raycastedToPlayer)
@@ -229,16 +229,7 @@ public class Enemy : MonoBehaviour
         else
         { Awareness = 0f; }
 
-        SpottedPlayer = Awareness >= .99f;
-
-        enemyPos2D.x = transform.position.x;
-        enemyPos2D.y = transform.position.z;
-        destinationPos2D.x = ai.destination.x;
-        destinationPos2D.y = ai.destination.z;
-
-        ArrivedAtDestinationOrStuck = false;
-        if(Vector2.SqrMagnitude(enemyPos2D - destinationPos2D) <= 0.2f)
-        { ArrivedAtDestinationOrStuck = true; }
+        SpottedPlayer = Awareness >= .99f;       
 
         Moving = !ai.isStopped && ai.velocity.sqrMagnitude > .1f;
 
@@ -246,12 +237,65 @@ public class Enemy : MonoBehaviour
 
         State.Update(this, ai);
         State.SetAnimationState(this, Anim);
+
+        if (currentWaypoint != null)
+        { ArrivedAtDestinationOrStuck = NavigateToWaypoint(); }
     }
 
     private void FixedUpdate()
     {
         raycastedToPlayer = RaycastToPlayer();
         PlayerUI.instance.SetSpottedGradient(SeesPlayer, transform.position);
+    }
+
+    Vector2 enemyPos2D, destinationPos2D;
+    public bool NavigateToPosition(Vector3 pos)
+    {
+        ai.destination = pos;
+
+        enemyPos2D.x = transform.position.x;
+        enemyPos2D.y = transform.position.z;
+        destinationPos2D.x = ai.destination.x;
+        destinationPos2D.y = ai.destination.z;
+
+        ArrivedAtDestinationOrStuck = Vector2.SqrMagnitude(enemyPos2D - destinationPos2D) <= 0.2f;
+
+        return ArrivedAtDestinationOrStuck;
+    }
+
+    public void SetWaypoint(Waypoint waypoint)
+    {
+        ArrivedAtDestinationOrStuck = false;
+        currentWaypoint = waypoint;
+        NavigateToWaypoint();
+    }
+
+    bool atWaypoint;
+    private float lastTimeAtWaypoint = -420f;
+    private bool NavigateToWaypoint()
+    {
+        ai.destination = currentWaypoint.transform.position;
+
+        if (NavigateToPosition(currentWaypoint.gameObject.transform.position))
+        {
+            if (!atWaypoint)
+            {
+                lastTimeAtWaypoint = Time.time;
+                atWaypoint = true;
+            }
+            if (Time.time - lastTimeAtWaypoint > currentWaypoint.StopTime)
+            {
+                //arrival
+                print("done waiting " + Time.time);
+                atWaypoint = false;
+                currentWaypoint = null;
+                ArrivedAtDestinationOrStuck = true;
+                return true;
+            }
+        }
+
+        ArrivedAtDestinationOrStuck = false;
+        return false;
     }
 
     bool IsPlayerWithinFieldOfView()
@@ -284,7 +328,10 @@ public class Enemy : MonoBehaviour
     {
         bool hitPlayer = false;
         Vector3 direction = (point - EyePosition.position);
-        if (Physics.Raycast(EyePosition.position, direction, out hit, SightDistance, everythingBesidesEnemy, QueryTriggerInteraction.Collide))
+        float sightDistance = SightDistance;
+        if(Awareness > 0.2f)
+        { sightDistance = SightDistance * 2f; } //give her more range once were spotted
+        if (Physics.Raycast(EyePosition.position, direction, out hit, sightDistance, everythingBesidesEnemy, QueryTriggerInteraction.Collide))
         {
             hitPlayer = hit.collider.CompareTag("Player");
             if (DebugMode)

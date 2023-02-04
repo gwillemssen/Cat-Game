@@ -137,8 +137,6 @@ public class PlayerUI : MonoBehaviour
 
     public void SetSpottedGradient(bool enable, Vector3 pos)
     {
-        if(!enable)
-        { return; }
         EnemyOnScreen = Vector3.Dot(transform.TransformDirection(Vector3.forward), (pos - transform.position)) >= .65;
         //enable both if enemy is on the screen
         bool onRightSide = Vector3.Cross(transform.TransformDirection(Vector3.forward), (pos - transform.position)).y > 0;
