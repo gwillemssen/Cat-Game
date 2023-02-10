@@ -19,7 +19,8 @@ public class EnemyState
     public virtual void OnNoise(Enemy enemy, Vector3 noisePos) { }
     public virtual void SetAnimationState(Enemy enemy, Animator anim)
     { anim.SetBool("isWalking", enemy.Moving); }
-    protected void RotateToFacePlayerIfVisible(Enemy enemy, IAstarAI ai)
+    //call this method in the update loop to make the enemy stop and rotate to face the player when sighted
+    protected void StopAndRotateToFacePlayerIfVisible(Enemy enemy, IAstarAI ai)
     {
         if (enemy.SeesPlayer)
         {
@@ -34,6 +35,8 @@ public class SittingState : EnemyState
 {
     public override void Update(Enemy enemy, IAstarAI ai)
     {
+        enemy.RedLightTargetIntensity = enemy.SeesPlayer ? enemy.RedLightIntensityNormal : 0f;
+
         //Movement
         ai.isStopped = true;
         enemy.NavigateToPosition(enemy.transform.position);
@@ -42,11 +45,16 @@ public class SittingState : EnemyState
         if(enemy.SpottedPlayer)
         { enemy.SetState(CallingCopsGrabbingGunState); }
 
-        base.RotateToFacePlayerIfVisible(enemy, ai);
+        base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
     }
 
     public override void OnNoise(Enemy enemy, Vector3 noisePos)
     { enemy.SetState(SearchingForNoiseState); }
+
+    public override void Init(Enemy enemy, IAstarAI ai)
+    {
+        enemy.RedLightTargetIntensity = 0f;
+    }
 }
 
 public class PatrollingState : EnemyState
@@ -55,6 +63,8 @@ public class PatrollingState : EnemyState
 
     public override void Update(Enemy enemy, IAstarAI ai)
     {
+        enemy.RedLightTargetIntensity = enemy.SeesPlayer ? enemy.RedLightIntensityNormal : 0f;
+
         //Movement
         ai.isStopped = false;
         enemy.SetWaypoint(enemy.PatrollingRoute[currentWaypointIndex]);
@@ -69,7 +79,7 @@ public class PatrollingState : EnemyState
         if (enemy.SpottedPlayer)
         { OnSpotted(enemy); }
 
-        base.RotateToFacePlayerIfVisible(enemy, ai);
+        base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
     }
 
     public virtual void OnSpotted(Enemy enemy)
@@ -77,6 +87,11 @@ public class PatrollingState : EnemyState
 
     public override void OnNoise(Enemy enemy, Vector3 noisePos)
     { enemy.SetState(SearchingForNoiseState); }
+
+    public override void Init(Enemy enemy, IAstarAI ai)
+    {
+        enemy.RedLightTargetIntensity = 0f;
+    }
 }
 
 public class PatrollingWithGunState : PatrollingState
@@ -89,7 +104,13 @@ public class PatrollingWithGunState : PatrollingState
     public override void Update(Enemy enemy, IAstarAI ai)
     {
         base.Update(enemy, ai);
+        
         //gun shooty stuff
+        if(enemy.Awareness >= .98f)
+        { GameManager.instance.GameOver(GameManager.LoseState.Shot); }
+
+        //flashing red
+        enemy.RedLightTargetIntensity = Mathf.Lerp(enemy.RedLightIntensityNormal, enemy.RedLightIntensityHigh, Mathf.Abs(Mathf.Sin(Time.time)));
     }
 
     public override void SetAnimationState(Enemy enemy, Animator anim)
@@ -119,11 +140,16 @@ public class SearchingForNoiseState : EnemyState
         if(enemy.SpottedPlayer)
         { enemy.SetState(CallingCopsGrabbingGunState); }
 
-        base.RotateToFacePlayerIfVisible(enemy, ai);
+        base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
     }
 
     public override void OnNoise(Enemy enemy, Vector3 noisePos)
     { NoisePosition = noisePos; }
+
+    public override void Init(Enemy enemy, IAstarAI ai)
+    {
+        enemy.RedLightTargetIntensity = enemy.RedLightIntensityHigh;
+    }
 }
 
 public class CallingCopsGrabbingGunState : EnemyState
@@ -153,6 +179,11 @@ public class CallingCopsGrabbingGunState : EnemyState
                 break;
         }
     }
+
+    public override void Init(Enemy enemy, IAstarAI ai)
+    {
+        enemy.RedLightTargetIntensity = 0f;
+    }
 }
 
 [RequireComponent(typeof(IAstarAI))]
@@ -161,6 +192,7 @@ public class Enemy : MonoBehaviour
 {
     public bool DebugMode;
     public Transform EyePosition;
+    public Light RedLight;
     public List<Waypoint> PatrollingRoute;
     public Waypoint PhoneWaypoint;
     public Waypoint GunWaypoint;
@@ -170,6 +202,11 @@ public class Enemy : MonoBehaviour
     public float SightDistance = 12f;
     public float AwarenessRate = 0.5f;
     public float AwarenessMultiplierBackTurned = 0.5f;
+    [Tooltip("How visible does the player need to be to be spotted [0.0-1.0]")]
+    [Range(0f,1f)]
+    public float VisibilityThreshold = 0.5f;
+    public float RedLightIntensityNormal = 4f;
+    public float RedLightIntensityHigh = 8f;
     [SerializeField] private LayerMask everythingBesidesEnemy;
     public Sound[] SpotPlayerSounds;
     public Sound[] GoingToCallThePoliceSounds;
@@ -178,17 +215,21 @@ public class Enemy : MonoBehaviour
 
     [HideInInspector] public EnemyState State { get; private set; } = EnemyState.SittingState;
     [HideInInspector] public EnemyState LastState { get; private set; } = EnemyState.SittingState;
+    [HideInInspector] public float RedLightTargetIntensity { get; set; }
     public bool SeesPlayer { get; private set; }
     public bool SpottedPlayer { get; private set; }
     public bool ArrivedAtDestinationOrStuck { get; private set; }
     public bool Moving { get; private set; }
     public float Awareness { get; private set; }
+    public float PercentVisible { get; private set; }
     public Transform PlayerTransform { get; private set; }
 
     private IAstarAI ai;
     private bool raycastedToPlayer;
     private AudioPlayer audioPlayer;
     private Waypoint currentWaypoint;
+    private float sightDistanceTarget;
+    private float sightDistance;
 
     private void Awake()
     {
@@ -213,25 +254,39 @@ public class Enemy : MonoBehaviour
         goingToCallThePoliceRandomSound = new NonRepeatingSound(GoingToCallThePoliceSounds);
         spotPlayerRandomSound = new NonRepeatingSound(SpotPlayerSounds);
 
+        sightDistance = SightDistance;
+        sightDistanceTarget = SightDistance;
+
+        RedLightTargetIntensity = 0f;
+        RedLight.intensity = RedLightTargetIntensity;
         State.Init(this, ai);
     }
 
     private void Update()
     {
-        if(raycastedToPlayer)
+        SeesPlayer = PercentVisible >= VisibilityThreshold;
+
+        if (raycastedToPlayer)
         {
             float awarenessAmt = Time.deltaTime;
             awarenessAmt *= AwarenessRate;
             if (!PlayerUI.instance.EnemyOnScreen)
             { awarenessAmt *= AwarenessMultiplierBackTurned; }
+            awarenessAmt *= PercentVisible;
+            if (!SeesPlayer)
+            { awarenessAmt = 0f; }
             Awareness += awarenessAmt;
         }
         else
         { Awareness = 0f; }
 
         SpottedPlayer = Awareness >= .99f;       
-
         Moving = !ai.isStopped && ai.velocity.sqrMagnitude > .1f;
+
+        sightDistanceTarget = SightDistance;
+        if (raycastedToPlayer)
+        { sightDistanceTarget = SightDistance * 2f; } //give her more range once were spotted
+        sightDistance = Mathf.Lerp(sightDistance, sightDistanceTarget, Time.deltaTime);
 
         //TODO: stuck prevention
 
@@ -240,6 +295,9 @@ public class Enemy : MonoBehaviour
 
         if (currentWaypoint != null)
         { ArrivedAtDestinationOrStuck = NavigateToWaypoint(); }
+
+        //red light
+        RedLight.intensity = Mathf.Lerp(RedLight.intensity, RedLightTargetIntensity, Time.deltaTime * 2f);
     }
 
     private void FixedUpdate()
@@ -303,22 +361,26 @@ public class Enemy : MonoBehaviour
         return Vector3.Dot(transform.TransformDirection(Vector3.forward), (PlayerTransform.position - transform.position).normalized) >= .15;
     }
 
+    int raycastsHit;
     bool RaycastToPlayer()
     {
+        PercentVisible = 0f;
+        raycastsHit = 0;
+
         if(!IsPlayerWithinFieldOfView())
         { return false; }
 
-        SeesPlayer = false;
+        bool hit = false;
         for (int i = 0; i < FirstPersonController.instance.VisibilityCheckPoints.Length; i++)
         {
             if (RaycastToPoint(FirstPersonController.instance.VisibilityCheckPoints[i].position))
             {
-                SeesPlayer = true;
-
-                if (!DebugMode)
-                { return true; }
+                hit = true;
+                raycastsHit++;
             }
         }
+
+        PercentVisible = (float)raycastsHit / (float)FirstPersonController.instance.VisibilityCheckPoints.Length;
 
         return SeesPlayer;
     }
@@ -328,9 +390,7 @@ public class Enemy : MonoBehaviour
     {
         bool hitPlayer = false;
         Vector3 direction = (point - EyePosition.position);
-        float sightDistance = SightDistance;
-        if(Awareness > 0.2f)
-        { sightDistance = SightDistance * 2f; } //give her more range once were spotted
+
         if (Physics.Raycast(EyePosition.position, direction, out hit, sightDistance, everythingBesidesEnemy, QueryTriggerInteraction.Collide))
         {
             hitPlayer = hit.collider.CompareTag("Player");

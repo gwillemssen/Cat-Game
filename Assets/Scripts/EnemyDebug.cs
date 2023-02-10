@@ -31,8 +31,8 @@ public class EnemyDebug : MonoBehaviour
         return $"{Enemy.State.ToString()}\n" +
             $"Sees Player: {Enemy.SeesPlayer}\n" +
             $"Awareness : {alertnessBar}\n" +
-            $"Moving : {Enemy.Moving}\n" +
-            $"ArrivedAtDestination : {Enemy.ArrivedAtDestinationOrStuck}";
+            $"PercentVisible : {Enemy.PercentVisible}\n";
+            //$"ArrivedAtDestination : {Enemy.ArrivedAtDestinationOrStuck}";
     }
 
     void FixedUpdate()
