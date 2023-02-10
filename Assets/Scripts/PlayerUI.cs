@@ -16,9 +16,9 @@ public class PlayerUI : MonoBehaviour
 
     public Canvas Canvas;
 
-    [HideInInspector]
-    public Slider PettingMeter;
+    [HideInInspector] public Slider PettingMeter;
     private Slider throwStrengthMeter;
+    private Image noiseMeter;
     private Image timeUI;
     private GameObject catTimerUI;
     private Image eyeOpenUI;
@@ -93,9 +93,6 @@ public class PlayerUI : MonoBehaviour
                     eyeHalfUI = t.GetChild(1).GetComponent<Image>();
                     eyeClosedUI = t.GetChild(2).GetComponent<Image>();
                     break;
-                case "Speaker":
-                    speakerUI = t.GetComponent<Image>();
-                    break;
                 case "Hamd":
                     hamd = t.GetComponent<Image>();
                     break;
@@ -104,6 +101,10 @@ public class PlayerUI : MonoBehaviour
                     break;
                 case "SpottedGradient_Right":
                     spottedGradient_Right = t.gameObject;
+                    break;
+                case "NoiseMeter":
+                    noiseMeter = t.transform.GetChild(0).gameObject.GetComponent<Image>();
+                    speakerUI = t.transform.GetChild(1).gameObject.GetComponent<Image>();
                     break;
             }
         }
@@ -126,13 +127,14 @@ public class PlayerUI : MonoBehaviour
     private void Update()
     {
         debugOutput = "";
-        //debugOutput += $"Noise : {(int)LevelManager.instance.Noise} / {LevelManager.instance.MaxNoise}\n";
-        //debugOutput += $"Most Alert Enemy State : {LevelManager.instance.MostAlertEnemyState}\n";
         debugOutput += $"CATS : {LevelManager.instance.CatsPetted} / {LevelManager.instance.CatsToPet}\n";
         debugText.text = debugOutput;
 
-        speakerColor.a = Mathf.Lerp(1f, 0f, Mathf.Clamp01((Time.time - lastTimeShownSpeaker)));
+        speakerColor.a = Mathf.Lerp(1f, 0f, Mathf.Clamp01((Time.time - lastTimeShownSpeaker) / 5f));
+        print(speakerUI.color);
         speakerUI.color = speakerColor;
+        noiseMeter.color = speakerColor;
+        noiseMeter.fillAmount = Mathf.MoveTowards(noiseMeter.fillAmount, 0f, Time.deltaTime / 5f);
     }
 
     public void SetSpottedGradient(bool enable, Vector3 pos)
@@ -180,10 +182,11 @@ public class PlayerUI : MonoBehaviour
         { catTimerAnim.Play(); }
     }
 
-    public void ShowSpeaker()
+    public void SetNoiseMeter(float percent)
     {
-        speakerUI.enabled = true;
         lastTimeShownSpeaker = Time.time;
+        noiseMeter.fillAmount += percent;
+        noiseMeter.fillAmount = Mathf.Clamp01(noiseMeter.fillAmount);
     }
 
 }

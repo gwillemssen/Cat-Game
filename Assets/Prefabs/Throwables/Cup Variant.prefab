@@ -80,7 +80,12 @@ PrefabInstance:
     - target: {fileID: 762439783231874713, guid: 21b518de5e58bfb4f82ff072c239d7d7,
         type: 3}
       propertyPath: m_Name
-      value: Cup Variant
+      value: Cup
+      objectReference: {fileID: 0}
+    - target: {fileID: 762439783231874713, guid: 21b518de5e58bfb4f82ff072c239d7d7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 762439783231874713, guid: 21b518de5e58bfb4f82ff072c239d7d7,
         type: 3}
@@ -103,25 +108,5 @@ PrefabInstance:
       value: 
       objectReference: {fileID: -4119317738140548247, guid: cbb6302e05ac77d4f8c8ebb8d0417ecb,
         type: 3}
-    m_RemovedComponents:
-    - {fileID: 2653243528983127922, guid: 21b518de5e58bfb4f82ff072c239d7d7, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 21b518de5e58bfb4f82ff072c239d7d7, type: 3}
---- !u!1 &3638582476503619556 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 762439783231874713, guid: 21b518de5e58bfb4f82ff072c239d7d7,
-    type: 3}
-  m_PrefabInstance: {fileID: 4101210852426576253}
-  m_PrefabAsset: {fileID: 0}
---- !u!65 &-2784305466822211950
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3638582476503619556}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.28491086, y: 0.50410414, z: 0.2849109}
-  m_Center: {x: 0.000000022351742, y: -0.011691399, z: -0.000000014901161}

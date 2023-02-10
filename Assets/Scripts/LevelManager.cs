@@ -53,10 +53,10 @@ public class LevelManager : MonoBehaviour
         }       
     }
 
-    public void MakeNoise(Vector3 pos) //add Vector3 LastNoise so the enemy AI investigates it
+    public void MakeNoise(Vector3 pos, float percent) //add Vector3 LastNoise so the enemy AI investigates it
     {
         lastTimeNoise = Time.time;
-        PlayerUI.instance.ShowSpeaker();
+        PlayerUI.instance.SetNoiseMeter(percent);
 
         OnNoise?.Invoke(pos);
     }
