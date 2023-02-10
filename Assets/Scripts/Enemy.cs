@@ -139,7 +139,7 @@ public class SearchingForNoiseState : EnemyState
         enemy.NavigateToPosition(NoisePosition);
 
         if(enemy.ArrivedAtDestinationOrStuck)
-        { enemy.SetState(enemy.LastState); }
+        { /*enemy.SetState(enemy.LastState);*/ enemy.SetState(PatrollingState); }
 
         //Spotting
         if(enemy.SpottedPlayer)
@@ -213,6 +213,7 @@ public class Enemy : MonoBehaviour
     public float SightDistance = 12f;
     public float AwarenessRate = 0.5f;
     public float AwarenessMultiplierBackTurned = 0.5f;
+    public float NoiseThreshold = 0.5f;
     [Tooltip("How visible does the player need to be to be spotted [0.0-1.0]")]
     [Range(0f,1f)]
     public float VisibilityThreshold = 0.5f;
@@ -418,8 +419,11 @@ public class Enemy : MonoBehaviour
         return hitPlayer;
     }
 
-    private void OnNoiseCallback(Vector3 pos)
-    { State.OnNoise(this, pos);  }
+    private void OnNoiseCallback(Vector3 pos, float noisePercentage)
+    {
+        if (noisePercentage > NoiseThreshold)
+        { State.OnNoise(this, pos); }
+    }
 
     private void CompletedPettingCallback()
     {

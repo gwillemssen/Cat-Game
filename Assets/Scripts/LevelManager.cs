@@ -17,7 +17,7 @@ public class LevelManager : MonoBehaviour
 
     //events
     public static event Action AllCatsPetted;
-    public static event Action<Vector3> OnNoise;
+    public static event Action<Vector3, float> OnNoise;
 
     private float lastTimeCalledCops = -420f;
     private float lastTimeNoise = -420f;
@@ -58,7 +58,7 @@ public class LevelManager : MonoBehaviour
         lastTimeNoise = Time.time;
         PlayerUI.instance.SetNoiseMeter(percent);
 
-        OnNoise?.Invoke(pos);
+        OnNoise?.Invoke(pos, PlayerUI.instance.NoiseMeterPercentage);
     }
 
 

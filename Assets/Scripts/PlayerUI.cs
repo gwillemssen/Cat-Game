@@ -36,6 +36,7 @@ public class PlayerUI : MonoBehaviour
     public GameObject LoseScreen { get; private set; }
     public GameObject LoseCopsScreen { get; private set; }
     public Image Hamd { get { return hamd; } private set { hamd = value; } }
+    public float NoiseMeterPercentage { get { return noiseMeter.fillAmount; } }
     public bool EnemyOnScreen { get; private set; }
 
     private float lastTimeShownSpeaker = -420f;
@@ -105,6 +106,7 @@ public class PlayerUI : MonoBehaviour
                 case "NoiseMeter":
                     noiseMeter = t.transform.GetChild(0).gameObject.GetComponent<Image>();
                     speakerUI = t.transform.GetChild(1).gameObject.GetComponent<Image>();
+                    noiseMeter.fillAmount = 0f;
                     break;
             }
         }
