@@ -77,6 +77,7 @@ public class FirstPersonInteraction : MonoBehaviour
         interactable.InteractHold(controller);
         if (controller.Input.interactedOnce)
         { interactable.Interact(controller); }
+        interactable.InteractBase();
     }
 
     private void HandleInteraction()
@@ -133,7 +134,7 @@ public class FirstPersonInteraction : MonoBehaviour
             interactable = hit.transform.GetComponent<Interactable>();
             if (interactable != null)
             {
-                if (!interactable.CanInteract)
+                if (!interactable.CanInteract || interactable.Disabled)
                 { interactable = null; }
                 else
                 { interactable.LookingAt = true; }

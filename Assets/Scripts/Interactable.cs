@@ -5,13 +5,16 @@ using UnityEngine.Events;
 
 public class Interactable : MonoBehaviour
 {
-    [HideInInspector] 
-    public bool LookingAt = false; //is the player looking at the object?
+    [HideInInspector] public bool LookingAt = false; //is the player looking at the object?
+    [HideInInspector] public bool Disabled = false;
     public bool CanInteract = true;
     public bool NoiseCrosshair = false;
+    public float Cooldown;
 
     [Tooltip("Called when we click on the object")]
     public UnityEvent OnInteract;
+
+    private float lastTimeInteracted = -420f;
 
     /// <summary>
     /// Called every frame as you hold left mouse on the object
@@ -28,6 +31,23 @@ public class Interactable : MonoBehaviour
     public virtual void Interact(FirstPersonController controller)
     {
         OnInteract?.Invoke();
+    }
+
+    public void InteractBase()
+    {
+        if(Cooldown <= 0f)
+        { return; }
+
+        lastTimeInteracted = Time.time;
+        Disabled = true;
+    }
+
+    private void FixedUpdate()
+    {
+        if(Time.time - lastTimeInteracted > Cooldown)
+        {
+            Disabled = false;
+        }
     }
 
     /// <summary>
