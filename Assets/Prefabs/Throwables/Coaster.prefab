@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 373034511368080567}
   - component: {fileID: 7147451601181356034}
   - component: {fileID: -3589557420646445704}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: Coaster
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -50,7 +50,7 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -245,6 +245,6 @@ MeshCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -5495902117074765545, guid: 4cbd9d15a0041d84588adcef192fb244, type: 3}
