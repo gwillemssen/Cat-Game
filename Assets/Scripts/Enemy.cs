@@ -264,7 +264,7 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
-        SeesPlayer = PercentVisible >= VisibilityThreshold;
+        bool pastThreshold = PercentVisible >= VisibilityThreshold;
 
         if (raycastedToPlayer)
         {
@@ -273,13 +273,14 @@ public class Enemy : MonoBehaviour
             if (!PlayerUI.instance.EnemyOnScreen)
             { awarenessAmt *= AwarenessMultiplierBackTurned; }
             awarenessAmt *= PercentVisible;
-            if (!SeesPlayer)
+            if (!pastThreshold && Awareness < 0.25f) //0.25 is the threshold for ignoring the threshold lmao
             { awarenessAmt = 0f; }
             Awareness += awarenessAmt;
         }
         else
         { Awareness = 0f; }
 
+        SeesPlayer = Awareness > 0.05f;
         SpottedPlayer = Awareness >= .99f;       
         Moving = !ai.isStopped && ai.velocity.sqrMagnitude > .1f;
 
@@ -382,7 +383,7 @@ public class Enemy : MonoBehaviour
 
         PercentVisible = (float)raycastsHit / (float)FirstPersonController.instance.VisibilityCheckPoints.Length;
 
-        return SeesPlayer;
+        return hit;
     }
 
     RaycastHit hit;
