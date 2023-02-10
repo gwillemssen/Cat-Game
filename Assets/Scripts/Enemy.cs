@@ -46,6 +46,7 @@ public class SittingState : EnemyState
         { enemy.SetState(CallingCopsGrabbingGunState); }
 
         base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
+        PlayerUI.instance.SetSpottedGradient(enemy.SeesPlayer, enemy.transform.position);
     }
 
     public override void OnNoise(Enemy enemy, Vector3 noisePos)
@@ -80,6 +81,7 @@ public class PatrollingState : EnemyState
         { OnSpotted(enemy); }
 
         base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
+        PlayerUI.instance.SetSpottedGradient(enemy.SeesPlayer, enemy.transform.position);
     }
 
     public virtual void OnSpotted(Enemy enemy)
@@ -111,6 +113,9 @@ public class PatrollingWithGunState : PatrollingState
 
         //flashing red
         enemy.RedLightTargetIntensity = Mathf.Lerp(enemy.RedLightIntensityNormal, enemy.RedLightIntensityHigh, Mathf.Abs(Mathf.Sin(Time.time)));
+
+        base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
+        PlayerUI.instance.SetSpottedGradient(enemy.SeesPlayer, enemy.transform.position);
     }
 
     public override void SetAnimationState(Enemy enemy, Animator anim)
@@ -141,6 +146,7 @@ public class SearchingForNoiseState : EnemyState
         { enemy.SetState(CallingCopsGrabbingGunState); }
 
         base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
+        PlayerUI.instance.SetSpottedGradient(enemy.SeesPlayer, enemy.transform.position);
     }
 
     public override void OnNoise(Enemy enemy, Vector3 noisePos)
@@ -174,10 +180,15 @@ public class CallingCopsGrabbingGunState : EnemyState
                 enemy.SetWaypoint(enemy.GunWaypoint);
 
                 if(enemy.ArrivedAtDestinationOrStuck)
-                { enemy.SetState(PatrollingWithGunState); }
+                {
+                    LevelManager.instance.CallCops();
+                    enemy.SetState(PatrollingWithGunState);
+                }
 
                 break;
         }
+
+        PlayerUI.instance.SetSpottedGradient(false, enemy.transform.position);
     }
 
     public override void Init(Enemy enemy, IAstarAI ai)
@@ -304,7 +315,6 @@ public class Enemy : MonoBehaviour
     private void FixedUpdate()
     {
         raycastedToPlayer = RaycastToPlayer();
-        PlayerUI.instance.SetSpottedGradient(SeesPlayer, transform.position);
     }
 
     Vector2 enemyPos2D, destinationPos2D;
