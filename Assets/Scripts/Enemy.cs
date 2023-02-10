@@ -302,14 +302,23 @@ public class Enemy : MonoBehaviour
 
         //TODO: stuck prevention
 
+        CalculateArrivedAtDestination();
+
         State.Update(this, ai);
         State.SetAnimationState(this, Anim);
 
-        if (currentWaypoint != null)
-        { ArrivedAtDestinationOrStuck = NavigateToWaypoint(); }
-
         //red light
         RedLight.intensity = Mathf.Lerp(RedLight.intensity, RedLightTargetIntensity, Time.deltaTime * 2f);
+    }
+
+    //pain
+    private void CalculateArrivedAtDestination()
+    {
+        enemyPos2D.x = transform.position.x;
+        enemyPos2D.y = transform.position.z;
+        destinationPos2D.x = ai.destination.x;
+        destinationPos2D.y = ai.destination.z;
+        ArrivedAtDestinationOrStuck = Vector2.SqrMagnitude(enemyPos2D - destinationPos2D) <= 0.2f;
     }
 
     private void FixedUpdate()
@@ -318,34 +327,26 @@ public class Enemy : MonoBehaviour
     }
 
     Vector2 enemyPos2D, destinationPos2D;
-    public bool NavigateToPosition(Vector3 pos)
+    public void NavigateToPosition(Vector3 pos)
     {
         ai.destination = pos;
-
-        enemyPos2D.x = transform.position.x;
-        enemyPos2D.y = transform.position.z;
-        destinationPos2D.x = ai.destination.x;
-        destinationPos2D.y = ai.destination.z;
-
-        ArrivedAtDestinationOrStuck = Vector2.SqrMagnitude(enemyPos2D - destinationPos2D) <= 0.2f;
-
-        return ArrivedAtDestinationOrStuck;
+        CalculateArrivedAtDestination();
     }
 
     public void SetWaypoint(Waypoint waypoint)
     {
-        ArrivedAtDestinationOrStuck = false;
         currentWaypoint = waypoint;
         NavigateToWaypoint();
+        CalculateArrivedAtDestination();
     }
 
     bool atWaypoint;
     private float lastTimeAtWaypoint = -420f;
-    private bool NavigateToWaypoint()
+    private void NavigateToWaypoint()
     {
         ai.destination = currentWaypoint.transform.position;
 
-        if (NavigateToPosition(currentWaypoint.gameObject.transform.position))
+        if (ArrivedAtDestinationOrStuck)
         {
             if (!atWaypoint)
             {
@@ -358,13 +359,8 @@ public class Enemy : MonoBehaviour
                 print("done waiting " + Time.time);
                 atWaypoint = false;
                 currentWaypoint = null;
-                ArrivedAtDestinationOrStuck = true;
-                return true;
             }
         }
-
-        ArrivedAtDestinationOrStuck = false;
-        return false;
     }
 
     bool IsPlayerWithinFieldOfView()
@@ -423,7 +419,7 @@ public class Enemy : MonoBehaviour
     }
 
     private void OnNoiseCallback(Vector3 pos)
-    { return; State.OnNoise(this, pos);  }
+    { State.OnNoise(this, pos);  }
 
     private void CompletedPettingCallback()
     {

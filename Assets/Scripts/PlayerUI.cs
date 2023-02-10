@@ -131,7 +131,6 @@ public class PlayerUI : MonoBehaviour
         debugText.text = debugOutput;
 
         speakerColor.a = Mathf.Lerp(1f, 0f, Mathf.Clamp01((Time.time - lastTimeShownSpeaker) / 5f));
-        print(speakerUI.color);
         speakerUI.color = speakerColor;
         noiseMeter.color = speakerColor;
         noiseMeter.fillAmount = Mathf.MoveTowards(noiseMeter.fillAmount, 0f, Time.deltaTime / 5f);
