@@ -230,7 +230,6 @@ public class Cat : Interactable
                     {
                         lastTimePet = Time.time;
                         int particleAmt = (int)(LightningAmount * pettingAmount);
-                        print(pettingAmount);
                         lightningParticles.Emit(particleAmt);
                     }
                     firstPet = false;

@@ -254,7 +254,7 @@ public class FirstPersonController : MonoBehaviour
         
 
         if (controller.velocity.sqrMagnitude > 2 && Input.sprint)
-        { LevelManager.instance.MakeNoise(transform.position);  }
+        { LevelManager.instance.MakeNoise(transform.position, .8f * Time.deltaTime);  }
 
         moveDir.y = verticalVelocity;
         controller.Move(moveDir * Time.deltaTime);

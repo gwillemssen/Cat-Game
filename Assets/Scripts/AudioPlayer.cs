@@ -36,8 +36,8 @@ public class AudioPlayer : MonoBehaviour
         au.spatialBlend = sound.SpatialBlend;
         au.pitch = sound.Pitch; //Doesnt work with multiple sounds playing at the same time.  Pitch affects all currently playing sounds
         au.PlayOneShot(sound.Clip, sound.Volume);
-        if (sound.IncreasesNoiseMeter && sound.NoiseAmt > 0)
-        { LevelManager.instance.MakeNoise(transform.position); }
+        if (sound.IncreasesNoiseMeter && sound.NoisePercentage > 0)
+        { LevelManager.instance.MakeNoise(transform.position, sound.NoisePercentage); }
     }
 
     /*public void Play(string sound)
