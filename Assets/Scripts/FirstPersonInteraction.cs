@@ -5,10 +5,10 @@ using UnityEngine;
 public class FirstPersonInteraction : MonoBehaviour
 {
     [Tooltip("How far can the player reach?")]
-    public float InteractRange = 8.0f;
+    public float InteractRange = 10.0f;
     public float ThrowForceMin = 0.5f;
-    public float ThrowForceMax = 8.0f;
-    public float ThrowWindupSpeed = 0.75f;
+    public float ThrowForceMax = 10.0f;
+    public float ThrowWindupSpeed = 1f;
     [Tooltip("What layers can we interact with?")]
     public LayerMask InteractableLayerMask;
     public Texture2D CrosshairSprite_Normal;
