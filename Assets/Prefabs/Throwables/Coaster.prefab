@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5425751893754324943}
   - component: {fileID: 373034511368080567}
   - component: {fileID: 7147451601181356034}
-  - component: {fileID: -3589557420646445704}
+  - component: {fileID: 7253302990077954953}
   m_Layer: 11
   m_Name: Coaster
   m_TagString: Untagged
@@ -234,8 +234,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &-3589557420646445704
-MeshCollider:
+--- !u!65 &7253302990077954953
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -244,7 +244,6 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -5495902117074765545, guid: 4cbd9d15a0041d84588adcef192fb244, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 2, y: 2, z: 2}
+  m_Center: {x: 0, y: 0, z: 0}
