@@ -12,8 +12,4 @@ public class Sound : ScriptableObject
     public float Pitch = 1f;
     [Range(0, 1)]
     public float NoisePercentage;
-    public bool IncreasesNoiseMeter = false;
-    [Range(0, 1f)]
-    public float SpatialBlend = 1f;
-
 }

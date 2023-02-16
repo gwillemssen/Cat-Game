@@ -12,6 +12,7 @@ public class EnemyState
     public static EnemyState SearchingForNoiseState = new SearchingForNoiseState();
     public static EnemyState CallingCopsGrabbingGunState = new CallingCopsGrabbingGunState();
     public static EnemyState PatrollingWithGunState = new PatrollingWithGunState();
+    public static EnemyState ReloadingState = new ReloadingState();
 
     public virtual void Init(Enemy enemy, IAstarAI ai) 
     { enemy.GunObject.SetActive(false); }
@@ -43,7 +44,10 @@ public class SittingState : EnemyState
 
         //Spotting
         if(enemy.SpottedPlayer)
-        { enemy.SetState(CallingCopsGrabbingGunState); }
+        {
+            enemy.PlayVoiceline(Enemy.VoiceLine.SpotPlayer);
+            enemy.SetState(CallingCopsGrabbingGunState);
+        }
 
         base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
         PlayerUI.instance.SetSpottedGradient(enemy.SeesPlayer, enemy.transform.position);
@@ -85,7 +89,10 @@ public class PatrollingState : EnemyState
     }
 
     public virtual void OnSpotted(Enemy enemy)
-    { enemy.SetState(CallingCopsGrabbingGunState); }
+    {
+        enemy.PlayVoiceline(Enemy.VoiceLine.SpotPlayer);
+        enemy.SetState(CallingCopsGrabbingGunState);
+    }
 
     public override void OnNoise(Enemy enemy, Vector3 noisePos)
     { enemy.SetState(SearchingForNoiseState); }
@@ -96,23 +103,85 @@ public class PatrollingState : EnemyState
     }
 }
 
+public class ReloadingState : EnemyState
+{
+    private float timeStartedReloading = -420f;
+
+    public override void Init(Enemy enemy, IAstarAI ai)
+    {
+        //PLAY I MISSED AUDIO
+        timeStartedReloading = Time.time;
+    }
+
+    public override void Update(Enemy enemy, IAstarAI ai)
+    {
+        ai.isStopped = true;
+        if (Time.time - timeStartedReloading > enemy.ReloadTime)
+        { enemy.SetState(PatrollingWithGunState); }
+    }
+}
+
 public class PatrollingWithGunState : PatrollingState
 {
+    private float lastTimePlayedChasingVoiceline = -420f;
+    private float chasingVoicelineDuration = -420f;
+    private int timesShot = 0;
+    private bool lastTimeSeesPlayer;
+    private float lastTimePlayedReloadSound = -420f;
+    private const float reloadSoundDelay = 4f;
+
     public override void Init(Enemy enemy, IAstarAI ai)
     {
         enemy.GunObject.SetActive(true);
+        lastTimeSeesPlayer = enemy.SeesPlayer;
+        lastTimePlayedReloadSound = -420f;
     }
 
     public override void Update(Enemy enemy, IAstarAI ai)
     {
         base.Update(enemy, ai);
-        
+
         //gun shooty stuff
-        if(enemy.Awareness >= .98f)
-        { GameManager.instance.GameOver(GameManager.LoseState.Shot); }
+        if (enemy.Awareness >= .98f)
+        {
+            UnityEngine.Debug.Log(FirstPersonController.instance.IsMoving);
+            if (timesShot >= 1 || !FirstPersonController.instance.IsMoving)
+            {
+                //GAME OVER
+                enemy.enabled = false;
+                GameManager.instance.GameOver(GameManager.LoseState.Shot);
+            }
+            else
+            { } //missed
+
+            enemy.AudioPlayer.Play(enemy.ShotgunSound_Fire);
+            timesShot++;
+            enemy.SetState(ReloadingState);
+        }
+
+        bool canPlayReloadSound = Time.time - lastTimePlayedReloadSound > reloadSoundDelay;
+
+        //GLEEK GLACK reload sounds
+        if(enemy.SeesPlayer && !lastTimeSeesPlayer && canPlayReloadSound)
+        {
+            enemy.AudioPlayer.Play(enemy.ShotgunSound_Reload);
+            lastTimePlayedReloadSound = Time.time;
+        }
+        lastTimeSeesPlayer = enemy.SeesPlayer;
 
         //flashing red
         enemy.RedLightTargetIntensity = Mathf.Lerp(enemy.RedLightIntensityNormal, enemy.RedLightIntensityHigh, Mathf.Abs(Mathf.Sin(Time.time)));
+
+        //Voicelines
+        if (Time.time - lastTimePlayedChasingVoiceline > chasingVoicelineDuration)
+        {
+            Sound soundPlayed = enemy.PlayVoiceline(Enemy.VoiceLine.Chasing);
+            if(soundPlayed != null)
+            {
+                chasingVoicelineDuration = soundPlayed.Clip.length * 1.5f;
+                lastTimePlayedChasingVoiceline = Time.time;
+            }
+        }
 
         base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
         PlayerUI.instance.SetSpottedGradient(enemy.SeesPlayer, enemy.transform.position);
@@ -126,6 +195,7 @@ public class PatrollingWithGunState : PatrollingState
     }
 
     public override void OnSpotted(Enemy enemy) { }
+    public override void OnNoise(Enemy enemy, Vector3 noisePos) { }
 }
 
 public class SearchingForNoiseState : EnemyState
@@ -143,7 +213,10 @@ public class SearchingForNoiseState : EnemyState
 
         //Spotting
         if(enemy.SpottedPlayer)
-        { enemy.SetState(CallingCopsGrabbingGunState); }
+        {
+            enemy.PlayVoiceline(Enemy.VoiceLine.SpotPlayer);
+            enemy.SetState(CallingCopsGrabbingGunState);
+        }
 
         base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
         PlayerUI.instance.SetSpottedGradient(enemy.SeesPlayer, enemy.transform.position);
@@ -182,6 +255,7 @@ public class CallingCopsGrabbingGunState : EnemyState
                 if(enemy.ArrivedAtDestinationOrStuck)
                 {
                     LevelManager.instance.CallCops();
+                    enemy.AudioPlayer.Play(enemy.ShotgunSound_Reload);
                     enemy.SetState(PatrollingWithGunState);
                 }
 
@@ -217,6 +291,7 @@ public class Enemy : MonoBehaviour
     [Tooltip("How visible does the player need to be to be spotted [0.0-1.0]")]
     [Range(0f,1f)]
     public float VisibilityThreshold = 0.5f;
+    public float ReloadTime = 1.5f;
     public float RedLightIntensityNormal = 4f;
     public float RedLightIntensityHigh = 8f;
     [SerializeField] private LayerMask everythingBesidesEnemy;
@@ -224,7 +299,10 @@ public class Enemy : MonoBehaviour
     public Sound[] GoingToCallThePoliceSounds;
     public Sound[] CallingPoliceSounds;
     public Sound[] ChasingSounds;
+    public Sound ShotgunSound_Reload;
+    public Sound ShotgunSound_Fire;
 
+    [HideInInspector] public AudioPlayer AudioPlayer;
     [HideInInspector] public EnemyState State { get; private set; } = EnemyState.SittingState;
     [HideInInspector] public EnemyState LastState { get; private set; } = EnemyState.SittingState;
     [HideInInspector] public float RedLightTargetIntensity { get; set; }
@@ -238,7 +316,6 @@ public class Enemy : MonoBehaviour
 
     private IAstarAI ai;
     private bool raycastedToPlayer;
-    private AudioPlayer audioPlayer;
     private Waypoint currentWaypoint;
     private float sightDistanceTarget;
     private float sightDistance;
@@ -260,7 +337,7 @@ public class Enemy : MonoBehaviour
     {
         PlayerTransform = FirstPersonController.instance.transform;
         DebugObject.gameObject.SetActive(DebugMode);
-        audioPlayer = GetComponent<AudioPlayer>();
+        AudioPlayer = GetComponent<AudioPlayer>();
         chasingRandomSound = new NonRepeatingSound(ChasingSounds);
         callingPoliceRandomSound = new NonRepeatingSound(CallingPoliceSounds);
         goingToCallThePoliceRandomSound = new NonRepeatingSound(GoingToCallThePoliceSounds);
@@ -310,6 +387,8 @@ public class Enemy : MonoBehaviour
 
         //red light
         RedLight.intensity = Mathf.Lerp(RedLight.intensity, RedLightTargetIntensity, Time.deltaTime * 2f);
+
+        PlayQueuedVoicelines();
     }
 
     //pain
@@ -357,7 +436,6 @@ public class Enemy : MonoBehaviour
             if (Time.time - lastTimeAtWaypoint > currentWaypoint.StopTime)
             {
                 //arrival
-                print("done waiting " + Time.time);
                 atWaypoint = false;
                 currentWaypoint = null;
             }
@@ -441,7 +519,7 @@ public class Enemy : MonoBehaviour
         Awareness = 0f;
     }
 
-    private enum VoiceLine { SpotPlayer, GoingToCallThePolice, CallingPolice, Chasing }
+    public enum VoiceLine { SpotPlayer, GoingToCallThePolice, CallingPolice, Chasing }
     private float lastTimePlayedVoiceline = -420f;
     private float voiceLineDuration;
     private float lastTimePlayedChasingVoiceline = -420f;
@@ -450,13 +528,16 @@ public class Enemy : MonoBehaviour
     private NonRepeatingSound callingPoliceRandomSound;
     private NonRepeatingSound goingToCallThePoliceRandomSound;
     private NonRepeatingSound spotPlayerRandomSound;
+    private Queue<VoiceLine> voicelineQueue = new Queue<VoiceLine>();
 
-    void PlayVoiceline(VoiceLine voiceLine)
+    //returns a reference to the sound that was played
+    public Sound PlayVoiceline(VoiceLine voiceLine)
     {
         if (Time.time - lastTimePlayedVoiceline < voiceLineDuration) //make sure we dont overlap voicelines
         {
-            //TODO: add voiceline to queue
-            return;
+            print("Queueing voiceline " + voiceLine);
+            voicelineQueue.Enqueue(voiceLine);
+            return null;
         }
 
         NonRepeatingSound randomSound = null;
@@ -478,14 +559,25 @@ public class Enemy : MonoBehaviour
         }
 
         if (randomSound == null)
-        { Debug.LogError("Random Sound null"); return; }
+        { Debug.LogError("Random Sound null"); return null; }
 
         Sound sound = randomSound.Random();
-        audioPlayer.Play(sound);
+        AudioPlayer.Play(sound);
+        print("Playing voiceline " + voiceLine);
         voiceLineDuration = sound.Clip.length;
 
 
         lastTimePlayedVoiceline = Time.time;
+        return sound;
+    }
+
+    private void PlayQueuedVoicelines()
+    {
+        if(voicelineQueue.Count <= 0)
+        { return; }
+
+        if (Time.time - lastTimePlayedVoiceline >= voiceLineDuration)
+        { PlayVoiceline(voicelineQueue.Dequeue()); }
     }
 
     //Editor Gizmo stuff

@@ -74,6 +74,8 @@ public class FirstPersonController : MonoBehaviour
     public PlayerUI UI;
     [HideInInspector]
     public bool IsCrouching { get; private set; }
+    [HideInInspector]
+    public bool IsMoving { get; private set; }
 
 
     // player
@@ -234,24 +236,17 @@ public class FirstPersonController : MonoBehaviour
         wishMoveDir = transform.TransformDirection(wishMoveDir);
 
         IsCrouching = Input.crouch;
+        IsMoving = Input.move.SqrMagnitude() > 0.2f;
 
         // targetSpeed = Input.sprint ? SprintSpeed : MoveSpeed;
         if (Input.crouch)
-        {
-            targetSpeed = CrouchSpeed;
-        }
+        { targetSpeed = CrouchSpeed; }
         else if(Input.sprint)
-        {
-            targetSpeed = SprintSpeed;
-        }
+        { targetSpeed = SprintSpeed; }
         else
-        {
-            targetSpeed = MoveSpeed;
-        }
+        { targetSpeed = MoveSpeed; }
 
         moveDir = Vector3.SmoothDamp(moveDir, targetSpeed * wishMoveDir, ref moveDamp, Smoothing);
-
-        
 
         if (controller.velocity.sqrMagnitude > 2 && Input.sprint)
         { LevelManager.instance.MakeNoise(transform.position, .8f * Time.deltaTime);  }
