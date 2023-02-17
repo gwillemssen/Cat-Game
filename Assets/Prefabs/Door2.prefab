@@ -111,7 +111,7 @@ GameObject:
   - component: {fileID: 8284904426380464009}
   - component: {fileID: 7792030013020517339}
   - component: {fileID: 8471867583836247226}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -211,12 +211,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LookingAt: 0
+  Disabled: 0
   CanInteract: 1
   NoiseCrosshair: 1
+  Cooldown: 0
   OnInteract:
     m_PersistentCalls:
       m_Calls: []
   _open: 0
+  openTime: 1.5
+  closeTime: 0.5
 --- !u!1 &6194389448130849344
 GameObject:
   m_ObjectHideFlags: 0
@@ -242,7 +246,7 @@ Transform:
   m_GameObject: {fileID: 6194389448130849344}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 5.2304688, y: 0.00000011920929, z: 9.682678}
-  m_LocalScale: {x: 1, y: 1.1, z: 1}
+  m_LocalScale: {x: 1.0305, y: 1.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3859264411115749536}
@@ -293,7 +297,7 @@ GameObject:
   - component: {fileID: 4647852101552359227}
   - component: {fileID: 7344271656494457848}
   - component: {fileID: 523603822493022392}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
