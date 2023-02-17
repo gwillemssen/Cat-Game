@@ -155,7 +155,9 @@ public class PlayerUI : MonoBehaviour
             }
         }
 
+
         grannyScreenSpaceUI.color = Color.Lerp(grannyScreenSpaceUI.color, targetColor, Time.deltaTime * 3f);
+        grannyScreenSpaceUI.enabled = Vector3.Dot(FirstPersonController.instance.MainCamera.transform.forward, (FirstPersonController.instance.transform.position - Enemy.instance.transform.position)) < 0f; //disable if it is behind
         grannyScreenSpaceUI.rectTransform.position = FirstPersonController.instance.MainCamera.WorldToScreenPoint(Enemy.instance.transform.position + Vector3.up * 2f);
 
     }
