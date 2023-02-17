@@ -23,15 +23,12 @@ public class Cat : Interactable
     public float MaxVolume = 0.2f;
     public float LightningAmount = 10f;
 
-
     //general
     private enum CatState { Pettable, Unpettable, PettingMinigame, DonePetting };
     private CatState state;
     private Animator anim;
     private AudioSource audioSource;
     public ParticleSystem lightningParticles;
-
-
 
     //events
     public static event Action CompletedPetting;
@@ -59,8 +56,6 @@ public class Cat : Interactable
     private static float petStretchCatAmt = 0.007f;
     private static float petPushLerpSmoothing = .5f;
     private static float petStretchLerpSmoothing = 8f;
-    private static float petCameraFOVNormal = 70f;
-    private static float petCameraFOVZoomed = 50f;
     public float colorDampener;
     public float colorAmplifier;
 
@@ -151,9 +146,6 @@ public class Cat : Interactable
                 { offsetScale.y += Mathf.Abs(mouseDelta.y * petStretchCatAmt); }
 
             }
-
-            //FOV from petting intensity
-            playerController.TargetFOV = Mathf.Lerp(petCameraFOVNormal, petCameraFOVZoomed, (mouseSpeed.magnitude / pettingSpeedMax));
 
             startPos = catOriginalPos;
             startRot = catOriginalRot;
@@ -271,7 +263,6 @@ public class Cat : Interactable
 
     public void EndMinigame()
     {
-        playerController.TargetFOV = petCameraFOVNormal;
         transform.localScale = catOriginalScale;
         state = CatState.DonePetting;
         timeStartedMovingCat = Time.time;

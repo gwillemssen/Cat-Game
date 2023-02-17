@@ -34,7 +34,7 @@ public class Door : Interactable
         if (!open)
         { targetY = 0f; }
 
-        targetRot.rotation = Quaternion.Euler(0f, targetY, 0f);
+        targetRot.localRotation = Quaternion.Euler(0f, targetY, 0f);
     }
 
     public void DoorTriggerEnter(Vector3 pos)
@@ -47,7 +47,7 @@ public class Door : Interactable
 
     private void Update()
     {
-        pivot.localRotation = Quaternion.Lerp(pivot.rotation, targetRot.rotation, Time.deltaTime * 4f);
+        pivot.localRotation = Quaternion.Lerp(pivot.localRotation, targetRot.localRotation, Time.deltaTime * 4f);
         collider.isTrigger = open || (!open && Mathf.Abs(pivot.localRotation.y) > .1f);
         //pivot.rotation = Quaternion.Euler(pivot.rotation.x, Mathf.Lerp(pivot.rotation.y, targetRot, Time.deltaTime * 4f), pivot.rotation.z);
     }

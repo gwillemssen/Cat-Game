@@ -526,6 +526,7 @@ public class Enemy : MonoBehaviour
 
     private void CompletedPettingCallback()
     {
+        print("swag");
         if (State == EnemyState.SittingState)
         { SetState(EnemyState.PatrollingState); }
     }
