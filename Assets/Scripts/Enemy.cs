@@ -370,6 +370,8 @@ public class Enemy : MonoBehaviour
         RedLightTargetIntensity = 0f;
         RedLight.intensity = RedLightTargetIntensity;
         State.Init(this, ai);
+
+        GunObject.SetActive(false);
     }
 
     private void Update()
