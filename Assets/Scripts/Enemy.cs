@@ -15,6 +15,7 @@ public class EnemyState
     public static EnemyState ReloadingState = new ReloadingState();
 
     public bool ShowScreenSpaceUI { get; protected set; } = true;
+    public bool FullyAlerted { get; protected set; } = false;
 
     public virtual void Init(Enemy enemy, IAstarAI ai) 
     { enemy.GunObject.SetActive(false); }
@@ -62,6 +63,7 @@ public class SittingState : EnemyState
     {
         enemy.RedLightTargetIntensity = 0f;
         base.ShowScreenSpaceUI = true;
+        base.FullyAlerted = false;
     }
 }
 
@@ -104,6 +106,7 @@ public class PatrollingState : EnemyState
     {
         enemy.RedLightTargetIntensity = 0f;
         base.ShowScreenSpaceUI = true;
+        base.FullyAlerted = false;
     }
 }
 
@@ -116,6 +119,7 @@ public class ReloadingState : EnemyState
         //PLAY I MISSED AUDIO
         timeStartedReloading = Time.time;
         base.ShowScreenSpaceUI = false;
+        base.FullyAlerted = true;
     }
 
     public override void Update(Enemy enemy, IAstarAI ai)
@@ -141,6 +145,7 @@ public class PatrollingWithGunState : PatrollingState
         lastTimeSeesPlayer = enemy.SeesPlayer;
         lastTimePlayedReloadSound = -420f;
         base.ShowScreenSpaceUI = false;
+        base.FullyAlerted = true;
     }
 
     public override void Update(Enemy enemy, IAstarAI ai)
@@ -235,6 +240,7 @@ public class SearchingForNoiseState : EnemyState
     {
         enemy.RedLightTargetIntensity = enemy.RedLightIntensityHigh;
         base.ShowScreenSpaceUI = true;
+        base.FullyAlerted = false;
     }
 }
 
@@ -276,6 +282,7 @@ public class CallingCopsGrabbingGunState : EnemyState
     {
         enemy.RedLightTargetIntensity = 0f;
         base.ShowScreenSpaceUI = false;
+        base.FullyAlerted = true;
     }
 }
 

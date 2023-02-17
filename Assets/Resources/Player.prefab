@@ -1933,7 +1933,6 @@ GameObject:
   - component: {fileID: 7150852423102710263}
   - component: {fileID: 6010451480444749816}
   - component: {fileID: 6010859259028334533}
-  - component: {fileID: 8286924869444656306}
   m_Layer: 13
   m_Name: GrannyScreenSpaceUI
   m_TagString: Untagged
@@ -1999,22 +1998,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!111 &8286924869444656306
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3230486383190454331}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: adf6fdd314093d24e9823bcb9ee800ba, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: adf6fdd314093d24e9823bcb9ee800ba, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_CullingType: 0
 --- !u!1 &3371720658259781849
 GameObject:
   m_ObjectHideFlags: 0
@@ -5444,7 +5427,7 @@ MonoBehaviour:
   ThrowWindupSpeed: 0.75
   InteractableLayerMask:
     serializedVersion: 2
-    m_Bits: 2147483647
+    m_Bits: 14911
   CrosshairSprite_Normal: {fileID: 2800000, guid: d7a4717a485a217468fee482fc9156d9,
     type: 3}
   CrosshairSprite_Interactable: {fileID: 2800000, guid: 57e50823218bbf34381f8aac53e53e3a,
@@ -6069,6 +6052,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4135013735270702856}
     m_Modifications:
+    - target: {fileID: 5587063052734750961, guid: 2d3a85ecde41a8246a79669975912b74,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.291
+      objectReference: {fileID: 0}
+    - target: {fileID: 5587063052734750961, guid: 2d3a85ecde41a8246a79669975912b74,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.226
+      objectReference: {fileID: 0}
+    - target: {fileID: 5587063052734750961, guid: 2d3a85ecde41a8246a79669975912b74,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.431
+      objectReference: {fileID: 0}
     - target: {fileID: 9005220659476430818, guid: 2d3a85ecde41a8246a79669975912b74,
         type: 3}
       propertyPath: m_RootOrder

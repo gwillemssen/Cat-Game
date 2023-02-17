@@ -129,7 +129,6 @@ public class PlayerUI : MonoBehaviour
         spottedGradient_Right.SetActive(false);
     }
 
-
     private void Update()
     {
         debugOutput = "";
@@ -141,8 +140,24 @@ public class PlayerUI : MonoBehaviour
         noiseMeter.color = speakerColor;
         noiseMeter.fillAmount = Mathf.MoveTowards(noiseMeter.fillAmount, 0f, Time.deltaTime / 5f);
 
-        grannyScreenSpaceUI.enabled = Enemy.instance.State.ShowScreenSpaceUI;
+        Color targetColor = Color.white;
+        targetColor.a = 0f;
+
+        if(Enemy.instance.State.ShowScreenSpaceUI)
+        {
+            if (Enemy.instance.Awareness < 0.1f && !Enemy.instance.State.FullyAlerted)
+            {
+                targetColor.a = (Mathf.Abs(Mathf.Sin(Time.time / 1.25f)) - 0.5f) * 0.35f;
+            }
+            else
+            {
+                targetColor.a = 0.5f;
+            }
+        }
+
+        grannyScreenSpaceUI.color = Color.Lerp(grannyScreenSpaceUI.color, targetColor, Time.deltaTime * 3f);
         grannyScreenSpaceUI.rectTransform.position = FirstPersonController.instance.MainCamera.WorldToScreenPoint(Enemy.instance.transform.position + Vector3.up * 2f);
+
     }
 
     public void SetSpottedGradient(bool enable, Vector3 pos)
