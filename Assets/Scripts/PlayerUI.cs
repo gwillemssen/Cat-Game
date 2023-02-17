@@ -32,6 +32,7 @@ public class PlayerUI : MonoBehaviour
     private Image hamd;
     private GameObject spottedGradient_Left;
     private GameObject spottedGradient_Right;
+    private Image grannyScreenSpaceUI;
     public GameObject WinScreen { get; private set; }
     public GameObject LoseScreen { get; private set; }
     public GameObject LoseCopsScreen { get; private set; }
@@ -108,6 +109,9 @@ public class PlayerUI : MonoBehaviour
                     speakerUI = t.transform.GetChild(1).gameObject.GetComponent<Image>();
                     noiseMeter.fillAmount = 0f;
                     break;
+                case "GrannyScreenSpaceUI":
+                    grannyScreenSpaceUI = t.GetComponent<Image>();
+                    break;
             }
         }
         PettingMeter.gameObject.SetActive(false);
@@ -136,6 +140,9 @@ public class PlayerUI : MonoBehaviour
         speakerUI.color = speakerColor;
         noiseMeter.color = speakerColor;
         noiseMeter.fillAmount = Mathf.MoveTowards(noiseMeter.fillAmount, 0f, Time.deltaTime / 5f);
+
+        grannyScreenSpaceUI.enabled = Enemy.instance.State.ShowScreenSpaceUI;
+        grannyScreenSpaceUI.rectTransform.position = FirstPersonController.instance.MainCamera.WorldToScreenPoint(Enemy.instance.transform.position + Vector3.up * 2f);
     }
 
     public void SetSpottedGradient(bool enable, Vector3 pos)
@@ -160,15 +167,9 @@ public class PlayerUI : MonoBehaviour
         infoText.fontStyle = italics ? FontStyle.Italic : FontStyle.Bold;
     }
 
-    public void SetEyeballUI(EyeState eyeState)
-    {
-        eyeOpenUI.enabled = eyeClosedUI.enabled = eyeHalfUI.enabled = false;
-
-        eyeOpenUI.enabled = (eyeState == EyeState.Open);
-        eyeHalfUI.enabled = (eyeState == EyeState.Half);
-        eyeClosedUI.enabled = (eyeState == EyeState.Closed);
-    }
-
+    //the way these 3 methods below are is bad
+    //ideally, the UI should observe other properties and act independently
+    //ill change this later if i have time
     public void SetThrowStrengthMeter(float p)
     {
         throwStrengthMeter.gameObject.SetActive(p > 0.15f);

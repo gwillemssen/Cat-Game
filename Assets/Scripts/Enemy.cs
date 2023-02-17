@@ -14,6 +14,8 @@ public class EnemyState
     public static EnemyState PatrollingWithGunState = new PatrollingWithGunState();
     public static EnemyState ReloadingState = new ReloadingState();
 
+    public bool ShowScreenSpaceUI { get; protected set; } = true;
+
     public virtual void Init(Enemy enemy, IAstarAI ai) 
     { enemy.GunObject.SetActive(false); }
     public virtual void Update(Enemy enemy, IAstarAI ai) { }
@@ -59,6 +61,7 @@ public class SittingState : EnemyState
     public override void Init(Enemy enemy, IAstarAI ai)
     {
         enemy.RedLightTargetIntensity = 0f;
+        base.ShowScreenSpaceUI = true;
     }
 }
 
@@ -100,6 +103,7 @@ public class PatrollingState : EnemyState
     public override void Init(Enemy enemy, IAstarAI ai)
     {
         enemy.RedLightTargetIntensity = 0f;
+        base.ShowScreenSpaceUI = true;
     }
 }
 
@@ -111,6 +115,7 @@ public class ReloadingState : EnemyState
     {
         //PLAY I MISSED AUDIO
         timeStartedReloading = Time.time;
+        base.ShowScreenSpaceUI = false;
     }
 
     public override void Update(Enemy enemy, IAstarAI ai)
@@ -135,6 +140,7 @@ public class PatrollingWithGunState : PatrollingState
         enemy.GunObject.SetActive(true);
         lastTimeSeesPlayer = enemy.SeesPlayer;
         lastTimePlayedReloadSound = -420f;
+        base.ShowScreenSpaceUI = false;
     }
 
     public override void Update(Enemy enemy, IAstarAI ai)
@@ -228,6 +234,7 @@ public class SearchingForNoiseState : EnemyState
     public override void Init(Enemy enemy, IAstarAI ai)
     {
         enemy.RedLightTargetIntensity = enemy.RedLightIntensityHigh;
+        base.ShowScreenSpaceUI = true;
     }
 }
 
@@ -268,6 +275,7 @@ public class CallingCopsGrabbingGunState : EnemyState
     public override void Init(Enemy enemy, IAstarAI ai)
     {
         enemy.RedLightTargetIntensity = 0f;
+        base.ShowScreenSpaceUI = false;
     }
 }
 
@@ -275,6 +283,8 @@ public class CallingCopsGrabbingGunState : EnemyState
 [RequireComponent(typeof(AudioPlayer))]
 public class Enemy : MonoBehaviour
 {
+    public static Enemy instance; //singleton because multiple Enemies are not in the scope of this project
+
     public bool DebugMode;
     public Transform EyePosition;
     public Light RedLight;
@@ -325,6 +335,10 @@ public class Enemy : MonoBehaviour
         ai = GetComponent<IAstarAI>();
         LevelManager.OnNoise += OnNoiseCallback;
         Cat.CompletedPetting += CompletedPettingCallback;
+
+        if(instance != null)
+        { Destroy(this.gameObject); return; }
+        instance = this;
     }
 
     private void OnDestroy()
