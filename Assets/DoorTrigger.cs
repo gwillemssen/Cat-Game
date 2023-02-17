@@ -9,6 +9,7 @@ public class DoorTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        door.DoorTriggerEnter(other.transform.position);
+        if (other.CompareTag("Player") || other.CompareTag("Enemy"))
+        { door.DoorTriggerEnter(other.transform.position); }
     }
 }
