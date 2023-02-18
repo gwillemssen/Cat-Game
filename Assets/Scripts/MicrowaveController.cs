@@ -8,6 +8,7 @@ using Random = UnityEngine.Random;
 
 public class MicrowaveController : Interactable
 {
+    [SerializeField] private Transform investigatePos;
     public float currentNoiseEmitted;
     private Light light;
     private Material mat;
@@ -95,7 +96,7 @@ public class MicrowaveController : Interactable
                 {
                     timeLeft = 0;
                     Debug.Log("time up");
-                    LevelManager.instance.MakeNoise(transform.position, 1f);
+                    LevelManager.instance.MakeNoise(investigatePos.position, 1f);
                     timerOn = false;
                     microwaveAnimator.SetTrigger("FinishedTrigger");
                     active = false;
