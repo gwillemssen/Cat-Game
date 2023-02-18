@@ -100,8 +100,6 @@ public class FirstPersonController : MonoBehaviour
     public Transform PickupPosition;
     public Transform PickupPositionWindup;
     [HideInInspector]
-    public float TargetFOV = 70f; //changed by the cat minigame for visual effect
-    [HideInInspector]
     public bool DisableMovement = false;
     [HideInInspector]
     public bool Hiding = false;
@@ -136,7 +134,6 @@ public class FirstPersonController : MonoBehaviour
         Interaction = GetComponent<FirstPersonInteraction>();
         Interaction.Init(this);
         UI.Init(this);
-        TargetFOV = MainCamera.fieldOfView;
     }
 
     private void Start()
@@ -162,7 +159,6 @@ public class FirstPersonController : MonoBehaviour
             CameraRotation();
         }
         Interaction.UpdateInteraction();
-        CameraFOVLerp();
     }
 
     private void Audio()
@@ -197,12 +193,6 @@ public class FirstPersonController : MonoBehaviour
             lastRng = rng;
         }
 
-    }
-
-
-    private void CameraFOVLerp()
-    {
-        MainCamera.fieldOfView = Mathf.Lerp(MainCamera.fieldOfView, TargetFOV, Time.deltaTime * CameraFOVLerpSpeed);
     }
 
     private void GroundedCheck()

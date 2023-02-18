@@ -370,6 +370,8 @@ public class Enemy : MonoBehaviour
         RedLightTargetIntensity = 0f;
         RedLight.intensity = RedLightTargetIntensity;
         State.Init(this, ai);
+
+        GunObject.SetActive(false);
     }
 
     private void Update()
@@ -526,6 +528,7 @@ public class Enemy : MonoBehaviour
 
     private void CompletedPettingCallback()
     {
+        print("swag");
         if (State == EnemyState.SittingState)
         { SetState(EnemyState.PatrollingState); }
     }
