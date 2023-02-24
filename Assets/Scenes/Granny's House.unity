@@ -7852,6 +7852,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: GRANNYS DOOR
       objectReference: {fileID: 0}
+    - target: {fileID: 6194389448130849344, guid: e45297aff357f7244bf4f4f19346cfc8,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6826670673204883706, guid: e45297aff357f7244bf4f4f19346cfc8,
         type: 3}
       propertyPath: m_RootOrder
@@ -41016,11 +41021,6 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
         type: 3}
-      propertyPath: DebugMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
-        type: 3}
       propertyPath: GunWaypoint
       value: 
       objectReference: {fileID: 1040075170}
@@ -41029,6 +41029,11 @@ PrefabInstance:
       propertyPath: PhoneWaypoint
       value: 
       objectReference: {fileID: 1987260630}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: PatrollingRoute.Array.size
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
         type: 3}
       propertyPath: PatrollingRoute.Array.data[0]
@@ -41044,6 +41049,26 @@ PrefabInstance:
       propertyPath: PatrollingRoute.Array.data[2]
       value: 
       objectReference: {fileID: 1776379995}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: PatrollingRoute.Array.data[3]
+      value: 
+      objectReference: {fileID: 76731412}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: PatrollingRoute.Array.data[4]
+      value: 
+      objectReference: {fileID: 1711909523}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: PatrollingRoute.Array.data[5]
+      value: 
+      objectReference: {fileID: 1166585117}
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
+        type: 3}
+      propertyPath: PatrollingRoute.Array.data[6]
+      value: 
+      objectReference: {fileID: 105736826}
     - target: {fileID: 6234930927336056523, guid: afdc863829524324688a1af37dc6c8bd,
         type: 3}
       propertyPath: m_Name
@@ -47069,6 +47094,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 399898390874147857, guid: 4e8695006a0728b4d803f618bf87c097,
+        type: 3}
+      propertyPath: data.dataString
+      value: UEsDBBQAAAgIAACQn+tmn/WwWwIAABgFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFlVE1z2jAQ/SuMzk3GNnUTemsdQnpIYEI7ufgi7DXWIEsefYSv4b93JQtsyAnz9r3dtx/2kTChWyiMVDPFyldZAvk5Iu6ZfBv1wRfY0bUUS3aAM+eDlaZ2JOo579QwiXjsZFo2YBQrfok1d+QIQStYJVUzLdeQSW00whXlGjCkpHFqgdBxRHZBsA+/B/c7OuFTAcKA+sq6i+/TJBon8fjhim9FwWnTQul897JxEnTjxNMEdhQY0X3q6kjOmQ6GiNm3vuGMttpiO0goGcUGvRXXbw1sXRv8kwzF86rSYIJNRfdPTOGcuqzkt+yG11C96Zx9Um5dndh76lK+fommcee5UrJ5OZeNI1fC1KzYvNN9QbUZDHcIP137tmJL+YauOHzUIN7kTEkrSgwaZZ3UakieBqkurWU1FJue15m9AW37dVFxv56Tb36Xcdas/OC/d8CSSz/uidOAwtX8QcP+PHTIhKgz8U/DX7oe3lEIPDOlDYZCQeHcraRVjkqmfmauGWsyqQR4OHhuQVBu9gtMY243eBMblL2JPFP3xoTiIXZ+EW4kHu75UXQTWsjtZVm6lttX0PXcGs4E9KZd4A3nlEkhugMbzuQsW1pV0WIgW1tWXt8W+UFXAKvHqoqrNCom1V0VJ+OH4jGBcZqmNJkQf3tMYJ+ULzqjYTy4NdEnF3hn5w/JaKZo64+9VHQ7Y4dGDkbORCWXhQIQ8y7DxTgoLIKvZTktGQ5oCcYw4fdNjjnhsthAmV8S5b7T6c4omvdZctKyT2kckpPMfz5y4uDLKS8UfDLYuuLnZCdy+g9QSwMEFAAACAgAAJCf64HQgYFtAAAAeAAAAAkAJABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQGrVipLLSrOzM9TslIw0TPSMzTXUVBKL0osyCgGihiCOKWZKSB2tJJZYlJqapJFWpphmqlBsmWabpqhkbF5soVRqrGpqWmikaVSLFB9SWVBql9ibipET0BiSUZaZl5KZl66nntRZoo7yGil2FoAUEsBAi0AFAAACAgAAJCf62af9bBbAgAAGAUAAAsAJAAAAAAAAAAAAAAAAAAAAGdyYXBoMC5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsBAi0AFAAACAgAAJCf64HQgYFtAAAAeAAAAAkAJAAAAAAAAAAAAAAAqAIAAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLBQYAAAAAAgACALgAAABgAwAAAAA=
       objectReference: {fileID: 0}
     - target: {fileID: 399898390874147870, guid: 4e8695006a0728b4d803f618bf87c097,
         type: 3}
