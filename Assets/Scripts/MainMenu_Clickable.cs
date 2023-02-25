@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MainMenu_Clickable : MonoBehaviour
 {
-
+    public GameObject MainCam;
     public Vector3 postion;
     public Vector3 rotation; 
     public Vector3 defaultPosition;
@@ -21,14 +21,15 @@ public class MainMenu_Clickable : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Camera.main.transform.position = defaultPosition;
-            Camera.main.transform.localRotation = Quaternion.Euler(0, 0, 0);
+            LeanTween.move(MainCam, defaultPosition, 1.5f).setEaseInOutExpo();
+            LeanTween.rotate(MainCam, Vector3.zero, 1.5f).setEaseInOutExpo();
         }
     }
 
     public void OnMouseDown()
     {
-        Camera.main.transform.position = postion;
-        Camera.main.transform.localRotation = Quaternion.Euler(rotation);
+
+        LeanTween.move(MainCam, postion, 1.5f).setEaseInOutExpo();
+        LeanTween.rotate(MainCam, rotation,1.5f).setEaseInOutExpo();
     }
 }
