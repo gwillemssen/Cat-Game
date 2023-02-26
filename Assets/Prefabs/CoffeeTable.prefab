@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8494818900347648635}
   - component: {fileID: 4777320148211201502}
   - component: {fileID: 7325250019217441044}
-  - component: {fileID: 8244140062345718118}
+  - component: {fileID: 4688202265355942575}
   m_Layer: 0
   m_Name: CoffeeTable
   m_TagString: Untagged
@@ -26,7 +26,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9126677019261575361}
-  m_LocalRotation: {x: -0, y: -0.70710677, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 13.004, y: -0.9586135, z: 5.7539997}
   m_LocalScale: {x: 0.6024803, y: 0.6024803, z: 0.6024803}
   m_ConstrainProportionsScale: 0
@@ -41,7 +41,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9126677019261575361}
-  m_Mesh: {fileID: -7759331768739107841, guid: ffa9796f2a8d05148935797ad7e86259, type: 3}
+  m_Mesh: {fileID: -7759331768739107841, guid: fb58bcadafe80614eae8adbcb67653a2, type: 3}
 --- !u!23 &7325250019217441044
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -84,8 +84,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &8244140062345718118
-MeshCollider:
+--- !u!65 &4688202265355942575
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -94,7 +94,6 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -7759331768739107841, guid: ffa9796f2a8d05148935797ad7e86259, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 2.999994, y: 1.1993809, z: 1.983867}
+  m_Center: {x: 0, y: -0.000000029802322, z: 0}
