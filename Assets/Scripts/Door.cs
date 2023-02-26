@@ -32,7 +32,7 @@ public class Door : Interactable
     {
         lastTimeOpenedDoor = Time.time;
         open = !open;
-        doorOpen.Play();
+        if(open) doorOpen.Play();
         float targetY = Vector3.Dot(forward.forward, (forward.position - pos)) < 0f ? -90f : 90f;
         if (!open)
         { targetY = 0f; doorClose.Play(); }
