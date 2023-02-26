@@ -9224,6 +9224,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1713150265}
     m_Modifications:
+    - target: {fileID: 368861428049381994, guid: ff4ccf1e009823946b31bab02481345e,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8391139291252761257, guid: ff4ccf1e009823946b31bab02481345e,
         type: 3}
       propertyPath: m_RootOrder
@@ -9284,7 +9289,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: Door_Interior
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4476635498447629645, guid: ff4ccf1e009823946b31bab02481345e, type: 3}
+    - {fileID: 368861428049381994, guid: ff4ccf1e009823946b31bab02481345e, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: ff4ccf1e009823946b31bab02481345e, type: 3}
 --- !u!4 &462315510 stripped
 Transform:
