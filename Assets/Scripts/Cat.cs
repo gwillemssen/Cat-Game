@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Threading;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -22,13 +24,15 @@ public class Cat : Interactable
     public float PettingDecayDelay = 0.5f;
     public float MaxVolume = 0.2f;
     public float LightningAmount = 10f;
+    public AudioSource metalGuitar;
+    public AudioSource catMeow;
 
     //general
     private enum CatState { Pettable, Unpettable, PettingMinigame, DonePetting };
     private CatState state;
     private Animator anim;
-    private AudioSource audioSource;
     public ParticleSystem lightningParticles;
+    private float catTimer;
 
     //events
     public static event Action CompletedPetting;
@@ -63,16 +67,17 @@ public class Cat : Interactable
     {
         state = (CatState)StartState;
         anim = GetComponentInChildren<Animator>();
-        audioSource = GetComponent<AudioSource>();
-        audioSource.loop = true;
         lastPetMousePos = new Vector2(-420f, -420f);
         catOriginalPos = transform.position;
         catOriginalRot = transform.rotation;
         catOriginalScale = transform.localScale;
+        catTimer = Random.Range(10f, 20f);
+
     }
 
     private void Update()
     {
+        CatsMeows();
         anim.SetBool("Excited", LookingAt && state == CatState.Pettable);
         anim.SetBool("DonePetting", state == CatState.DonePetting && !base.CanInteract);
 
@@ -92,11 +97,11 @@ public class Cat : Interactable
                 }
             }
         }
-        if (audioSource.isPlaying && state != CatState.PettingMinigame)
+        if (metalGuitar.isPlaying && state != CatState.PettingMinigame)
         {
-            audioSource.volume -= Time.deltaTime;
-            if (audioSource.volume <= 0f)
-            { audioSource.Stop(); }
+            metalGuitar.volume -= Time.deltaTime;
+            if (metalGuitar.volume <= 0f)
+            { metalGuitar.Stop(); }
         }
 
         if (state == CatState.PettingMinigame)
@@ -192,8 +197,8 @@ public class Cat : Interactable
         playerController.Interaction.HideCrosshair = true;
         PlayerUI.instance.SetInfoText("Click and Drag to pet the Cat!\nRight click to Cancel");
         pettingAmount = 0f;
-        audioSource.volume = 0f;
-        audioSource.Play();
+        metalGuitar.volume = 0f;
+        metalGuitar.Play();
     }
 
     private void UpdateMinigame()
@@ -242,12 +247,12 @@ public class Cat : Interactable
         {
             pettingAmount -= Time.deltaTime * PettingDecayRate;
             //audio.volume -= Time.deltaTime;
-            audioSource.volume = 0f;
+            metalGuitar.volume = 0f;
         }
         else //cat getting pet mmm yes good :)
         {
-            audioSource.volume += Time.deltaTime * MaxVolume;
-            audioSource.volume = Mathf.Clamp(audioSource.volume, 0f, MaxVolume);
+            metalGuitar.volume += Time.deltaTime * MaxVolume;
+            metalGuitar.volume = Mathf.Clamp(metalGuitar.volume, 0f, MaxVolume);
         }
 
         PlayerUI.instance.PettingMeter.value = pettingAmount;
@@ -272,5 +277,23 @@ public class Cat : Interactable
         PlayerUI.instance.PettingMeter.gameObject.SetActive(false);
         playerController.Interaction.HideCrosshair = false;
         playerController.UI.Hamd.enabled = false;
+    }
+
+    public void CatsMeows()
+    {
+        float minTimeForMeow = 20f;
+        float maxTimeForMeow = 40f;
+        
+        if(catTimer <= 0f)
+        {
+            catMeow.Play();
+            catTimer += Random.Range(minTimeForMeow, maxTimeForMeow);
+        }
+        if(catTimer > 0f)
+        {
+            catTimer -= Time.deltaTime;
+        }
+       
+        
     }
 }

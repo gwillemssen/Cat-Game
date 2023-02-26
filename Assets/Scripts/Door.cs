@@ -12,12 +12,15 @@ public class Door : Interactable
     private Transform targetRot;
     private bool open;
     private float lastTimeOpenedDoor = -420f;
+    public AudioSource doorOpen;
+    public AudioSource doorClose;
 
     private void Start()
     {
         targetRot = new GameObject("doorTargetRot").transform;
         targetRot.SetParent(pivot.parent);
         targetRot.localRotation = pivot.localRotation;
+        
     }
 
     public override void Interact(FirstPersonController controller)
@@ -29,12 +32,14 @@ public class Door : Interactable
     {
         lastTimeOpenedDoor = Time.time;
         open = !open;
-
+        doorOpen.Play();
         float targetY = Vector3.Dot(forward.forward, (forward.position - pos)) < 0f ? -90f : 90f;
         if (!open)
-        { targetY = 0f; }
+        { targetY = 0f; doorClose.Play(); }
 
         targetRot.localRotation = Quaternion.Euler(0f, targetY, 0f);
+
+        
     }
 
     public void DoorTriggerEnter(Vector3 pos)
