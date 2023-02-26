@@ -43,7 +43,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5739396650604946456}
-  - component: {fileID: 1974556288876064004}
   m_Layer: 0
   m_Name: ExitDoor
   m_TagString: Untagged
@@ -67,26 +66,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1974556288876064004
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2493935314715269402}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08474ce1bfd6fee4691842eeca4c686d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  LookingAt: 0
-  Disabled: 0
-  CanInteract: 1
-  NoiseCrosshair: 0
-  Cooldown: 0
-  OnInteract:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &5317229646331674896
 GameObject:
   m_ObjectHideFlags: 0
@@ -98,6 +77,8 @@ GameObject:
   - component: {fileID: 6864979839437859285}
   - component: {fileID: 9130751877550120782}
   - component: {fileID: 6687422714174251839}
+  - component: {fileID: 661158832}
+  - component: {fileID: 661158833}
   m_Layer: 0
   m_Name: Door_Body
   m_TagString: Untagged
@@ -170,6 +151,39 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &661158832
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5317229646331674896}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3.335581, y: 9.047511, z: 0.62184197}
+  m_Center: {x: 0, y: 0.0000009536743, z: -0.0000019073486}
+--- !u!114 &661158833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5317229646331674896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08474ce1bfd6fee4691842eeca4c686d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LookingAt: 0
+  Disabled: 0
+  CanInteract: 1
+  NoiseCrosshair: 0
+  Cooldown: 0
+  OnInteract:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &6300127037919690575
 GameObject:
   m_ObjectHideFlags: 0
