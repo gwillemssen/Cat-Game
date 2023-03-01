@@ -7,35 +7,29 @@ using UnityEngine.UIElements;
 public class MainMenu_Clickable : MonoBehaviour
 {
     public GameObject MainCam;
+    public int valueToChangeTo;
 
     private Vector3 position;
     private Vector3 rotation;
-    private Vector3 defaultPosition;
-    private Vector3 defaultRotation;
 
-    //public enum test
-    //{
-    //left = 0, right = 1, center = 2
-    //}
-    public int LRCPosition;
-    private int LRC
-    public int LRDirection;
-    public string objType;
-    private Vector3[] cameraPositions = new Vector3[3] 
-    {new Vector3(-2.62f, 1.65f, 1.63f), new Vector3(-1.16f, 1.61f, 1.67f),new Vector3(.45f, 1.65f, 1.65f) };
-    private Vector3[] cameraRotations = new Vector3[3]
-    {new Vector3(0, -90, 0),new Vector3(15, 0, 0),new Vector3(0, 90, 0)};
+    private Vector3 defaultPosition = new Vector3(-1.16f, 1.61f, -0.6f);
+    private Vector3 leftPosition = new Vector3(-2.5f, 1.65f, 1.63f);
+    private Vector3 rightPosition = new Vector3(.34f, 1.65f, 1.65f);
+    private Vector3 centerPosition = new Vector3(-1.16f, 1.61f, 1.67f);
+    private Vector3 defaultRotation = Vector3.zero;
+    private Vector3 leftRotation = new Vector3(0, -90, 0);
+    private Vector3 rightRotation = new Vector3(0, 90, 0);
+    private Vector3 centerRotation = new Vector3(15, 0, 0);
+
+    private Vector3[] cameraPositions = new Vector3[4];
+    private Vector3[] cameraRotations = new Vector3[4];
 
 
     //look into world canvas
     // Start is called before the first frame update
     void Start()
     {
-        defaultPosition = Camera.main.transform.position;
-        defaultRotation = Camera.main.transform.position; 
-        
-
-        
+        AddValues();
     }
 
     // Update is called once per frame
@@ -44,21 +38,28 @@ public class MainMenu_Clickable : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             LeanTween.move(MainCam, defaultPosition, 1.5f).setEaseInOutExpo();
-            LeanTween.rotate(MainCam, Vector3.zero, 1.5f).setEaseInOutExpo();
-          
+            LeanTween.rotate(MainCam, defaultRotation, 1.5f).setEaseInOutExpo();
         }
+    }
+
+    public void AddValues()
+    {
+        cameraPositions[0] = defaultPosition;
+        cameraPositions[1] = leftPosition;
+        cameraPositions[2] = rightPosition;
+        cameraPositions[3] = centerPosition;
+
+        cameraRotations[0] = defaultRotation;
+        cameraRotations[1] = leftRotation;
+        cameraRotations[2] = rightRotation;
+        cameraRotations[3] = centerRotation;
     }
 
     public void OnMouseDown()
     {
-        LRDirection
-        if (objType == "arrow")
-        {
-            LRC += LRDirection;
-        }
-        Debug.Log($"{LRC}");
-        position = cameraPositions[LRC];
-        rotation = cameraRotations[LRC];
+
+        position = cameraPositions[valueToChangeTo];
+        rotation = cameraRotations[valueToChangeTo];
         LeanTween.move(MainCam, position, 1.5f).setEaseInOutExpo();
         LeanTween.rotate(MainCam, rotation, 1.5f).setEaseInOutExpo();
 
