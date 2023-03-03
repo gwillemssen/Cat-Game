@@ -238,13 +238,8 @@ public class FirstPersonController : MonoBehaviour
 
         moveDir = Vector3.SmoothDamp(moveDir, targetSpeed * wishMoveDir, ref moveDamp, Smoothing);
 
-        if (controller.velocity.sqrMagnitude > 2 && Input.sprint)
-        { LevelManager.instance.MakeNoise(transform.position, .8f * Time.deltaTime);  }
-
         moveDir.y = verticalVelocity;
         controller.Move(moveDir * Time.deltaTime);
-
-
     }
   
     private void JumpAndGravity()

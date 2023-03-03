@@ -96,7 +96,6 @@ public class MicrowaveController : Interactable
                 {
                     timeLeft = 0;
                     Debug.Log("time up");
-                    LevelManager.instance.MakeNoise(investigatePos.position, 1f);
                     timerOn = false;
                     microwaveAnimator.SetTrigger("FinishedTrigger");
                     active = false;
