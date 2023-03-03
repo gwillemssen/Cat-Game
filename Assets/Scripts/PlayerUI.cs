@@ -18,13 +18,11 @@ public class PlayerUI : MonoBehaviour
 
     [HideInInspector] public Slider PettingMeter;
     private Slider throwStrengthMeter;
-    private Image noiseMeter;
     private Image timeUI;
     private GameObject catTimerUI;
     private Image eyeOpenUI;
     private Image eyeHalfUI;
     private Image eyeClosedUI;
-    private Image speakerUI;
     private Text debugText;
     private Text infoText;
     private Animation catTimerAnim;
@@ -37,12 +35,9 @@ public class PlayerUI : MonoBehaviour
     public GameObject LoseScreen { get; private set; }
     public GameObject LoseCopsScreen { get; private set; }
     public Image Hamd { get { return hamd; } private set { hamd = value; } }
-    public float NoiseMeterPercentage { get { return noiseMeter.fillAmount; } }
     public bool EnemyOnScreen { get; private set; }
 
-    private float lastTimeShownSpeaker = -420f;
     string debugOutput = "";
-    Color speakerColor;
 
     private void Awake()
     {
@@ -104,11 +99,6 @@ public class PlayerUI : MonoBehaviour
                 case "SpottedGradient_Right":
                     spottedGradient_Right = t.gameObject;
                     break;
-                case "NoiseMeter":
-                    noiseMeter = t.transform.GetChild(0).gameObject.GetComponent<Image>();
-                    speakerUI = t.transform.GetChild(1).gameObject.GetComponent<Image>();
-                    noiseMeter.fillAmount = 0f;
-                    break;
                 case "GrannyScreenSpaceUI":
                     grannyScreenSpaceUI = t.GetComponent<Image>();
                     break;
@@ -121,8 +111,6 @@ public class PlayerUI : MonoBehaviour
         catTimerUI.gameObject.SetActive(false);
         throwStrengthMeter.gameObject.SetActive(false);
         hamd.enabled = false;
-        speakerColor = new Color(1, 1, 1, 0);
-        speakerUI.color = speakerColor;
         //debugText.enabled = false;
         debugText.text = "";
         spottedGradient_Left.SetActive(false);
@@ -135,17 +123,12 @@ public class PlayerUI : MonoBehaviour
         debugOutput += $"CATS : {LevelManager.instance.CatsPetted} / {LevelManager.instance.CatsToPet}\n";
         debugText.text = debugOutput;
 
-        speakerColor.a = Mathf.Lerp(1f, 0f, Mathf.Clamp01((Time.time - lastTimeShownSpeaker) / 5f));
-        speakerUI.color = speakerColor;
-        noiseMeter.color = speakerColor;
-        noiseMeter.fillAmount = Mathf.MoveTowards(noiseMeter.fillAmount, 0f, Time.deltaTime / 5f);
-
         Color targetColor = Color.white;
         targetColor.a = 0f;
 
         if(Enemy.instance.State.ShowScreenSpaceUI)
         {
-            if (Enemy.instance.Awareness < 0.1f && !Enemy.instance.State.FullyAlerted)
+            if (Enemy.instance.Awareness < 0.1f/* && !Enemy.instance.State.FullyAlerted*/)
             {
                 targetColor.a = (Mathf.Abs(Mathf.Sin(Time.time / 1.25f)) - 0.5f) * 0.35f;
             }
@@ -200,12 +183,4 @@ public class PlayerUI : MonoBehaviour
         if(!catTimerAnim.isPlaying)
         { catTimerAnim.Play(); }
     }
-
-    public void SetNoiseMeter(float percent)
-    {
-        lastTimeShownSpeaker = Time.time;
-        noiseMeter.fillAmount += percent;
-        noiseMeter.fillAmount = Mathf.Clamp01(noiseMeter.fillAmount);
-    }
-
 }

@@ -9,18 +9,19 @@ public class EnemyState
 {
     public static EnemyState SittingState = new SittingState();
     public static EnemyState PatrollingState = new PatrollingState();
-    public static EnemyState SearchingForNoiseState = new SearchingForNoiseState();
+    public static EnemyState SearchingForNoiseState = new GoingToPosition();
     public static EnemyState CallingCopsGrabbingGunState = new CallingCopsGrabbingGunState();
     public static EnemyState PatrollingWithGunState = new PatrollingWithGunState();
     public static EnemyState ReloadingState = new ReloadingState();
 
+    public enum AlertnessEnum { Idle, Warning, Alerted }
+
     public bool ShowScreenSpaceUI { get; protected set; } = true;
-    public bool FullyAlerted { get; protected set; } = false;
+    public AlertnessEnum MinimumAlertness { get; protected set; } = AlertnessEnum.Idle; //the minimum alertness the 
 
     public virtual void Init(Enemy enemy, IAstarAI ai) 
     { enemy.GunObject.SetActive(false); }
     public virtual void Update(Enemy enemy, IAstarAI ai) { }
-    public virtual void OnNoise(Enemy enemy, Vector3 noisePos) { }
     public virtual void SetAnimationState(Enemy enemy, Animator anim)
     { anim.SetBool("isWalking", enemy.Moving); }
     //call this method in the update loop to make the enemy stop and rotate to face the player when sighted
@@ -56,14 +57,11 @@ public class SittingState : EnemyState
         PlayerUI.instance.SetSpottedGradient(enemy.SeesPlayer, enemy.transform.position);
     }
 
-    public override void OnNoise(Enemy enemy, Vector3 noisePos)
-    { enemy.SetState(SearchingForNoiseState); }
-
     public override void Init(Enemy enemy, IAstarAI ai)
     {
         enemy.RedLightTargetIntensity = 0f;
         base.ShowScreenSpaceUI = true;
-        base.FullyAlerted = false;
+        base.MinimumAlertness = AlertnessEnum.Idle;
     }
 }
 
@@ -99,14 +97,11 @@ public class PatrollingState : EnemyState
         enemy.SetState(CallingCopsGrabbingGunState);
     }
 
-    public override void OnNoise(Enemy enemy, Vector3 noisePos)
-    { enemy.SetState(SearchingForNoiseState); }
-
     public override void Init(Enemy enemy, IAstarAI ai)
     {
         enemy.RedLightTargetIntensity = 0f;
         base.ShowScreenSpaceUI = true;
-        base.FullyAlerted = false;
+        base.MinimumAlertness = AlertnessEnum.Idle;
     }
 }
 
@@ -119,7 +114,7 @@ public class ReloadingState : EnemyState
         //PLAY I MISSED AUDIO
         timeStartedReloading = Time.time;
         base.ShowScreenSpaceUI = false;
-        base.FullyAlerted = true;
+        base.MinimumAlertness = AlertnessEnum.Alerted;
     }
 
     public override void Update(Enemy enemy, IAstarAI ai)
@@ -145,7 +140,7 @@ public class PatrollingWithGunState : PatrollingState
         lastTimeSeesPlayer = enemy.SeesPlayer;
         lastTimePlayedReloadSound = -420f;
         base.ShowScreenSpaceUI = false;
-        base.FullyAlerted = true;
+        base.MinimumAlertness = AlertnessEnum.Warning;
     }
 
     public override void Update(Enemy enemy, IAstarAI ai)
@@ -206,18 +201,17 @@ public class PatrollingWithGunState : PatrollingState
     }
 
     public override void OnSpotted(Enemy enemy) { }
-    public override void OnNoise(Enemy enemy, Vector3 noisePos) { }
 }
 
-public class SearchingForNoiseState : EnemyState
+public class GoingToPosition : EnemyState
 {
-    public Vector3 NoisePosition;
+    public Vector3 Position;
 
     public override void Update(Enemy enemy, IAstarAI ai)
     {
         //Movement
         ai.isStopped = false;
-        enemy.NavigateToPosition(NoisePosition);
+        enemy.NavigateToPosition(Position);
 
         if(enemy.ArrivedAtDestinationOrStuck)
         { /*enemy.SetState(enemy.LastState);*/ enemy.SetState(PatrollingState); }
@@ -233,14 +227,11 @@ public class SearchingForNoiseState : EnemyState
         PlayerUI.instance.SetSpottedGradient(enemy.SeesPlayer, enemy.transform.position);
     }
 
-    public override void OnNoise(Enemy enemy, Vector3 noisePos)
-    { NoisePosition = noisePos; }
-
     public override void Init(Enemy enemy, IAstarAI ai)
     {
         enemy.RedLightTargetIntensity = enemy.RedLightIntensityHigh;
         base.ShowScreenSpaceUI = true;
-        base.FullyAlerted = false;
+        base.MinimumAlertness = AlertnessEnum.Warning;
     }
 }
 
@@ -282,7 +273,7 @@ public class CallingCopsGrabbingGunState : EnemyState
     {
         enemy.RedLightTargetIntensity = 0f;
         base.ShowScreenSpaceUI = false;
-        base.FullyAlerted = true;
+        base.MinimumAlertness = AlertnessEnum.Alerted;
     }
 }
 
@@ -304,7 +295,6 @@ public class Enemy : MonoBehaviour
     public float SightDistance = 12f;
     public float AwarenessRate = 0.5f;
     public float AwarenessMultiplierBackTurned = 0.5f;
-    public float NoiseThreshold = 0.5f;
     [Tooltip("How visible does the player need to be to be spotted [0.0-1.0]")]
     [Range(0f,1f)]
     public float VisibilityThreshold = 0.5f;
@@ -340,7 +330,6 @@ public class Enemy : MonoBehaviour
     private void Awake()
     {
         ai = GetComponent<IAstarAI>();
-        LevelManager.OnNoise += OnNoiseCallback;
         Cat.CompletedPetting += CompletedPettingCallback;
 
         if(instance != null)
@@ -350,7 +339,6 @@ public class Enemy : MonoBehaviour
 
     private void OnDestroy()
     {
-        LevelManager.OnNoise -= OnNoiseCallback;
         Cat.CompletedPetting -= CompletedPettingCallback;
     }
 
@@ -518,12 +506,6 @@ public class Enemy : MonoBehaviour
         }
 
         return hitPlayer;
-    }
-
-    private void OnNoiseCallback(Vector3 pos, float noisePercentage)
-    {
-        if (noisePercentage > NoiseThreshold)
-        { State.OnNoise(this, pos); }
     }
 
     private void CompletedPettingCallback()

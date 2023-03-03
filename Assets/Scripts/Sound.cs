@@ -10,6 +10,4 @@ public class Sound : ScriptableObject
     public float Volume = 1f;
     [Range(-3f, 3f)]
     public float Pitch = 1f;
-    [Range(0, 1)]
-    public float NoisePercentage;
 }
