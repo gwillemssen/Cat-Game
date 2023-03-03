@@ -5,6 +5,62 @@ using UnityEngine;
 using UnityEditor;
 using System;
 
+public class Awareness
+{
+    public enum AwarenessEnum { Idle, Warning, Alerted }
+    public AwarenessEnum AwarenessValue { get; private set; }
+
+    private Enemy enemy;
+    private float value;
+    private float maxValue
+    {
+        get 
+        {
+            if (AwarenessValue == AwarenessEnum.Idle)
+            { return enemy.Awareness_IdleState_Duration; }
+            else if (AwarenessValue == AwarenessEnum.Warning)
+            { return enemy.Awareness_WarningState_Duration; }
+            return 1f;
+        }
+    }
+
+    public Awareness(Enemy enemy)
+    { this.enemy = enemy; }
+
+    public void Update(float delta, float percentVisible, bool enemyOnScreen)
+    {
+        value += percentVisible >= enemy.VisibilityThreshold ? enemy.AwarenessRate * delta : -enemy.AwarenessDecayRate * delta;
+        value = Mathf.Clamp(value, 0f, maxValue);      
+
+        if(value >= maxValue && AwarenessValue < AwarenessEnum.Alerted)
+        {
+            AwarenessValue++;
+            value = 0f;
+        }
+        else if(value <= 0f && AwarenessValue > enemy.State.MinimumAlertness)
+        {
+            AwarenessValue--;
+            value = maxValue;
+        }
+
+        AwarenessValue = (AwarenessEnum)Math.Clamp((int)AwarenessValue, 0, (int)AwarenessEnum.Alerted);
+    }
+
+    public void SetMinimum(AwarenessEnum min)
+    {
+        if(AwarenessValue >= min)
+        { return; }
+
+        value = 0f;
+        AwarenessValue = min;
+    }
+
+    public override string ToString()
+    {
+        return "STATE: " + AwarenessValue.ToString() + " value: " + value + " / " + maxValue;
+    }
+}
+
 public class EnemyState
 {
     public static EnemyState SittingState = new SittingState();
@@ -14,10 +70,8 @@ public class EnemyState
     public static EnemyState PatrollingWithGunState = new PatrollingWithGunState();
     public static EnemyState ReloadingState = new ReloadingState();
 
-    public enum AlertnessEnum { Idle, Warning, Alerted }
-
     public bool ShowScreenSpaceUI { get; protected set; } = true;
-    public AlertnessEnum MinimumAlertness { get; protected set; } = AlertnessEnum.Idle; //the minimum alertness the 
+    public Awareness.AwarenessEnum MinimumAlertness { get; protected set; } = Awareness.AwarenessEnum.Idle; //the minimum alertness the 
 
     public virtual void Init(Enemy enemy, IAstarAI ai) 
     { enemy.GunObject.SetActive(false); }
@@ -27,11 +81,12 @@ public class EnemyState
     //call this method in the update loop to make the enemy stop and rotate to face the player when sighted
     protected void StopAndRotateToFacePlayerIfVisible(Enemy enemy, IAstarAI ai)
     {
+        ai.isStopped = false;
         if (enemy.SeesPlayer)
         {
             //stop and rotate to face the player
             ai.isStopped = true;
-            ai.rotation = Quaternion.Lerp(ai.rotation, Quaternion.LookRotation(new Vector3(enemy.PlayerTransform.position.x, 0f, enemy.PlayerTransform.position.z) - new Vector3(enemy.transform.position.x, 0f, enemy.transform.position.z)), Time.deltaTime* 3f);
+            ai.rotation = Quaternion.Lerp(ai.rotation, Quaternion.LookRotation(new Vector3(enemy.PlayerTransform.position.x, 0f, enemy.PlayerTransform.position.z) - new Vector3(enemy.transform.position.x, 0f, enemy.transform.position.z)), Time.deltaTime* 4.5f);
         }
     }
 }
@@ -40,28 +95,28 @@ public class SittingState : EnemyState
 {
     public override void Update(Enemy enemy, IAstarAI ai)
     {
-        enemy.RedLightTargetIntensity = enemy.SeesPlayer ? enemy.RedLightIntensityNormal : 0f;
+        enemy.RedLightTargetIntensity = enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Warning ? enemy.RedLightIntensityNormal : 0f;
 
         //Movement
         ai.isStopped = true;
         enemy.NavigateToPosition(enemy.transform.position);
 
         //Spotting
-        if(enemy.SpottedPlayer)
+        if(enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Alerted)
         {
             enemy.PlayVoiceline(Enemy.VoiceLine.SpotPlayer);
             enemy.SetState(CallingCopsGrabbingGunState);
         }
 
         base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
-        PlayerUI.instance.SetSpottedGradient(enemy.SeesPlayer, enemy.transform.position);
+        PlayerUI.instance.SetSpottedGradient(enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Warning, enemy.transform.position);
     }
 
     public override void Init(Enemy enemy, IAstarAI ai)
     {
         enemy.RedLightTargetIntensity = 0f;
         base.ShowScreenSpaceUI = true;
-        base.MinimumAlertness = AlertnessEnum.Idle;
+        base.MinimumAlertness = Awareness.AwarenessEnum.Idle;
     }
 }
 
@@ -71,7 +126,7 @@ public class PatrollingState : EnemyState
 
     public override void Update(Enemy enemy, IAstarAI ai)
     {
-        enemy.RedLightTargetIntensity = enemy.SeesPlayer ? enemy.RedLightIntensityNormal : 0f;
+        enemy.RedLightTargetIntensity = enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Warning ? enemy.RedLightIntensityNormal : 0f;
 
         //Movement
         ai.isStopped = false;
@@ -84,11 +139,11 @@ public class PatrollingState : EnemyState
         { currentWaypointIndex = 0; }
 
         //Spotting
-        if (enemy.SpottedPlayer)
+        if (enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Alerted)
         { OnSpotted(enemy); }
 
         base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
-        PlayerUI.instance.SetSpottedGradient(enemy.SeesPlayer, enemy.transform.position);
+        PlayerUI.instance.SetSpottedGradient(enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Warning, enemy.transform.position);
     }
 
     public virtual void OnSpotted(Enemy enemy)
@@ -101,7 +156,7 @@ public class PatrollingState : EnemyState
     {
         enemy.RedLightTargetIntensity = 0f;
         base.ShowScreenSpaceUI = true;
-        base.MinimumAlertness = AlertnessEnum.Idle;
+        base.MinimumAlertness = Awareness.AwarenessEnum.Idle;
     }
 }
 
@@ -114,7 +169,7 @@ public class ReloadingState : EnemyState
         //PLAY I MISSED AUDIO
         timeStartedReloading = Time.time;
         base.ShowScreenSpaceUI = false;
-        base.MinimumAlertness = AlertnessEnum.Alerted;
+        base.MinimumAlertness = Awareness.AwarenessEnum.Alerted;
     }
 
     public override void Update(Enemy enemy, IAstarAI ai)
@@ -133,22 +188,30 @@ public class PatrollingWithGunState : PatrollingState
     private bool lastTimeSeesPlayer;
     private float lastTimePlayedReloadSound = -420f;
     private const float reloadSoundDelay = 4f;
+    private float timeVisible;
 
     public override void Init(Enemy enemy, IAstarAI ai)
     {
         enemy.GunObject.SetActive(true);
-        lastTimeSeesPlayer = enemy.SeesPlayer;
+        lastTimeSeesPlayer = enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Warning;
         lastTimePlayedReloadSound = -420f;
         base.ShowScreenSpaceUI = false;
-        base.MinimumAlertness = AlertnessEnum.Warning;
+        base.MinimumAlertness = Awareness.AwarenessEnum.Warning;
     }
 
     public override void Update(Enemy enemy, IAstarAI ai)
     {
         base.Update(enemy, ai);
 
+        if(enemy.SeesPlayer)
+        { timeVisible += Time.deltaTime; }
+        else
+        { timeVisible -= Time.deltaTime ; }
+
+        timeVisible = Mathf.Clamp(timeVisible, 0f, enemy.TimeUntilShoot);
+
         //gun shooty stuff
-        if (enemy.Awareness >= .98f)
+        if (timeVisible >= enemy.TimeUntilShoot)
         {
             UnityEngine.Debug.Log(FirstPersonController.instance.IsMoving);
             if (timesShot >= 1 || !FirstPersonController.instance.IsMoving)
@@ -162,21 +225,28 @@ public class PatrollingWithGunState : PatrollingState
 
             enemy.AudioPlayer.Play(enemy.ShotgunSound_Fire);
             timesShot++;
+            timeVisible = 0f;
             enemy.SetState(ReloadingState);
         }
 
         bool canPlayReloadSound = Time.time - lastTimePlayedReloadSound > reloadSoundDelay;
 
         //GLEEK GLACK reload sounds
-        if(enemy.SeesPlayer && !lastTimeSeesPlayer && canPlayReloadSound)
+        if(enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Warning && !lastTimeSeesPlayer && canPlayReloadSound)
         {
             enemy.AudioPlayer.Play(enemy.ShotgunSound_Reload);
             lastTimePlayedReloadSound = Time.time;
         }
-        lastTimeSeesPlayer = enemy.SeesPlayer;
 
-        //flashing red
-        enemy.RedLightTargetIntensity = Mathf.Lerp(enemy.RedLightIntensityNormal, enemy.RedLightIntensityHigh, Mathf.Abs(Mathf.Sin(Time.time)));
+        //move to player if spotted
+        base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
+        if (enemy.SeesPlayer)
+        {
+            ai.isStopped = false;
+            ai.destination = FirstPersonController.instance.transform.position;
+            if(Vector3.SqrMagnitude(FirstPersonController.instance.transform.position - enemy.transform.position) <= 1f)
+            { ai.isStopped = true; }
+        }
 
         //Voicelines
         if (Time.time - lastTimePlayedChasingVoiceline > chasingVoicelineDuration)
@@ -189,8 +259,7 @@ public class PatrollingWithGunState : PatrollingState
             }
         }
 
-        base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
-        PlayerUI.instance.SetSpottedGradient(enemy.SeesPlayer, enemy.transform.position);
+        PlayerUI.instance.SetSpottedGradient(enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Warning, enemy.transform.position);
     }
 
     public override void SetAnimationState(Enemy enemy, Animator anim)
@@ -201,6 +270,11 @@ public class PatrollingWithGunState : PatrollingState
     }
 
     public override void OnSpotted(Enemy enemy) { }
+
+    public override string ToString()
+    {
+        return base.ToString() + " time: " + timeVisible;
+    }
 }
 
 public class GoingToPosition : EnemyState
@@ -217,21 +291,21 @@ public class GoingToPosition : EnemyState
         { /*enemy.SetState(enemy.LastState);*/ enemy.SetState(PatrollingState); }
 
         //Spotting
-        if(enemy.SpottedPlayer)
+        if(enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Alerted)
         {
             enemy.PlayVoiceline(Enemy.VoiceLine.SpotPlayer);
             enemy.SetState(CallingCopsGrabbingGunState);
         }
 
         base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
-        PlayerUI.instance.SetSpottedGradient(enemy.SeesPlayer, enemy.transform.position);
+        PlayerUI.instance.SetSpottedGradient(enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Warning, enemy.transform.position);
     }
 
     public override void Init(Enemy enemy, IAstarAI ai)
     {
         enemy.RedLightTargetIntensity = enemy.RedLightIntensityHigh;
         base.ShowScreenSpaceUI = true;
-        base.MinimumAlertness = AlertnessEnum.Warning;
+        base.MinimumAlertness = Awareness.AwarenessEnum.Warning;
     }
 }
 
@@ -273,7 +347,7 @@ public class CallingCopsGrabbingGunState : EnemyState
     {
         enemy.RedLightTargetIntensity = 0f;
         base.ShowScreenSpaceUI = false;
-        base.MinimumAlertness = AlertnessEnum.Alerted;
+        base.MinimumAlertness = Awareness.AwarenessEnum.Alerted;
     }
 }
 
@@ -294,7 +368,11 @@ public class Enemy : MonoBehaviour
     public Animator Anim;
     public float SightDistance = 12f;
     public float AwarenessRate = 0.5f;
-    public float AwarenessMultiplierBackTurned = 0.5f;
+    public float AwarenessDecayRate = 0.3f;
+    public float Awareness_IdleState_Duration = 0.4f;
+    public float Awareness_WarningState_Duration = 1.8f;
+    public float TimeUntilShoot = 1.2f;
+    //public float AwarenessMultiplierBackTurned = 0.5f;
     [Tooltip("How visible does the player need to be to be spotted [0.0-1.0]")]
     [Range(0f,1f)]
     public float VisibilityThreshold = 0.5f;
@@ -313,13 +391,12 @@ public class Enemy : MonoBehaviour
     [HideInInspector] public EnemyState State { get; private set; } = EnemyState.SittingState;
     [HideInInspector] public EnemyState LastState { get; private set; } = EnemyState.SittingState;
     [HideInInspector] public float RedLightTargetIntensity { get; set; }
-    public bool SeesPlayer { get; private set; }
-    public bool SpottedPlayer { get; private set; }
     public bool ArrivedAtDestinationOrStuck { get; private set; }
     public bool Moving { get; private set; }
-    public float Awareness { get; private set; }
+    public Awareness Awareness { get; private set; }
     public float PercentVisible { get; private set; }
     public Transform PlayerTransform { get; private set; }
+    public bool SeesPlayer { get; private set; }
 
     private IAstarAI ai;
     private bool raycastedToPlayer;
@@ -329,12 +406,13 @@ public class Enemy : MonoBehaviour
 
     private void Awake()
     {
-        ai = GetComponent<IAstarAI>();
-        Cat.CompletedPetting += CompletedPettingCallback;
-
-        if(instance != null)
+        if (instance != null)
         { Destroy(this.gameObject); return; }
         instance = this;
+
+        ai = GetComponent<IAstarAI>();
+        Cat.CompletedPetting += CompletedPettingCallback;
+        Awareness = new Awareness(this);
     }
 
     private void OnDestroy()
@@ -364,24 +442,9 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
-        bool pastThreshold = PercentVisible >= VisibilityThreshold;
+        SeesPlayer = PercentVisible >= VisibilityThreshold;
 
-        if (raycastedToPlayer)
-        {
-            float awarenessAmt = Time.deltaTime;
-            awarenessAmt *= AwarenessRate;
-            if (!PlayerUI.instance.EnemyOnScreen)
-            { awarenessAmt *= AwarenessMultiplierBackTurned; }
-            awarenessAmt *= PercentVisible;
-            if (!pastThreshold && Awareness < 0.25f) //0.25 is the threshold for ignoring the threshold lmao
-            { awarenessAmt = 0f; }
-            Awareness += awarenessAmt;
-        }
-        else
-        { Awareness = 0f; }
-
-        SeesPlayer = Awareness > 0.05f;
-        SpottedPlayer = Awareness >= .99f;       
+        Awareness.Update(Time.deltaTime, PercentVisible, PlayerUI.instance.EnemyOnScreen);     
         Moving = !ai.isStopped && ai.velocity.sqrMagnitude > .1f;
 
         sightDistanceTarget = SightDistance;
@@ -522,7 +585,7 @@ public class Enemy : MonoBehaviour
         LastState = State;
         State = newState;
         State.Init(this, ai);
-        Awareness = 0f;
+        Awareness.SetMinimum(newState.MinimumAlertness);
     }
 
     public enum VoiceLine { SpotPlayer, GoingToCallThePolice, CallingPolice, Chasing }

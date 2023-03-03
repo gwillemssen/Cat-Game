@@ -21,7 +21,7 @@ public class EnemyDebug : MonoBehaviour
 
     string GetDebugStatus()
     {
-        alertnessPercentage = Mathf.Lerp(0f, 100f, (Enemy.Awareness / 1f));
+        //alertnessPercentage = Mathf.Lerp(0f, 100f, (Enemy.PercentVisible / 1f));
         string alertnessBar = "";
         for (int i = 0; i < 20; i++)
         {
@@ -29,8 +29,7 @@ public class EnemyDebug : MonoBehaviour
             { alertnessBar += "|"; }
         }
         return $"{Enemy.State.ToString()}\n" +
-            $"Sees Player: {Enemy.SeesPlayer}\n" +
-            $"Awareness : {alertnessBar}\n" +
+            $"{Enemy.Awareness.ToString()}\n" +
             $"PercentVisible : {Enemy.PercentVisible}\n" +
             $"ArrivedAtDestination : {Enemy.ArrivedAtDestinationOrStuck}";
     }

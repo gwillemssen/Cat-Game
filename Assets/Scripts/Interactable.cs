@@ -8,7 +8,6 @@ public class Interactable : MonoBehaviour
     [HideInInspector] public bool LookingAt = false; //is the player looking at the object?
     [HideInInspector] public bool Disabled = false;
     public bool CanInteract = true;
-    public bool NoiseCrosshair = false;
     public float Cooldown;
 
     [Tooltip("Called when we click on the object")]

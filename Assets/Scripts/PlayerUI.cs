@@ -126,16 +126,9 @@ public class PlayerUI : MonoBehaviour
         Color targetColor = Color.white;
         targetColor.a = 0f;
 
-        if(Enemy.instance.State.ShowScreenSpaceUI)
+        if (Enemy.instance.State.ShowScreenSpaceUI)
         {
-            if (Enemy.instance.Awareness < 0.1f/* && !Enemy.instance.State.FullyAlerted*/)
-            {
-                targetColor.a = (Mathf.Abs(Mathf.Sin(Time.time / 1.25f)) - 0.5f) * 0.35f;
-            }
-            else
-            {
-                targetColor.a = 0.5f;
-            }
+            targetColor.a = 0.5f;
         }
 
 

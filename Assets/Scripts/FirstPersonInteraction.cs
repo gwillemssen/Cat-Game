@@ -147,11 +147,10 @@ public class FirstPersonInteraction : MonoBehaviour
     private void UpdateCrosshair()
     {
         if(interactable == null)
-            { crosshairImage = CrosshairSprite_Normal; }
-        else if(interactable.NoiseCrosshair == false)
-            { crosshairImage = CrosshairSprite_Interactable; }
+        { crosshairImage = CrosshairSprite_Normal; }
         else
-            { crosshairImage = CrosshairSprite_Noise; }
+        { crosshairImage = CrosshairSprite_Interactable; }
+
     }
 
     public void CalculateCrosshair()
