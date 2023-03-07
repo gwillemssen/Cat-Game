@@ -24,8 +24,12 @@ public class Cat : Interactable
     public float PettingDecayDelay = 0.5f;
     public float MaxVolume = 0.2f;
     public float LightningAmount = 10f;
-    public AudioSource metalGuitar;
-    public AudioSource catMeow;
+    public AudioSource MusicAudioSource;
+    [SerializeField] private AudioClip music1;
+    [SerializeField] private AudioClip music2;
+    public AudioSource MeowAudioSource;
+    [SerializeField] private float[] musicStartPositions;
+    [SerializeField] private float[] music2StartPositions;
 
     //general
     private enum CatState { Pettable, Unpettable, PettingMinigame, DonePetting };
@@ -97,11 +101,11 @@ public class Cat : Interactable
                 }
             }
         }
-        if (metalGuitar.isPlaying && state != CatState.PettingMinigame)
+        if (MusicAudioSource.isPlaying && state != CatState.PettingMinigame)
         {
-            metalGuitar.volume -= Time.deltaTime;
-            if (metalGuitar.volume <= 0f)
-            { metalGuitar.Stop(); }
+            MusicAudioSource.volume -= Time.deltaTime;
+            if (MusicAudioSource.volume <= 0f)
+            { MusicAudioSource.Stop(); }
         }
 
         if (state == CatState.PettingMinigame)
@@ -197,8 +201,8 @@ public class Cat : Interactable
         playerController.Interaction.HideCrosshair = true;
         PlayerUI.instance.SetInfoText("Click and Drag to pet the Cat!\nRight click to Cancel");
         pettingAmount = 0f;
-        metalGuitar.volume = 0f;
-        metalGuitar.Play();
+        MusicAudioSource.volume = 0f;
+        MusicAudioSource.Play();
     }
 
     private void UpdateMinigame()
@@ -243,16 +247,25 @@ public class Cat : Interactable
             mouseDelta = Vector2.zero;
         }
 
+        if(MusicAudioSource.volume == 0f)
+        {
+            MusicAudioSource.Stop();
+            int music = Random.Range(0, 2);
+            MusicAudioSource.clip = music == 0 ? music1 : music2;
+            MusicAudioSource.time = music == 0 ? musicStartPositions[Random.Range(0, musicStartPositions.Length)] : music2StartPositions[Random.Range(0, music2StartPositions.Length)];
+            MusicAudioSource.Play();
+        }
+
         if (decay) //cat got bored
         {
             pettingAmount -= Time.deltaTime * PettingDecayRate;
             //audio.volume -= Time.deltaTime;
-            metalGuitar.volume = 0f;
+            MusicAudioSource.volume = 0f;
         }
         else //cat getting pet mmm yes good :)
         {
-            metalGuitar.volume += Time.deltaTime * MaxVolume;
-            metalGuitar.volume = Mathf.Clamp(metalGuitar.volume, 0f, MaxVolume);
+            MusicAudioSource.volume += Time.deltaTime * MaxVolume;
+            MusicAudioSource.volume = Mathf.Clamp(MusicAudioSource.volume, 0f, MaxVolume);
         }
 
         PlayerUI.instance.PettingMeter.value = pettingAmount;
@@ -286,7 +299,7 @@ public class Cat : Interactable
         
         if(catTimer <= 0f)
         {
-            catMeow.Play();
+            MeowAudioSource.Play();
             catTimer += Random.Range(minTimeForMeow, maxTimeForMeow);
         }
         if(catTimer > 0f)

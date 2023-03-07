@@ -5809,7 +5809,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 0e168d8ea91bc964eb9ea01cecab8dd7, type: 3}
+  m_audioClip: {fileID: 8300000, guid: dd73f869c3af4794bbd999e97611320e, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -5910,7 +5910,6 @@ MonoBehaviour:
   LookingAt: 0
   Disabled: 0
   CanInteract: 1
-  NoiseCrosshair: 0
   Cooldown: 0
   OnInteract:
     m_PersistentCalls:
@@ -5921,8 +5920,16 @@ MonoBehaviour:
   PettingDecayDelay: 0.5
   MaxVolume: 0.2
   LightningAmount: 20
-  metalGuitar: {fileID: 461238427157166943}
-  catMeow: {fileID: 6857564928647273250}
+  MusicAudioSource: {fileID: 461238427157166943}
+  music1: {fileID: 8300000, guid: 25d0ad45af468154e974c15be5a85030, type: 3}
+  music2: {fileID: 8300000, guid: dd73f869c3af4794bbd999e97611320e, type: 3}
+  MeowAudioSource: {fileID: 6857564928647273250}
+  musicStartPositions:
+  - 1.8
+  - 17.5
+  music2StartPositions:
+  - 1.9
+  - 20
   lightningParticles: {fileID: 3301111365488755647}
   colorDampener: 0
   colorAmplifier: 0
