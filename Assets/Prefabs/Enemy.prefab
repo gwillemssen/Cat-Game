@@ -426,7 +426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9414aabddf48aa14ea1ad77e2da5cb37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DebugMode: 1
+  DebugMode: 0
   EyePosition: {fileID: 8272336163191410661}
   RedLight: {fileID: 6671474887497150355}
   PatrollingRoute:
@@ -444,6 +444,7 @@ MonoBehaviour:
   Awareness_IdleState_Duration: 0.4
   Awareness_WarningState_Duration: 1.8
   TimeUntilShoot: 1.8
+  FovDotProduct: 0.15
   VisibilityThreshold: 0.691
   ReloadTime: 1.5
   RedLightIntensityNormal: 0.05
@@ -471,6 +472,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 007418af252786a42b4a940b90537dad, type: 2}
   - {fileID: 11400000, guid: 6f5e7cec3e5e791458773d9863605811, type: 2}
   - {fileID: 11400000, guid: b8667339de8c06c4a989fb46297eb63b, type: 2}
+  AlertedSounds:
+  - {fileID: 11400000, guid: 6d95e1a8eb64a2540a0b83f49656ff57, type: 2}
+  - {fileID: 11400000, guid: b93750c370b36504095a73fb20186850, type: 2}
+  - {fileID: 11400000, guid: c58b3e8d4f7412e458c28b12a37f72b0, type: 2}
   ShotgunSound_Reload: {fileID: 11400000, guid: f0d0b671a1abd4e4b8e3c5db5faaa6d1,
     type: 2}
   ShotgunSound_Fire: {fileID: 11400000, guid: 311425cf03cf0104286a7042e38a4c8a, type: 2}

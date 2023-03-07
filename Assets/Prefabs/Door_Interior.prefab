@@ -9,8 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8143572217980752762}
-  - component: {fileID: 72111284}
-  - component: {fileID: 72111285}
   - component: {fileID: 739212196}
   - component: {fileID: 8849147334854008162}
   - component: {fileID: 5950643270630881780}
@@ -37,56 +35,6 @@ Transform:
   m_Father: {fileID: 630623917495218338}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!23 &72111284
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 425076172292646712}
-  m_Enabled: 0
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &72111285
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 425076172292646712}
-  m_Mesh: {fileID: 2619086233303812490, guid: 67e8b1cc677786e45b07bff471fdfa2f, type: 3}
 --- !u!65 &739212196
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -95,11 +43,11 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 425076172292646712}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 4.119146, y: 5.83398, z: 0.5284723}
-  m_Center: {x: 0.01715215, y: 3.8296692, z: 0.031233136}
+  m_Size: {x: 4.359979, y: 7.085024, z: 0.321678}
+  m_Center: {x: 0.06959411, y: 3.595494, z: 0.013328598}
 --- !u!114 &8849147334854008162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115,7 +63,6 @@ MonoBehaviour:
   LookingAt: 0
   Disabled: 0
   CanInteract: 1
-  NoiseCrosshair: 0
   Cooldown: 0
   OnInteract:
     m_PersistentCalls:
@@ -721,7 +668,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1619223229841882663}
-  - component: {fileID: 4820600915147125370}
   m_Layer: 4
   m_Name: Door_Components
   m_TagString: Untagged
@@ -747,19 +693,6 @@ Transform:
   m_Father: {fileID: 630623917495218338}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &4820600915147125370
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7995931623429831382}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1.5849004, y: 2.3294349, z: 0.090951204}
-  m_Center: {x: -0.7883723, y: 0.17399168, z: 0.017034411}
 --- !u!1 &9167217876464171027
 GameObject:
   m_ObjectHideFlags: 0
@@ -771,7 +704,7 @@ GameObject:
   - component: {fileID: 8391139291252761257}
   - component: {fileID: 79055557961279504}
   - component: {fileID: 8353746126616334417}
-  m_Layer: 4
+  m_Layer: 14
   m_Name: Door_Interior
   m_TagString: Untagged
   m_Icon: {fileID: 0}

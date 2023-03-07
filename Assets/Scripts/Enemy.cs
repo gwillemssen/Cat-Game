@@ -71,7 +71,7 @@ public class EnemyState
     public static EnemyState ReloadingState = new ReloadingState();
 
     public bool ShowScreenSpaceUI { get; protected set; } = true;
-    public Awareness.AwarenessEnum MinimumAlertness { get; protected set; } = Awareness.AwarenessEnum.Idle; //the minimum alertness the 
+    public Awareness.AwarenessEnum MinimumAlertness { get; protected set; } = Awareness.AwarenessEnum.Idle; //the minimum alertness state the enemy can be in
 
     public virtual void Init(Enemy enemy, IAstarAI ai) 
     { enemy.GunObject.SetActive(false); }
@@ -88,6 +88,20 @@ public class EnemyState
             ai.isStopped = true;
             ai.rotation = Quaternion.Lerp(ai.rotation, Quaternion.LookRotation(new Vector3(enemy.PlayerTransform.position.x, 0f, enemy.PlayerTransform.position.z) - new Vector3(enemy.transform.position.x, 0f, enemy.transform.position.z)), Time.deltaTime* 4.5f);
         }
+    }
+    private bool canPlayAlertedVoiceline = true;
+    private float voicelineCooldownTimer;
+    protected void PlayAlertedVoicelineIfInWarningState(Enemy enemy)
+    {
+        if (canPlayAlertedVoiceline && enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Warning)
+        {
+            voicelineCooldownTimer += enemy.PlayVoiceline(Enemy.VoiceLine.Alerted).Clip.length + 2f;
+            canPlayAlertedVoiceline = false;
+        }
+        if(voicelineCooldownTimer <= 0f)
+        { canPlayAlertedVoiceline = true; }
+
+        voicelineCooldownTimer = Mathf.Max(0f, voicelineCooldownTimer - Time.deltaTime);
     }
 }
 
@@ -109,6 +123,7 @@ public class SittingState : EnemyState
         }
 
         base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
+        base.PlayAlertedVoicelineIfInWarningState(enemy);
         PlayerUI.instance.SetSpottedGradient(enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Warning, enemy.transform.position);
     }
 
@@ -143,6 +158,7 @@ public class PatrollingState : EnemyState
         { OnSpotted(enemy); }
 
         base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
+        base.PlayAlertedVoicelineIfInWarningState(enemy);
         PlayerUI.instance.SetSpottedGradient(enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Warning, enemy.transform.position);
     }
 
@@ -193,10 +209,10 @@ public class PatrollingWithGunState : PatrollingState
     public override void Init(Enemy enemy, IAstarAI ai)
     {
         enemy.GunObject.SetActive(true);
-        lastTimeSeesPlayer = enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Warning;
         lastTimePlayedReloadSound = -420f;
         base.ShowScreenSpaceUI = false;
-        base.MinimumAlertness = Awareness.AwarenessEnum.Warning;
+        base.MinimumAlertness = Awareness.AwarenessEnum.Alerted;
+        enemy.FovDotProduct = -.85f; //make the FOV of the enemy really high
     }
 
     public override void Update(Enemy enemy, IAstarAI ai)
@@ -232,11 +248,13 @@ public class PatrollingWithGunState : PatrollingState
         bool canPlayReloadSound = Time.time - lastTimePlayedReloadSound > reloadSoundDelay;
 
         //GLEEK GLACK reload sounds
-        if(enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Warning && !lastTimeSeesPlayer && canPlayReloadSound)
+        if(enemy.SeesPlayer && !lastTimeSeesPlayer && canPlayReloadSound)
         {
             enemy.AudioPlayer.Play(enemy.ShotgunSound_Reload);
             lastTimePlayedReloadSound = Time.time;
         }
+
+        lastTimeSeesPlayer = enemy.SeesPlayer;
 
         //move to player if spotted
         base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
@@ -254,7 +272,7 @@ public class PatrollingWithGunState : PatrollingState
             Sound soundPlayed = enemy.PlayVoiceline(Enemy.VoiceLine.Chasing);
             if(soundPlayed != null)
             {
-                chasingVoicelineDuration = soundPlayed.Clip.length * 1.5f;
+                chasingVoicelineDuration = soundPlayed.Clip.length * 2.25f;
                 lastTimePlayedChasingVoiceline = Time.time;
             }
         }
@@ -372,6 +390,7 @@ public class Enemy : MonoBehaviour
     public float Awareness_IdleState_Duration = 0.4f;
     public float Awareness_WarningState_Duration = 1.8f;
     public float TimeUntilShoot = 1.2f;
+    public float FovDotProduct = 0.15f;
     //public float AwarenessMultiplierBackTurned = 0.5f;
     [Tooltip("How visible does the player need to be to be spotted [0.0-1.0]")]
     [Range(0f,1f)]
@@ -384,6 +403,7 @@ public class Enemy : MonoBehaviour
     public Sound[] GoingToCallThePoliceSounds;
     public Sound[] CallingPoliceSounds;
     public Sound[] ChasingSounds;
+    public Sound[] AlertedSounds;
     public Sound ShotgunSound_Reload;
     public Sound ShotgunSound_Fire;
 
@@ -429,6 +449,7 @@ public class Enemy : MonoBehaviour
         callingPoliceRandomSound = new NonRepeatingSound(CallingPoliceSounds);
         goingToCallThePoliceRandomSound = new NonRepeatingSound(GoingToCallThePoliceSounds);
         spotPlayerRandomSound = new NonRepeatingSound(SpotPlayerSounds);
+        alertedRandomSound = new NonRepeatingSound(AlertedSounds);
 
         sightDistance = SightDistance;
         sightDistanceTarget = SightDistance;
@@ -518,7 +539,7 @@ public class Enemy : MonoBehaviour
 
     bool IsPlayerWithinFieldOfView()
     {
-        return Vector3.Dot(transform.TransformDirection(Vector3.forward), (PlayerTransform.position - transform.position).normalized) >= .15;
+        return Vector3.Dot(transform.TransformDirection(Vector3.forward), (PlayerTransform.position - transform.position).normalized) >= FovDotProduct;
     }
 
     int raycastsHit;
@@ -575,7 +596,10 @@ public class Enemy : MonoBehaviour
     {
         print("swag");
         if (State == EnemyState.SittingState)
-        { SetState(EnemyState.PatrollingState); }
+        {
+            SetState(EnemyState.PatrollingState);
+            PlayVoiceline(VoiceLine.Alerted);
+        }
     }
 
     public void SetState(EnemyState newState)
@@ -588,7 +612,7 @@ public class Enemy : MonoBehaviour
         Awareness.SetMinimum(newState.MinimumAlertness);
     }
 
-    public enum VoiceLine { SpotPlayer, GoingToCallThePolice, CallingPolice, Chasing }
+    public enum VoiceLine { SpotPlayer, GoingToCallThePolice, CallingPolice, Chasing, Alerted }
     private float lastTimePlayedVoiceline = -420f;
     private float voiceLineDuration;
     private float lastTimePlayedChasingVoiceline = -420f;
@@ -597,6 +621,7 @@ public class Enemy : MonoBehaviour
     private NonRepeatingSound callingPoliceRandomSound;
     private NonRepeatingSound goingToCallThePoliceRandomSound;
     private NonRepeatingSound spotPlayerRandomSound;
+    private NonRepeatingSound alertedRandomSound;
     private Queue<VoiceLine> voicelineQueue = new Queue<VoiceLine>();
 
     //returns a reference to the sound that was played
@@ -623,7 +648,9 @@ public class Enemy : MonoBehaviour
                 break;
             case VoiceLine.Chasing:
                 randomSound = chasingRandomSound;
-
+                break;
+            case VoiceLine.Alerted:
+                randomSound = alertedRandomSound;
                 break;
         }
 

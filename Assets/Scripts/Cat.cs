@@ -75,7 +75,7 @@ public class Cat : Interactable
         catOriginalPos = transform.position;
         catOriginalRot = transform.rotation;
         catOriginalScale = transform.localScale;
-        catTimer = Random.Range(10f, 20f);
+        catTimer = Random.Range(5f, 30f);
 
     }
 
@@ -295,7 +295,7 @@ public class Cat : Interactable
     public void CatsMeows()
     {
         float minTimeForMeow = 20f;
-        float maxTimeForMeow = 40f;
+        float maxTimeForMeow = 60f;
         
         if(catTimer <= 0f)
         {
