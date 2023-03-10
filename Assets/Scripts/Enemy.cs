@@ -406,6 +406,7 @@ public class Enemy : MonoBehaviour
     public float AwarenessDecayRate = 0.3f;
     public float Awareness_IdleState_Duration = 0.4f;
     public float Awareness_WarningState_Duration = 1.8f;
+    public float CloseDistance = 1.5f;
     public float TimeUntilShoot = 1.2f;
     public float FovDotProduct = 0.15f;
     //public float AwarenessMultiplierBackTurned = 0.5f;
@@ -440,6 +441,7 @@ public class Enemy : MonoBehaviour
     private Waypoint currentWaypoint;
     private float sightDistanceTarget;
     private float sightDistance;
+    private float sqrCloseDistance;
 
     private void Awake()
     {
@@ -450,6 +452,7 @@ public class Enemy : MonoBehaviour
         ai = GetComponent<NavMeshAgent>();
         Cat.CompletedPetting += CompletedPettingCallback;
         Awareness = new Awareness(this);
+        sqrCloseDistance = CloseDistance * CloseDistance;
     }
 
     private void OnDestroy()
@@ -482,6 +485,12 @@ public class Enemy : MonoBehaviour
     {
         SeesPlayer = PercentVisible >= VisibilityThreshold;
 
+        //Automatically see player if theyre within a distance
+        if (Vector3.SqrMagnitude(FirstPersonController.instance.MainCamera.transform.position - EyePosition.transform.position) <= sqrCloseDistance)
+        { 
+            PercentVisible = 1f;
+            SeesPlayer = true;
+        }
         Awareness.Update(Time.deltaTime, PercentVisible, PlayerUI.instance.EnemyOnScreen);
         Moving = !ai.isStopped && ai.velocity.sqrMagnitude > .1f;
 
