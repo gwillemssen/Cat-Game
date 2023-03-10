@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using Pathfinding;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEditor;
 using System;
 
+#region Awareness
 public class Awareness
 {
     public enum AwarenessEnum { Idle, Warning, Alerted }
@@ -66,7 +68,9 @@ public class Awareness
         return "STATE: " + AwarenessValue.ToString() + " value: " + value + " / " + maxValue;
     }
 }
+#endregion
 
+#region EnemyState
 public class EnemyState
 {
     public static EnemyState SittingState = new SittingState();
@@ -79,20 +83,20 @@ public class EnemyState
     public bool ShowScreenSpaceUI { get; protected set; } = true;
     public Awareness.AwarenessEnum MinimumAlertness { get; protected set; } = Awareness.AwarenessEnum.Idle; //the minimum alertness state the enemy can be in
 
-    public virtual void Init(Enemy enemy, IAstarAI ai) 
+    public virtual void Init(Enemy enemy, NavMeshAgent ai) 
     { enemy.GunObject.SetActive(false); }
-    public virtual void Update(Enemy enemy, IAstarAI ai) { }
+    public virtual void Update(Enemy enemy, NavMeshAgent ai) { }
     public virtual void SetAnimationState(Enemy enemy, Animator anim)
     { anim.SetBool("isWalking", enemy.Moving); }
     //call this method in the update loop to make the enemy stop and rotate to face the player when sighted
-    protected void StopAndRotateToFacePlayerIfVisible(Enemy enemy, IAstarAI ai)
+    protected void StopAndRotateToFacePlayerIfVisible(Enemy enemy, NavMeshAgent ai)
     {
         ai.isStopped = false;
         if (enemy.SeesPlayer)
         {
             //stop and rotate to face the player
             ai.isStopped = true;
-            ai.rotation = Quaternion.Lerp(ai.rotation, Quaternion.LookRotation(new Vector3(enemy.PlayerTransform.position.x, 0f, enemy.PlayerTransform.position.z) - new Vector3(enemy.transform.position.x, 0f, enemy.transform.position.z)), Time.deltaTime* 4.5f);
+            ai.transform.rotation = Quaternion.Lerp(ai.transform.rotation, Quaternion.LookRotation(new Vector3(enemy.PlayerTransform.position.x, 0f, enemy.PlayerTransform.position.z) - new Vector3(enemy.transform.position.x, 0f, enemy.transform.position.z)), Time.deltaTime* 4.5f);
         }
     }
     private bool canPlayAlertedVoiceline = true;
@@ -113,7 +117,7 @@ public class EnemyState
 
 public class SittingState : EnemyState
 {
-    public override void Update(Enemy enemy, IAstarAI ai)
+    public override void Update(Enemy enemy, NavMeshAgent ai)
     {
         enemy.RedLightTargetIntensity = enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Warning ? enemy.RedLightIntensityNormal : 0f;
 
@@ -133,7 +137,7 @@ public class SittingState : EnemyState
         PlayerUI.instance.SetSpottedGradient(enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Warning, enemy.transform.position);
     }
 
-    public override void Init(Enemy enemy, IAstarAI ai)
+    public override void Init(Enemy enemy, NavMeshAgent ai)
     {
         enemy.RedLightTargetIntensity = 0f;
         base.ShowScreenSpaceUI = true;
@@ -145,7 +149,7 @@ public class PatrollingState : EnemyState
 {
     private int currentWaypointIndex;
 
-    public override void Update(Enemy enemy, IAstarAI ai)
+    public override void Update(Enemy enemy, NavMeshAgent ai)
     {
         enemy.RedLightTargetIntensity = enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Warning ? enemy.RedLightIntensityNormal : 0f;
 
@@ -179,7 +183,7 @@ public class PatrollingState : EnemyState
         enemy.SetState(CallingCopsGrabbingGunState);
     }
 
-    public override void Init(Enemy enemy, IAstarAI ai)
+    public override void Init(Enemy enemy, NavMeshAgent ai)
     {
         enemy.RedLightTargetIntensity = 0f;
         base.ShowScreenSpaceUI = true;
@@ -191,7 +195,7 @@ public class ReloadingState : EnemyState
 {
     private float timeStartedReloading = -420f;
 
-    public override void Init(Enemy enemy, IAstarAI ai)
+    public override void Init(Enemy enemy, NavMeshAgent ai)
     {
         //PLAY I MISSED AUDIO
         timeStartedReloading = Time.time;
@@ -199,7 +203,7 @@ public class ReloadingState : EnemyState
         base.MinimumAlertness = Awareness.AwarenessEnum.Alerted;
     }
 
-    public override void Update(Enemy enemy, IAstarAI ai)
+    public override void Update(Enemy enemy, NavMeshAgent ai)
     {
         ai.isStopped = true;
         if (Time.time - timeStartedReloading > enemy.ReloadTime)
@@ -217,7 +221,7 @@ public class PatrollingWithGunState : PatrollingState
     private const float reloadSoundDelay = 4f;
     private float timeVisible;
 
-    public override void Init(Enemy enemy, IAstarAI ai)
+    public override void Init(Enemy enemy, NavMeshAgent ai)
     {
         enemy.GunObject.SetActive(true);
         lastTimePlayedReloadSound = -420f;
@@ -226,7 +230,7 @@ public class PatrollingWithGunState : PatrollingState
         enemy.FovDotProduct = -.85f; //make the FOV of the enemy really high
     }
 
-    public override void Update(Enemy enemy, IAstarAI ai)
+    public override void Update(Enemy enemy, NavMeshAgent ai)
     {
         base.Update(enemy, ai);
 
@@ -310,7 +314,7 @@ public class GoingToPosition : EnemyState
 {
     public Vector3 Position;
 
-    public override void Update(Enemy enemy, IAstarAI ai)
+    public override void Update(Enemy enemy, NavMeshAgent ai)
     {
         //Movement
         ai.isStopped = false;
@@ -330,7 +334,7 @@ public class GoingToPosition : EnemyState
         PlayerUI.instance.SetSpottedGradient(enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Warning, enemy.transform.position);
     }
 
-    public override void Init(Enemy enemy, IAstarAI ai)
+    public override void Init(Enemy enemy, NavMeshAgent ai)
     {
         enemy.RedLightTargetIntensity = enemy.RedLightIntensityHigh;
         base.ShowScreenSpaceUI = true;
@@ -343,7 +347,7 @@ public class CallingCopsGrabbingGunState : EnemyState
     enum State { GoingToPhone, GrabbingGun }
     State state = State.GoingToPhone;
 
-    public override void Update(Enemy enemy, IAstarAI ai)
+    public override void Update(Enemy enemy, NavMeshAgent ai)
     {
         //Movement
         ai.isStopped = false;
@@ -372,15 +376,16 @@ public class CallingCopsGrabbingGunState : EnemyState
         PlayerUI.instance.SetSpottedGradient(false, enemy.transform.position);
     }
 
-    public override void Init(Enemy enemy, IAstarAI ai)
+    public override void Init(Enemy enemy, NavMeshAgent ai)
     {
         enemy.RedLightTargetIntensity = 0f;
         base.ShowScreenSpaceUI = false;
         base.MinimumAlertness = Awareness.AwarenessEnum.Alerted;
     }
 }
+#endregion
 
-[RequireComponent(typeof(IAstarAI))]
+[RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(AudioPlayer))]
 public class Enemy : MonoBehaviour
 {
@@ -430,7 +435,7 @@ public class Enemy : MonoBehaviour
     public Transform PlayerTransform { get; private set; }
     public bool SeesPlayer { get; private set; }
 
-    private IAstarAI ai;
+    private NavMeshAgent ai;
     private bool raycastedToPlayer;
     private Waypoint currentWaypoint;
     private float sightDistanceTarget;
@@ -442,7 +447,7 @@ public class Enemy : MonoBehaviour
         { Destroy(this.gameObject); return; }
         instance = this;
 
-        ai = GetComponent<IAstarAI>();
+        ai = GetComponent<NavMeshAgent>();
         Cat.CompletedPetting += CompletedPettingCallback;
         Awareness = new Awareness(this);
     }
