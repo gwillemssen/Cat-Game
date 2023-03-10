@@ -29,7 +29,13 @@ public class Awareness
 
     public void Update(float delta, float percentVisible, bool enemyOnScreen)
     {
-        value += percentVisible >= enemy.VisibilityThreshold ? enemy.AwarenessRate * delta : -enemy.AwarenessDecayRate * delta;
+        bool visible = percentVisible >= enemy.VisibilityThreshold;
+
+        float awarenessMultiplier = 1f;
+        if(!enemyOnScreen)
+        { awarenessMultiplier = enemy.AwarenessMultiplier_BackTurned; }
+
+        value += visible ? enemy.AwarenessRate * delta * awarenessMultiplier : -enemy.AwarenessDecayRate * delta;
         value = Mathf.Clamp(value, 0f, maxValue);      
 
         if(value >= maxValue && AwarenessValue < AwarenessEnum.Alerted)
@@ -149,7 +155,12 @@ public class PatrollingState : EnemyState
 
         //Patrolling
         if(enemy.ArrivedAtDestinationOrStuck)
-        { currentWaypointIndex++; }
+        {
+            int last = currentWaypointIndex;
+            currentWaypointIndex = UnityEngine.Random.Range(0, enemy.PatrollingRoute.Count);
+            if(currentWaypointIndex == last)
+            { currentWaypointIndex++; }
+        }
         if(currentWaypointIndex >= enemy.PatrollingRoute.Count)
         { currentWaypointIndex = 0; }
 
@@ -386,6 +397,7 @@ public class Enemy : MonoBehaviour
     public Animator Anim;
     public float SightDistance = 12f;
     public float AwarenessRate = 0.5f;
+    public float AwarenessMultiplier_BackTurned = 0.6f;
     public float AwarenessDecayRate = 0.3f;
     public float Awareness_IdleState_Duration = 0.4f;
     public float Awareness_WarningState_Duration = 1.8f;
@@ -465,7 +477,7 @@ public class Enemy : MonoBehaviour
     {
         SeesPlayer = PercentVisible >= VisibilityThreshold;
 
-        Awareness.Update(Time.deltaTime, PercentVisible, PlayerUI.instance.EnemyOnScreen);     
+        Awareness.Update(Time.deltaTime, PercentVisible, PlayerUI.instance.EnemyOnScreen);
         Moving = !ai.isStopped && ai.velocity.sqrMagnitude > .1f;
 
         sightDistanceTarget = SightDistance;
