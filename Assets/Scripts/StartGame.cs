@@ -25,13 +25,10 @@ public class StartGame : MonoBehaviour
     {
         if(Vector3.SqrMagnitude(centerPosition - MainCam.transform.position) < .01)
         {
-            Debug.Log("Ayo?");
+            
             SceneManager.LoadScene("Granny's House");
         }
-        else
-        {
-            Debug.Log("This ain't cash money");
-        }
+
         
     }
 }
