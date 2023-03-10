@@ -132,21 +132,23 @@ public class PlayerUI : MonoBehaviour
             {
                 case Awareness.AwarenessEnum.Idle:
                     targetColor = Color.white;
+                    targetColor.a = 0.25f;
                     break;
                 case Awareness.AwarenessEnum.Warning:
                     targetColor = Color.yellow;
+                    targetColor.a = 0.5f;
                     break;
                 case Awareness.AwarenessEnum.Alerted:
                     targetColor = Color.red;
+                    targetColor.a = 0.9f;
                     break;
             }
-            targetColor.a = 0.25f;
         }
 
 
         grannyScreenSpaceUI.color = Color.Lerp(grannyScreenSpaceUI.color, targetColor, Time.deltaTime * 3f);
         grannyScreenSpaceUI.enabled = Vector3.Dot(FirstPersonController.instance.MainCamera.transform.forward, (FirstPersonController.instance.transform.position - Enemy.instance.transform.position)) < 0f; //disable if it is behind
-        grannyScreenSpaceUI.rectTransform.position = FirstPersonController.instance.MainCamera.WorldToScreenPoint(Enemy.instance.transform.position + Vector3.up * 2.25f);
+        grannyScreenSpaceUI.rectTransform.position = FirstPersonController.instance.MainCamera.WorldToScreenPoint(Enemy.instance.transform.position + Vector3.up * 2f);
 
     }
 
