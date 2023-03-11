@@ -76,7 +76,7 @@ public class EnemyState
     public static EnemyState SittingState = new SittingState();
     public static EnemyState PatrollingState = new PatrollingState();
     public static EnemyState SearchingForNoiseState = new GoingToPosition();
-    public static EnemyState CallingCopsGrabbingGunState = new CallingCopsGrabbingGunState();
+    public static EnemyState GrabbingGunState = new GrabbingGunState();
     public static EnemyState PatrollingWithGunState = new PatrollingWithGunState();
     public static EnemyState ReloadingState = new ReloadingState();
 
@@ -129,7 +129,7 @@ public class SittingState : EnemyState
         if(enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Alerted)
         {
             enemy.PlayVoiceline(Enemy.VoiceLine.SpotPlayer);
-            enemy.SetState(CallingCopsGrabbingGunState);
+            enemy.SetState(GrabbingGunState);
         }
 
         base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
@@ -180,7 +180,7 @@ public class PatrollingState : EnemyState
     public virtual void OnSpotted(Enemy enemy)
     {
         enemy.PlayVoiceline(Enemy.VoiceLine.SpotPlayer);
-        enemy.SetState(CallingCopsGrabbingGunState);
+        enemy.SetState(GrabbingGunState);
     }
 
     public override void Init(Enemy enemy, NavMeshAgent ai)
@@ -327,7 +327,7 @@ public class GoingToPosition : EnemyState
         if(enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Alerted)
         {
             enemy.PlayVoiceline(Enemy.VoiceLine.SpotPlayer);
-            enemy.SetState(CallingCopsGrabbingGunState);
+            enemy.SetState(GrabbingGunState);
         }
 
         base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
@@ -342,35 +342,18 @@ public class GoingToPosition : EnemyState
     }
 }
 
-public class CallingCopsGrabbingGunState : EnemyState
+public class GrabbingGunState : EnemyState
 {
-    enum State { GoingToPhone, GrabbingGun }
-    State state = State.GoingToPhone;
-
     public override void Update(Enemy enemy, NavMeshAgent ai)
     {
         //Movement
         ai.isStopped = false;
-        switch(state)
+        enemy.SetWaypoint(enemy.GunWaypoint);
+
+        if (enemy.ArrivedAtDestinationOrStuck)
         {
-            case State.GoingToPhone:
-                enemy.SetWaypoint(enemy.PhoneWaypoint);
-
-                if(enemy.ArrivedAtDestinationOrStuck)
-                { state = State.GrabbingGun; }
-
-                break;
-            case State.GrabbingGun:
-                enemy.SetWaypoint(enemy.GunWaypoint);
-
-                if(enemy.ArrivedAtDestinationOrStuck)
-                {
-                    LevelManager.instance.CallCops();
-                    enemy.AudioPlayer.Play(enemy.ShotgunSound_Reload);
-                    enemy.SetState(PatrollingWithGunState);
-                }
-
-                break;
+            enemy.AudioPlayer.Play(enemy.ShotgunSound_Reload);
+            enemy.SetState(PatrollingWithGunState);
         }
 
         PlayerUI.instance.SetSpottedGradient(false, enemy.transform.position);
@@ -395,7 +378,6 @@ public class Enemy : MonoBehaviour
     public Transform EyePosition;
     public Light RedLight;
     public List<Waypoint> PatrollingRoute;
-    public Waypoint PhoneWaypoint;
     public Waypoint GunWaypoint;
     public GameObject GunObject;
     public EnemyDebug DebugObject;
@@ -418,8 +400,7 @@ public class Enemy : MonoBehaviour
     public float RedLightIntensityHigh = 8f;
     [SerializeField] private LayerMask everythingBesidesEnemy;
     public Sound[] SpotPlayerSounds;
-    public Sound[] GoingToCallThePoliceSounds;
-    public Sound[] CallingPoliceSounds;
+    public Sound[] GrabbingGunSounds;
     public Sound[] ChasingSounds;
     public Sound[] AlertedSounds;
     public Sound ShotgunSound_Reload;
@@ -466,10 +447,9 @@ public class Enemy : MonoBehaviour
         DebugObject.gameObject.SetActive(DebugMode);
         AudioPlayer = GetComponent<AudioPlayer>();
         chasingRandomSound = new NonRepeatingSound(ChasingSounds);
-        callingPoliceRandomSound = new NonRepeatingSound(CallingPoliceSounds);
-        goingToCallThePoliceRandomSound = new NonRepeatingSound(GoingToCallThePoliceSounds);
         spotPlayerRandomSound = new NonRepeatingSound(SpotPlayerSounds);
         alertedRandomSound = new NonRepeatingSound(AlertedSounds);
+        grabbingGunRandonSound = new NonRepeatingSound(GrabbingGunSounds);
 
         sightDistance = SightDistance;
         sightDistanceTarget = SightDistance;
@@ -620,7 +600,6 @@ public class Enemy : MonoBehaviour
 
     private void CompletedPettingCallback()
     {
-        print("swag");
         if (State == EnemyState.SittingState)
         {
             SetState(EnemyState.PatrollingState);
@@ -638,16 +617,15 @@ public class Enemy : MonoBehaviour
         Awareness.SetMinimum(newState.MinimumAlertness);
     }
 
-    public enum VoiceLine { SpotPlayer, GoingToCallThePolice, CallingPolice, Chasing, Alerted }
+    public enum VoiceLine { SpotPlayer, GrabbingGun, Chasing, Alerted }
     private float lastTimePlayedVoiceline = -420f;
     private float voiceLineDuration;
     private float lastTimePlayedChasingVoiceline = -420f;
     private float chasingVoicelineDuration;
     private NonRepeatingSound chasingRandomSound;
-    private NonRepeatingSound callingPoliceRandomSound;
-    private NonRepeatingSound goingToCallThePoliceRandomSound;
     private NonRepeatingSound spotPlayerRandomSound;
     private NonRepeatingSound alertedRandomSound;
+    private NonRepeatingSound grabbingGunRandonSound;
     private Queue<VoiceLine> voicelineQueue = new Queue<VoiceLine>();
 
     //returns a reference to the sound that was played
@@ -665,12 +643,6 @@ public class Enemy : MonoBehaviour
         {
             case VoiceLine.SpotPlayer:
                 randomSound = spotPlayerRandomSound;
-                break;
-            case VoiceLine.GoingToCallThePolice:
-                randomSound = goingToCallThePoliceRandomSound;
-                break;
-            case VoiceLine.CallingPolice:
-                randomSound = callingPoliceRandomSound;
                 break;
             case VoiceLine.Chasing:
                 randomSound = chasingRandomSound;
