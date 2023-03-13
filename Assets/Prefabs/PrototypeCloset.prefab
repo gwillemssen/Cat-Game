@@ -128,7 +128,7 @@ GameObject:
   - component: {fileID: 4114987660335100382}
   - component: {fileID: 4377785079992641056}
   - component: {fileID: 6028297830316782829}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: PrototypeCloset
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -165,8 +165,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LookingAt: 0
+  Disabled: 0
   CanInteract: 1
-  NoiseCrosshair: 0
+  Cooldown: 0
   OnInteract:
     m_PersistentCalls:
       m_Calls: []
@@ -187,8 +188,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.3772273, y: 2.4321537, z: 1.6970172}
-  m_Center: {x: -0.4682421, y: 1.624749, z: 0.010545433}
+  m_Size: {x: 0.3772273, y: 2.536894, z: 1.7328844}
+  m_Center: {x: -0.4682421, y: 1.6771191, z: -0.017297268}
 --- !u!82 &4377785079992641056
 AudioSource:
   m_ObjectHideFlags: 0
@@ -306,7 +307,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4114987661786476682}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: HidingPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
