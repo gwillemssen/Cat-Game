@@ -4,31 +4,37 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(AudioPlayer))]
+//a better name for this would be 'Throwable' but I dont want to change it and risk losing references on a bunch of prefabs
 public class InteractablePickup : Interactable
 {
+    //this throwable will impact at any velocity.
+    //This is set to true in FirstPersonInteraction to make it impact when the throw is charged to more than 50%
+    public bool AlwaysMakeImpact = false;
     public Rigidbody Rigidbody { get; private set; }
-    public float ImpactVelocity = 0.5f;
+    public float ImpactVelocity = 1f;
 
     public Sound ImpactSound;
 
     private AudioPlayer audioPlayer;
-    private float sqrImpactSoundVelocity;
+    private float sqrImpactVelocity;
+    private bool canImpact = false;
 
     private void Awake()
     {
         Rigidbody = GetComponent<Rigidbody>();
         audioPlayer = GetComponent<AudioPlayer>();
-        sqrImpactSoundVelocity = ImpactVelocity * ImpactVelocity;
+        sqrImpactVelocity = ImpactVelocity * ImpactVelocity;
     }
 
     public void OnCollisionEnter(Collision collision)
     {
-        if(ImpactSound == null)
+        if(ImpactSound == null || !canImpact)
         { return; }
 
-        if(Rigidbody.velocity.sqrMagnitude > sqrImpactSoundVelocity)
+        if(Rigidbody.velocity.sqrMagnitude > sqrImpactVelocity)
         {
             audioPlayer.Play(ImpactSound);
+            Enemy.instance.Distract(transform.position);
             Impacted();
         }
     }
@@ -41,6 +47,7 @@ public class InteractablePickup : Interactable
     public override void Interact(FirstPersonController controller)
     {
         PlayerUI.instance.SetInfoText("Press Right Click to Drop\nHold Right Click to Throw");
+        canImpact = true;
     }
 
 

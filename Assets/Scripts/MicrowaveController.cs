@@ -184,6 +184,7 @@ public class MicrowaveController : Interactable
     private void MicrowaveFinish()
     {
         microwaveAnimator.SetTrigger("FinishedTrigger");
+        Enemy.instance.Distract(transform.position);
     }
 
     private void MicrowaveLoad()
