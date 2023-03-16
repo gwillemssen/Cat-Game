@@ -11,6 +11,7 @@ public class Awareness
 {
     public enum AwarenessEnum { Idle, Warning, Alerted }
     public AwarenessEnum AwarenessValue { get; private set; }
+    public float AwarenessPercentage { get { return value / maxValue; } }
 
     private Enemy enemy;
     private float value;

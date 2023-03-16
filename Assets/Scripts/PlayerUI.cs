@@ -31,6 +31,7 @@ public class PlayerUI : MonoBehaviour
     private GameObject spottedGradient_Left;
     private GameObject spottedGradient_Right;
     private Image grannyScreenSpaceUI;
+    private Image grannyScreenSpaceUI_Fill;
     public GameObject WinScreen { get; private set; }
     public GameObject LoseScreen { get; private set; }
     public GameObject LoseCopsScreen { get; private set; }
@@ -101,6 +102,7 @@ public class PlayerUI : MonoBehaviour
                     break;
                 case "GrannyScreenSpaceUI":
                     grannyScreenSpaceUI = t.GetComponent<Image>();
+                    grannyScreenSpaceUI_Fill = t.GetChild(0).GetComponent<Image>();
                     break;
             }
         }
@@ -136,11 +138,11 @@ public class PlayerUI : MonoBehaviour
                     break;
                 case Awareness.AwarenessEnum.Warning:
                     targetColor = Color.yellow;
-                    targetColor.a = 0.5f;
+                    targetColor.a = 0.25f;
                     break;
                 case Awareness.AwarenessEnum.Alerted:
                     targetColor = Color.red;
-                    targetColor.a = 0.9f;
+                    targetColor.a = 1f;
                     break;
             }
         }
@@ -148,6 +150,10 @@ public class PlayerUI : MonoBehaviour
         grannyScreenSpaceUI.color = Color.Lerp(grannyScreenSpaceUI.color, targetColor, Time.deltaTime * 3f);
         grannyScreenSpaceUI.enabled = Vector3.Dot(FirstPersonController.instance.MainCamera.transform.forward, (FirstPersonController.instance.transform.position - Enemy.instance.transform.position)) < 0f; //disable if it is behind
         grannyScreenSpaceUI.rectTransform.position = FirstPersonController.instance.MainCamera.WorldToScreenPoint(Enemy.instance.transform.position + Vector3.up * 2f);
+
+        grannyScreenSpaceUI_Fill.fillAmount = Enemy.instance.Awareness.AwarenessPercentage;
+        targetColor.a = 1f;
+        grannyScreenSpaceUI_Fill.color = targetColor;
 
     }
 
