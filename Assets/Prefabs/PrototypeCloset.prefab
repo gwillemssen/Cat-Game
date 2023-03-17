@@ -124,10 +124,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4114987660335100380}
-  - component: {fileID: 4114987660335100381}
   - component: {fileID: 4114987660335100382}
   - component: {fileID: 4377785079992641056}
   - component: {fileID: 6028297830316782829}
+  - component: {fileID: 667615072107870290}
   m_Layer: 0
   m_Name: PrototypeCloset
   m_TagString: Untagged
@@ -153,32 +153,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4114987660335100381
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4114987660335100383}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8860ce3b41cfb494f88e8ebd8b9a34ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  LookingAt: 0
-  Disabled: 0
-  CanInteract: 1
-  Cooldown: 0
-  OnInteract:
-    m_PersistentCalls:
-      m_Calls: []
-  HidingPosition: {fileID: 4114987661786476682}
-  GrannyOpenPosition: {fileID: 4533378467886269582}
-  EnterSpeed: 2
-  ExitSpeed: 0.75
-  anim: {fileID: 0}
-  DoorOpenSound: {fileID: 11400000, guid: 5927957cab4e7374a9d2e15a389eed66, type: 2}
-  DoorCloseSound: {fileID: 11400000, guid: f79dfc44d56bf414bbec4e8179df14cc, type: 2}
 --- !u!65 &4114987660335100382
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -300,6 +274,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03d6b8fc5abf6674b9fb3d7bef260517, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &667615072107870290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4114987660335100383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd9a1fe9ee1efef49a8f882568ccfa97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LookingAt: 0
+  Disabled: 0
+  CanInteract: 1
+  Cooldown: 0
+  OnInteract:
+    m_PersistentCalls:
+      m_Calls: []
+  HidingPosition: {fileID: 4114987661786476682}
+  GrannyOpenPosition: {fileID: 4533378467886269582}
+  EnterSpeed: 2
+  ExitSpeed: 0.75
+  anim: {fileID: 0}
+  DoorOpenSound: {fileID: 11400000, guid: 5927957cab4e7374a9d2e15a389eed66, type: 2}
+  DoorCloseSound: {fileID: 11400000, guid: f79dfc44d56bf414bbec4e8179df14cc, type: 2}
 --- !u!1 &4114987661786476683
 GameObject:
   m_ObjectHideFlags: 0

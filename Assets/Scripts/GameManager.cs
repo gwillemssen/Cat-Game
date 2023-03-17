@@ -7,9 +7,12 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance { get; private set; }
-
+    public static event Action AllCatsPetted;
     public enum GameState { Normal, Loading, GameOver }
-    public enum LoseState { Shot, Arrested }
+    public enum LoseState { Shot }
+
+    public List<Cat> CatList = new List<Cat>();
+    public int CatsPet { get; private set; }
 
 
     public GameState State { get; private set; } = GameState.Loading;
@@ -49,6 +52,14 @@ public class GameManager : MonoBehaviour
         State = GameState.Normal;
     }
 
+    public void IncreaseCatsPet()
+    {
+        CatsPet++;
+        if (GameManager.instance.CatsPet == GameManager.instance.CatList.Count)
+        {
+            AllCatsPetted?.Invoke();
+        }
+    }
     public void WinGame()
     {
         if (State == GameState.Loading)
@@ -77,9 +88,6 @@ public class GameManager : MonoBehaviour
             case LoseState.Shot:
                 PlayerUI.instance.LoseScreen.SetActive(true);
                 
-                break;
-            case LoseState.Arrested:
-                PlayerUI.instance.LoseCopsScreen.SetActive(true);
                 break;
         }
         
