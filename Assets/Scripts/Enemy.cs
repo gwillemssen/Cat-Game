@@ -86,7 +86,10 @@ public class EnemyState
     public Awareness.AwarenessEnum MinimumAlertness { get; protected set; } = Awareness.AwarenessEnum.Idle; //the minimum alertness state the enemy can be in
 
     public virtual void Init(Enemy enemy, NavMeshAgent ai) 
-    { enemy.GunObject.SetActive(false); }
+    {
+        lastSpottedPlayer = false;
+        enemy.GunObject.SetActive(false);
+    }
     public virtual void Update(Enemy enemy, NavMeshAgent ai) { }
     public virtual void OnDistract(Enemy enemy, Vector3 position) { }
     public virtual void SetAnimationState(Enemy enemy, Animator anim)
@@ -175,6 +178,7 @@ public class SittingState : EnemyState
 
     public override void Init(Enemy enemy, NavMeshAgent ai)
     {
+        base.Init(enemy, ai);
         enemy.RedLightTargetIntensity = 0f;
         base.ShowScreenSpaceUI = true;
         base.MinimumAlertness = Awareness.AwarenessEnum.Idle;
@@ -231,6 +235,7 @@ public class PatrollingState : EnemyState
 
     public override void Init(Enemy enemy, NavMeshAgent ai)
     {
+        base.Init(enemy, ai);
         enemy.RedLightTargetIntensity = 0f;
         base.ShowScreenSpaceUI = true;
         base.MinimumAlertness = Awareness.AwarenessEnum.Idle;
@@ -277,6 +282,7 @@ public class PatrollingWithGunState : PatrollingState
 
     public override void Init(Enemy enemy, NavMeshAgent ai)
     {
+        base.Init(enemy, ai);
         enemy.GunObject.SetActive(true);
         lastTimePlayedReloadSound = -420f;
         base.ShowScreenSpaceUI = false;
@@ -415,6 +421,7 @@ public class InvestigatingState : EnemyState
 
     public override void Init(Enemy enemy, NavMeshAgent ai)
     {
+        base.Init(enemy, ai);
         enemy.RedLightTargetIntensity = enemy.RedLightIntensityHigh;
         base.ShowScreenSpaceUI = true;
         base.MinimumAlertness = Awareness.AwarenessEnum.Warning;
@@ -447,6 +454,7 @@ public class GrabbingGunState : EnemyState
 
     public override void Init(Enemy enemy, NavMeshAgent ai)
     {
+        base.Init(enemy, ai);
         enemy.RedLightTargetIntensity = 0f;
         base.ShowScreenSpaceUI = false;
         base.MinimumAlertness = Awareness.AwarenessEnum.Alerted;
