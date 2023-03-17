@@ -46,6 +46,7 @@ public class GameManager : MonoBehaviour
 
     private void StartGame()
     {
+        Cursor.lockState = CursorLockMode.Locked;
         if (State == GameState.Normal)
             return;
 

@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
 
 public class MainMenu_Clickable : MonoBehaviour
 {
     public GameObject MainCam;
     public int valueToChangeTo;
+    public bool isStartButton;
 
     private Vector3 position;
     private Vector3 rotation;
@@ -16,6 +18,9 @@ public class MainMenu_Clickable : MonoBehaviour
     private Vector3 leftPosition = new Vector3(-2.5f, 1.65f, 1.63f);
     private Vector3 rightPosition = new Vector3(.34f, 1.65f, 1.65f);
     private Vector3 centerPosition = new Vector3(-1.16f, 1.61f, 1.67f);
+
+    private Vector3 loadPosition = new Vector3(-1.4104867f, 3.72687531f, 5.35491753f);
+
     private Vector3 defaultRotation = Vector3.zero;
     private Vector3 leftRotation = new Vector3(0, -90, 0);
     private Vector3 rightRotation = new Vector3(0, 90, 0);
@@ -57,12 +62,26 @@ public class MainMenu_Clickable : MonoBehaviour
 
     public void OnMouseDown()
     {
+        if(!isStartButton)
+        {
+            position = cameraPositions[valueToChangeTo];
+            rotation = cameraRotations[valueToChangeTo];
+            LeanTween.move(MainCam, position, 1.5f).setEaseInOutExpo();
+            LeanTween.rotate(MainCam, rotation, 1.5f).setEaseInOutExpo();
+        }
+        
+        if((MainCam.transform.position.z - centerPosition.z) < 0.1 && isStartButton)
+        {
+            MainCam.transform.position = loadPosition;
+            StartCoroutine(Load());
+            
+        }
+    }
 
-        position = cameraPositions[valueToChangeTo];
-        rotation = cameraRotations[valueToChangeTo];
-        LeanTween.move(MainCam, position, 1.5f).setEaseInOutExpo();
-        LeanTween.rotate(MainCam, rotation, 1.5f).setEaseInOutExpo();
-
+    private IEnumerator Load()
+    {
+        yield return new WaitForSeconds(5);
+        SceneManager.LoadScene("Granny's House");
     }
 }
  
