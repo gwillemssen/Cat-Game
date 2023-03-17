@@ -299,8 +299,11 @@ public class Cat : Interactable
         {
             if (catTimer <= 0f)
             {
-                MeowAudioSource.Play();
-                catTimer += Random.Range(minTimeForMeow, maxTimeForMeow);
+                if (state == CatState.Pettable)
+                {
+                    MeowAudioSource.Play();
+                    catTimer += Random.Range(minTimeForMeow, maxTimeForMeow);
+                }
             }
             if (catTimer > 0f)
             {

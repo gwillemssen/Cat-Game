@@ -12,7 +12,6 @@ public class PlayerUI : MonoBehaviour
 
     public static PlayerUI instance;
 
-    public enum EyeState { Closed, Half, Open }
 
     public Canvas Canvas;
 
@@ -20,9 +19,6 @@ public class PlayerUI : MonoBehaviour
     private Slider throwStrengthMeter;
     private Image timeUI;
     private GameObject catTimerUI;
-    private Image eyeOpenUI;
-    private Image eyeHalfUI;
-    private Image eyeClosedUI;
     private Text debugText;
     private Text infoText;
     private Animation catTimerAnim;
@@ -85,11 +81,6 @@ public class PlayerUI : MonoBehaviour
                     break;
                 case "LOSECops":
                     LoseCopsScreen = t.gameObject;
-                    break;
-                case "EyeUI":
-                    eyeOpenUI = t.GetChild(0).GetComponent<Image>();
-                    eyeHalfUI = t.GetChild(1).GetComponent<Image>();
-                    eyeClosedUI = t.GetChild(2).GetComponent<Image>();
                     break;
                 case "Hamd":
                     hamd = t.GetComponent<Image>();
