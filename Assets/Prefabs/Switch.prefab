@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4545990863585196964}
   - component: {fileID: 9123684306382930906}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Switch_Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1028959783775031588}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Switch_N
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -129,7 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2390651021186770708}
   - component: {fileID: 967884833634967293}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Switch_Flipper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -215,7 +215,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5787085130666057328}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Flip_N
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -249,7 +249,7 @@ GameObject:
   - component: {fileID: 8750900405374261521}
   - component: {fileID: 2087134554}
   - component: {fileID: 927178208363239388}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Switch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -287,7 +287,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LookingAt: 0
+  Disabled: 0
   CanInteract: 1
+  Cooldown: 0
+  OnInteract:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8480304882326769899}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   on: 0
   lights:
   - {fileID: 0}

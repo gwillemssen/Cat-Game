@@ -52,14 +52,6 @@ public class LevelManager : MonoBehaviour
         }       
     }
 
-    public void CallCops()
-    {
-        if(State == LevelState.CopsCalled)
-        { return; }
-        lastTimeCalledCops = Time.time;
-        State = LevelState.CopsCalled;
-    }
-
     public void StartGame()
     {
         CatsPetted = 0;

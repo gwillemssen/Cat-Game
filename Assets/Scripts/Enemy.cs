@@ -11,6 +11,7 @@ public class Awareness
 {
     public enum AwarenessEnum { Idle, Warning, Alerted }
     public AwarenessEnum AwarenessValue { get; private set; }
+    public float AwarenessPercentage { get { return value / maxValue; } }
 
     private Enemy enemy;
     private float value;
@@ -73,12 +74,13 @@ public class Awareness
 #region EnemyState
 public class EnemyState
 {
-    public static EnemyState SittingState = new SittingState();
-    public static EnemyState PatrollingState = new PatrollingState();
-    public static EnemyState SearchingForNoiseState = new GoingToPosition();
-    public static EnemyState CallingCopsGrabbingGunState = new CallingCopsGrabbingGunState();
-    public static EnemyState PatrollingWithGunState = new PatrollingWithGunState();
-    public static EnemyState ReloadingState = new ReloadingState();
+    //I'm just now realizing I could have made the classes static instead of using singletons
+    public static SittingState SittingState = new SittingState();
+    public static PatrollingState PatrollingState = new PatrollingState();
+    public static InvestigatingState InvestigatingState = new InvestigatingState();
+    public static GrabbingGunState GrabbingGunState = new GrabbingGunState();
+    public static PatrollingWithGunState PatrollingWithGunState = new PatrollingWithGunState();
+    public static ReloadingState ReloadingState = new ReloadingState();
 
     public bool ShowScreenSpaceUI { get; protected set; } = true;
     public Awareness.AwarenessEnum MinimumAlertness { get; protected set; } = Awareness.AwarenessEnum.Idle; //the minimum alertness state the enemy can be in
@@ -86,6 +88,7 @@ public class EnemyState
     public virtual void Init(Enemy enemy, NavMeshAgent ai) 
     { enemy.GunObject.SetActive(false); }
     public virtual void Update(Enemy enemy, NavMeshAgent ai) { }
+    public virtual void OnDistract(Enemy enemy, Vector3 position) { }
     public virtual void SetAnimationState(Enemy enemy, Animator anim)
     { anim.SetBool("isWalking", enemy.Moving); }
     //call this method in the update loop to make the enemy stop and rotate to face the player when sighted
@@ -129,7 +132,7 @@ public class SittingState : EnemyState
         if(enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Alerted)
         {
             enemy.PlayVoiceline(Enemy.VoiceLine.SpotPlayer);
-            enemy.SetState(CallingCopsGrabbingGunState);
+            enemy.SetState(GrabbingGunState);
         }
 
         base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
@@ -143,11 +146,20 @@ public class SittingState : EnemyState
         base.ShowScreenSpaceUI = true;
         base.MinimumAlertness = Awareness.AwarenessEnum.Idle;
     }
+
+    public override void OnDistract(Enemy enemy, Vector3 position)
+    {
+        if (enemy.SeesPlayer) //ignore if we already see the player - cannot be distracted
+        { return; }
+        enemy.SetState(InvestigatingState);
+        InvestigatingState.Position = position;
+    }
 }
 
 public class PatrollingState : EnemyState
 {
     private int currentWaypointIndex;
+    private bool lastSpottedPlayer;
 
     public override void Update(Enemy enemy, NavMeshAgent ai)
     {
@@ -169,6 +181,12 @@ public class PatrollingState : EnemyState
         { currentWaypointIndex = 0; }
 
         //Spotting
+        if(enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Idle && lastSpottedPlayer) //player got out of enemies sights - go investigate
+        {
+            OnDistract(enemy, FirstPersonController.instance.transform.position);
+        }
+        lastSpottedPlayer = enemy.Awareness.AwarenessValue != Awareness.AwarenessEnum.Idle;
+
         if (enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Alerted)
         { OnSpotted(enemy); }
 
@@ -180,7 +198,7 @@ public class PatrollingState : EnemyState
     public virtual void OnSpotted(Enemy enemy)
     {
         enemy.PlayVoiceline(Enemy.VoiceLine.SpotPlayer);
-        enemy.SetState(CallingCopsGrabbingGunState);
+        enemy.SetState(GrabbingGunState);
     }
 
     public override void Init(Enemy enemy, NavMeshAgent ai)
@@ -188,6 +206,14 @@ public class PatrollingState : EnemyState
         enemy.RedLightTargetIntensity = 0f;
         base.ShowScreenSpaceUI = true;
         base.MinimumAlertness = Awareness.AwarenessEnum.Idle;
+    }
+
+    public override void OnDistract(Enemy enemy, Vector3 position)
+    {
+        if(enemy.SeesPlayer) //ignore if we already see the player - cannot be distracted
+        { return; }
+        enemy.SetState(InvestigatingState);
+        InvestigatingState.Position = position;
     }
 }
 
@@ -310,9 +336,11 @@ public class PatrollingWithGunState : PatrollingState
     }
 }
 
-public class GoingToPosition : EnemyState
+public class InvestigatingState : EnemyState
 {
     public Vector3 Position;
+
+    private float investigatingTimer;
 
     public override void Update(Enemy enemy, NavMeshAgent ai)
     {
@@ -321,13 +349,17 @@ public class GoingToPosition : EnemyState
         enemy.NavigateToPosition(Position);
 
         if(enemy.ArrivedAtDestinationOrStuck)
-        { /*enemy.SetState(enemy.LastState);*/ enemy.SetState(PatrollingState); }
+        {
+            investigatingTimer += Time.deltaTime;
+            if(investigatingTimer > enemy.InvestigateTime)
+            {/*enemy.SetState(enemy.LastState);*/ enemy.SetState(PatrollingState); } //for now, the only outcome of this state is Patrolling
+        }
 
         //Spotting
         if(enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Alerted)
         {
             enemy.PlayVoiceline(Enemy.VoiceLine.SpotPlayer);
-            enemy.SetState(CallingCopsGrabbingGunState);
+            enemy.SetState(GrabbingGunState);
         }
 
         base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
@@ -339,38 +371,27 @@ public class GoingToPosition : EnemyState
         enemy.RedLightTargetIntensity = enemy.RedLightIntensityHigh;
         base.ShowScreenSpaceUI = true;
         base.MinimumAlertness = Awareness.AwarenessEnum.Warning;
+        investigatingTimer = 0f;
+    }
+
+    public override void OnDistract(Enemy enemy, Vector3 position)
+    {
+        Position = position;
     }
 }
 
-public class CallingCopsGrabbingGunState : EnemyState
+public class GrabbingGunState : EnemyState
 {
-    enum State { GoingToPhone, GrabbingGun }
-    State state = State.GoingToPhone;
-
     public override void Update(Enemy enemy, NavMeshAgent ai)
     {
         //Movement
         ai.isStopped = false;
-        switch(state)
+        enemy.SetWaypoint(enemy.GunWaypoint);
+
+        if (enemy.ArrivedAtDestinationOrStuck)
         {
-            case State.GoingToPhone:
-                enemy.SetWaypoint(enemy.PhoneWaypoint);
-
-                if(enemy.ArrivedAtDestinationOrStuck)
-                { state = State.GrabbingGun; }
-
-                break;
-            case State.GrabbingGun:
-                enemy.SetWaypoint(enemy.GunWaypoint);
-
-                if(enemy.ArrivedAtDestinationOrStuck)
-                {
-                    LevelManager.instance.CallCops();
-                    enemy.AudioPlayer.Play(enemy.ShotgunSound_Reload);
-                    enemy.SetState(PatrollingWithGunState);
-                }
-
-                break;
+            enemy.AudioPlayer.Play(enemy.ShotgunSound_Reload);
+            enemy.SetState(PatrollingWithGunState);
         }
 
         PlayerUI.instance.SetSpottedGradient(false, enemy.transform.position);
@@ -395,7 +416,6 @@ public class Enemy : MonoBehaviour
     public Transform EyePosition;
     public Light RedLight;
     public List<Waypoint> PatrollingRoute;
-    public Waypoint PhoneWaypoint;
     public Waypoint GunWaypoint;
     public GameObject GunObject;
     public EnemyDebug DebugObject;
@@ -406,6 +426,7 @@ public class Enemy : MonoBehaviour
     public float AwarenessDecayRate = 0.3f;
     public float Awareness_IdleState_Duration = 0.4f;
     public float Awareness_WarningState_Duration = 1.8f;
+    public float InvestigateTime = 3.5f;
     public float CloseDistance = 1.5f;
     public float TimeUntilShoot = 1.2f;
     public float FovDotProduct = 0.15f;
@@ -418,8 +439,7 @@ public class Enemy : MonoBehaviour
     public float RedLightIntensityHigh = 8f;
     [SerializeField] private LayerMask everythingBesidesEnemy;
     public Sound[] SpotPlayerSounds;
-    public Sound[] GoingToCallThePoliceSounds;
-    public Sound[] CallingPoliceSounds;
+    public Sound[] GrabbingGunSounds;
     public Sound[] ChasingSounds;
     public Sound[] AlertedSounds;
     public Sound ShotgunSound_Reload;
@@ -466,10 +486,9 @@ public class Enemy : MonoBehaviour
         DebugObject.gameObject.SetActive(DebugMode);
         AudioPlayer = GetComponent<AudioPlayer>();
         chasingRandomSound = new NonRepeatingSound(ChasingSounds);
-        callingPoliceRandomSound = new NonRepeatingSound(CallingPoliceSounds);
-        goingToCallThePoliceRandomSound = new NonRepeatingSound(GoingToCallThePoliceSounds);
         spotPlayerRandomSound = new NonRepeatingSound(SpotPlayerSounds);
         alertedRandomSound = new NonRepeatingSound(AlertedSounds);
+        grabbingGunRandonSound = new NonRepeatingSound(GrabbingGunSounds);
 
         sightDistance = SightDistance;
         sightDistanceTarget = SightDistance;
@@ -525,6 +544,11 @@ public class Enemy : MonoBehaviour
     private void FixedUpdate()
     {
         raycastedToPlayer = RaycastToPlayer();
+    }
+
+    public void Distract(Vector3 position)
+    {
+        State.OnDistract(this, position);
     }
 
     Vector2 enemyPos2D, destinationPos2D;
@@ -620,7 +644,6 @@ public class Enemy : MonoBehaviour
 
     private void CompletedPettingCallback()
     {
-        print("swag");
         if (State == EnemyState.SittingState)
         {
             SetState(EnemyState.PatrollingState);
@@ -638,16 +661,15 @@ public class Enemy : MonoBehaviour
         Awareness.SetMinimum(newState.MinimumAlertness);
     }
 
-    public enum VoiceLine { SpotPlayer, GoingToCallThePolice, CallingPolice, Chasing, Alerted }
+    public enum VoiceLine { SpotPlayer, GrabbingGun, Chasing, Alerted }
     private float lastTimePlayedVoiceline = -420f;
     private float voiceLineDuration;
     private float lastTimePlayedChasingVoiceline = -420f;
     private float chasingVoicelineDuration;
     private NonRepeatingSound chasingRandomSound;
-    private NonRepeatingSound callingPoliceRandomSound;
-    private NonRepeatingSound goingToCallThePoliceRandomSound;
     private NonRepeatingSound spotPlayerRandomSound;
     private NonRepeatingSound alertedRandomSound;
+    private NonRepeatingSound grabbingGunRandonSound;
     private Queue<VoiceLine> voicelineQueue = new Queue<VoiceLine>();
 
     //returns a reference to the sound that was played
@@ -665,12 +687,6 @@ public class Enemy : MonoBehaviour
         {
             case VoiceLine.SpotPlayer:
                 randomSound = spotPlayerRandomSound;
-                break;
-            case VoiceLine.GoingToCallThePolice:
-                randomSound = goingToCallThePoliceRandomSound;
-                break;
-            case VoiceLine.CallingPolice:
-                randomSound = callingPoliceRandomSound;
                 break;
             case VoiceLine.Chasing:
                 randomSound = chasingRandomSound;
