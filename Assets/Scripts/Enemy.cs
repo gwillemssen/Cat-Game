@@ -102,6 +102,34 @@ public class EnemyState
             ai.transform.rotation = Quaternion.Lerp(ai.transform.rotation, Quaternion.LookRotation(new Vector3(enemy.PlayerTransform.position.x, 0f, enemy.PlayerTransform.position.z) - new Vector3(enemy.transform.position.x, 0f, enemy.transform.position.z)), Time.deltaTime* 4.5f);
         }
     }
+    public virtual void OnEnteredHidingSpotCallback(HidingSpot hidingSpot, Enemy enemy) 
+    { hidingSpotTriggered = hidingSpot; }
+    private HidingSpot hidingSpotTriggered;
+    protected void InvestigateHidingSpotIfSeen(Enemy enemy)
+    {
+        if (hidingSpotTriggered != null)
+        {
+            Debug.Log("Sees player" + enemy.SeesPlayer);
+            if(!enemy.SeesPlayer)
+            {
+                hidingSpotTriggered = null;
+                return;
+            }
+            enemy.SetState(InvestigatingState);
+            InvestigatingState.Position = hidingSpotTriggered.GrannyOpenPosition.position;
+            InvestigatingState.GrannyInteractable = hidingSpotTriggered;
+        }
+        hidingSpotTriggered = null;
+    }
+    private bool lastSpottedPlayer;
+    protected void InvestigateLastSeenPositionIfAlerted(Enemy enemy)
+    {
+        if (enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Idle && lastSpottedPlayer) //player got out of enemies sights - go investigate
+        {
+            OnDistract(enemy, FirstPersonController.instance.transform.position);
+        }
+        lastSpottedPlayer = enemy.Awareness.AwarenessValue != Awareness.AwarenessEnum.Idle;
+    }
     private bool canPlayAlertedVoiceline = true;
     private float voicelineCooldownTimer;
     protected void PlayAlertedVoicelineIfInWarningState(Enemy enemy)
@@ -135,6 +163,8 @@ public class SittingState : EnemyState
             enemy.SetState(GrabbingGunState);
         }
 
+        base.InvestigateHidingSpotIfSeen(enemy);
+        base.InvestigateLastSeenPositionIfAlerted(enemy);
         base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
         base.PlayAlertedVoicelineIfInWarningState(enemy);
         PlayerUI.instance.SetSpottedGradient(enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Warning, enemy.transform.position);
@@ -159,7 +189,6 @@ public class SittingState : EnemyState
 public class PatrollingState : EnemyState
 {
     private int currentWaypointIndex;
-    private bool lastSpottedPlayer;
 
     public override void Update(Enemy enemy, NavMeshAgent ai)
     {
@@ -181,15 +210,11 @@ public class PatrollingState : EnemyState
         { currentWaypointIndex = 0; }
 
         //Spotting
-        if(enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Idle && lastSpottedPlayer) //player got out of enemies sights - go investigate
-        {
-            OnDistract(enemy, FirstPersonController.instance.transform.position);
-        }
-        lastSpottedPlayer = enemy.Awareness.AwarenessValue != Awareness.AwarenessEnum.Idle;
-
         if (enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Alerted)
         { OnSpotted(enemy); }
 
+        base.InvestigateHidingSpotIfSeen(enemy);
+        base.InvestigateLastSeenPositionIfAlerted(enemy);
         base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
         base.PlayAlertedVoicelineIfInWarningState(enemy);
         PlayerUI.instance.SetSpottedGradient(enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Warning, enemy.transform.position);
@@ -339,8 +364,10 @@ public class PatrollingWithGunState : PatrollingState
 public class InvestigatingState : EnemyState
 {
     public Vector3 Position;
+    public IGrannyInteractable GrannyInteractable;
 
     private float investigatingTimer;
+    private bool lastTimeAtDestination;
 
     public override void Update(Enemy enemy, NavMeshAgent ai)
     {
@@ -350,10 +377,15 @@ public class InvestigatingState : EnemyState
 
         if(enemy.ArrivedAtDestinationOrStuck)
         {
+            if(!lastTimeAtDestination && GrannyInteractable != null)
+            { GrannyInteractable.GrannyInteract(); }
+
             investigatingTimer += Time.deltaTime;
             if(investigatingTimer > enemy.InvestigateTime)
             {/*enemy.SetState(enemy.LastState);*/ enemy.SetState(PatrollingState); } //for now, the only outcome of this state is Patrolling
         }
+
+        lastTimeAtDestination = enemy.ArrivedAtDestinationOrStuck;
 
         //Spotting
         if(enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Alerted)
@@ -366,12 +398,21 @@ public class InvestigatingState : EnemyState
         PlayerUI.instance.SetSpottedGradient(enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Warning, enemy.transform.position);
     }
 
+    public override void OnEnteredHidingSpotCallback(HidingSpot hidingSpot, Enemy enemy)
+    {
+        if(hidingSpot == null) //Hiding spot investigation takes importance here
+        { return; }
+
+        base.InvestigateHidingSpotIfSeen(enemy);
+    }
+
     public override void Init(Enemy enemy, NavMeshAgent ai)
     {
         enemy.RedLightTargetIntensity = enemy.RedLightIntensityHigh;
         base.ShowScreenSpaceUI = true;
         base.MinimumAlertness = Awareness.AwarenessEnum.Warning;
         investigatingTimer = 0f;
+        GrannyInteractable = null;
     }
 
     public override void OnDistract(Enemy enemy, Vector3 position)
@@ -471,6 +512,7 @@ public class Enemy : MonoBehaviour
 
         ai = GetComponent<NavMeshAgent>();
         Cat.CompletedPetting += CompletedPettingCallback;
+        HidingSpot.OnEnteredHidingSpot += OnEnteredHidingSpotCallback;
         Awareness = new Awareness(this);
         sqrCloseDistance = CloseDistance * CloseDistance;
     }
@@ -478,6 +520,12 @@ public class Enemy : MonoBehaviour
     private void OnDestroy()
     {
         Cat.CompletedPetting -= CompletedPettingCallback;
+        HidingSpot.OnEnteredHidingSpot -= OnEnteredHidingSpotCallback;
+    }
+
+    private void OnEnteredHidingSpotCallback(HidingSpot hidingSpot)
+    {
+        State.OnEnteredHidingSpotCallback(hidingSpot, this);
     }
 
     private void Start()
@@ -505,8 +553,8 @@ public class Enemy : MonoBehaviour
         SeesPlayer = PercentVisible >= VisibilityThreshold;
 
         //Automatically see player if theyre within a distance
-        if (Vector3.SqrMagnitude(FirstPersonController.instance.MainCamera.transform.position - EyePosition.transform.position) <= sqrCloseDistance)
-        { 
+        if (Vector3.SqrMagnitude(FirstPersonController.instance.MainCamera.transform.position - EyePosition.transform.position) <= sqrCloseDistance && !FirstPersonController.instance.Hiding)
+        {
             PercentVisible = 1f;
             SeesPlayer = true;
         }
@@ -593,6 +641,7 @@ public class Enemy : MonoBehaviour
     }
 
     int raycastsHit;
+    int framesHiding = 0;
     bool RaycastToPlayer()
     {
         PercentVisible = 0f;
@@ -600,6 +649,15 @@ public class Enemy : MonoBehaviour
 
         if(!IsPlayerWithinFieldOfView())
         { return false; }
+
+        if(FirstPersonController.instance.Hiding)
+        {
+            framesHiding++;
+            if(framesHiding > 3)
+            return false;
+        }
+        else
+        { framesHiding = 0; }
 
         bool hit = false;
         for (int i = 0; i < FirstPersonController.instance.VisibilityCheckPoints.Length; i++)
