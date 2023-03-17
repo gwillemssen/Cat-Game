@@ -105,8 +105,11 @@ public class EnemyState
     public virtual void OnEnteredHidingSpotCallback(HidingSpot hidingSpot, Enemy enemy) 
     { hidingSpotTriggered = hidingSpot; }
     private HidingSpot hidingSpotTriggered;
-    protected void InvestigateHidingSpotIfSeen(Enemy enemy)
+    protected void InvestigateHidingSpotIfSeen(Enemy enemy, HidingSpot hidingSpot = null)
     {
+        if(hidingSpot != null)
+        { hidingSpotTriggered = hidingSpot; }
+
         if (hidingSpotTriggered != null)
         {
             Debug.Log("Sees player" + enemy.SeesPlayer);
@@ -380,6 +383,9 @@ public class InvestigatingState : EnemyState
             if(!lastTimeAtDestination && GrannyInteractable != null)
             { GrannyInteractable.GrannyInteract(); }
 
+            if(GrannyInteractable is HidingSpot)
+            { enemy.SetState(GrabbingGunState); }
+
             investigatingTimer += Time.deltaTime;
             if(investigatingTimer > enemy.InvestigateTime)
             {/*enemy.SetState(enemy.LastState);*/ enemy.SetState(PatrollingState); } //for now, the only outcome of this state is Patrolling
@@ -394,6 +400,7 @@ public class InvestigatingState : EnemyState
             enemy.SetState(GrabbingGunState);
         }
 
+        base.InvestigateHidingSpotIfSeen(enemy);
         base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
         PlayerUI.instance.SetSpottedGradient(enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Warning, enemy.transform.position);
     }
@@ -403,7 +410,7 @@ public class InvestigatingState : EnemyState
         if(hidingSpot == null) //Hiding spot investigation takes importance here
         { return; }
 
-        base.InvestigateHidingSpotIfSeen(enemy);
+        base.InvestigateHidingSpotIfSeen(enemy, hidingSpot);
     }
 
     public override void Init(Enemy enemy, NavMeshAgent ai)
