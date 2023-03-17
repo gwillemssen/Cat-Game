@@ -12,11 +12,11 @@ public class ExitDoor : Interactable
 
     private void Start()
     {
-        GameManager.AllCatsPetted += Unlock;
+        LevelManager.AllCatsPetted += Unlock;
     }
     private void OnDestroy()
     {
-        GameManager.AllCatsPetted -= Unlock;
+        LevelManager.AllCatsPetted -= Unlock;
     }
     public override void Interact(FirstPersonController controller)
     {

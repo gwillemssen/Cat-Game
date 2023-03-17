@@ -122,7 +122,7 @@ public class PlayerUI : MonoBehaviour
     private void Update()
     {
         debugOutput = "";
-        debugOutput += $"CATS : {GameManager.instance.CatsPet} / {GameManager.instance.CatList.Count}\n";
+        debugOutput += $"CATS : {LevelManager.instance.CatsPetted} / {LevelManager.instance.CatsToPet}\n";
         debugText.text = debugOutput;
 
         Color targetColor = Color.white;

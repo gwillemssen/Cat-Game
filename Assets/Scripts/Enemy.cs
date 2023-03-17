@@ -526,16 +526,12 @@ public class Enemy : MonoBehaviour
         instance = this;
 
         ai = GetComponent<NavMeshAgent>();
-<<<<<<< Updated upstream
         Cat.CompletedPetting += CompletedPettingCallback;
         HidingSpot.OnEnteredHidingSpot += OnEnteredHidingSpotCallback;
-=======
->>>>>>> Stashed changes
         Awareness = new Awareness(this);
         sqrCloseDistance = CloseDistance * CloseDistance;
     }
 
-<<<<<<< Updated upstream
     private void OnDestroy()
     {
         Cat.CompletedPetting -= CompletedPettingCallback;
@@ -546,9 +542,6 @@ public class Enemy : MonoBehaviour
     {
         State.OnEnteredHidingSpotCallback(hidingSpot, this);
     }
-=======
-
->>>>>>> Stashed changes
 
     private void Start()
     {
@@ -722,7 +715,14 @@ public class Enemy : MonoBehaviour
         return hitPlayer;
     }
 
-
+    private void CompletedPettingCallback()
+    {
+        if (State == EnemyState.SittingState)
+        {
+            SetState(EnemyState.PatrollingState);
+            PlayVoiceline(VoiceLine.Alerted);
+        }
+    }
 
     public void SetState(EnemyState newState)
     {
