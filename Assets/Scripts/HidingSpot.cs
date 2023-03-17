@@ -10,43 +10,35 @@ public class HidingSpot : Interactable, IGrannyInteractable
     public Transform GrannyOpenPosition;
     public float EnterSpeed = 2f;
     public float ExitSpeed = 0.75f;
-    public Animation anim;
-    public Sound DoorOpenSound;
-    public Sound DoorCloseSound;
+
 
     private FirstPersonController player;
     private Vector3 startPos;
     private Quaternion startRot;
-    private AudioPlayer audioPlayer;
 
     private float lerp;
     private bool entering;
 
     public static event Action<HidingSpot> OnEnteredHidingSpot;
 
-    private void Start()
-    {
-        anim = GetComponentInChildren<Animation>();
-        audioPlayer = GetComponent<AudioPlayer>();
-    }
+    public virtual void OnEnterHidingSpot() { }
 
     public override void Interact(FirstPersonController controller)
     {
-        audioPlayer.Play(DoorOpenSound);
         if (player != null)
             return;
+
         player = controller;
         startPos = player.transform.position;
         startRot = player.transform.rotation;
         player.DisableMovement = true;
         player.UI.SetInfoText("Hiding...\nRight click to exit");
         player.Hiding = true;
-        anim.Stop();
-        anim.Play();
         entering = true;
         lerp = 0f;
 
         OnEnteredHidingSpot?.Invoke(this);
+        OnEnterHidingSpot();
     }
 
     private void Update()
@@ -91,17 +83,17 @@ public class HidingSpot : Interactable, IGrannyInteractable
         }
     }
 
-    private void Exit()
-    {
-        audioPlayer.Play(DoorCloseSound);
-        entering = false;
-        lerp = 0f;
-        anim.Stop();
-        anim.Play();
-    }
+    public virtual void OnExitHidingSpot() { }
 
     public void GrannyInteract()
     {
         Exit();
+    }
+
+    private void Exit()
+    {
+        OnExitHidingSpot();
+        entering = false;
+        lerp = 0f;
     }
 }
