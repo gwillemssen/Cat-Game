@@ -1,11 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioPlayer))]
-public class HidingSpot : Interactable
+public class HidingSpot : Interactable, IGrannyInteractable
 {
     public Transform HidingPosition;
+    public Transform GrannyOpenPosition;
     public float EnterSpeed = 2f;
     public float ExitSpeed = 0.75f;
     public Animation anim;
@@ -19,6 +21,8 @@ public class HidingSpot : Interactable
 
     private float lerp;
     private bool entering;
+
+    public static event Action<HidingSpot> OnEnteredHidingSpot;
 
     private void Start()
     {
@@ -41,6 +45,8 @@ public class HidingSpot : Interactable
         anim.Play();
         entering = true;
         lerp = 0f;
+
+        OnEnteredHidingSpot?.Invoke(this);
     }
 
     private void Update()
@@ -68,7 +74,7 @@ public class HidingSpot : Interactable
             {
                 if(entering)
                 {
-                    Debug.Log(player.Hiding);
+                    //Debug.Log(player.Hiding);
                 }
                 else
                 {
@@ -80,12 +86,22 @@ public class HidingSpot : Interactable
 
             if(player != null && player.Input.throwing && entering)
             {
-                audioPlayer.Play(DoorCloseSound);
-                entering = false;
-                lerp = 0f;
-                anim.Stop();
-                anim.Play();
+                Exit();
             }
         }
+    }
+
+    private void Exit()
+    {
+        audioPlayer.Play(DoorCloseSound);
+        entering = false;
+        lerp = 0f;
+        anim.Stop();
+        anim.Play();
+    }
+
+    public void GrannyInteract()
+    {
+        Exit();
     }
 }

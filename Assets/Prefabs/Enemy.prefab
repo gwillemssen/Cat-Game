@@ -384,7 +384,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  PhoneWaypoint: {fileID: 0}
   GunWaypoint: {fileID: 0}
   GunObject: {fileID: 5722006649426265206}
   DebugObject: {fileID: 6234930925431052522}
@@ -393,8 +392,9 @@ MonoBehaviour:
   AwarenessRate: 0.8
   AwarenessMultiplier_BackTurned: 0.6
   AwarenessDecayRate: 0.3
-  Awareness_IdleState_Duration: 0.4
-  Awareness_WarningState_Duration: 1.25
+  Awareness_IdleState_Duration: 0.5
+  Awareness_WarningState_Duration: 1.1
+  InvestigateTime: 3.5
   CloseDistance: 2
   TimeUntilShoot: 1.8
   FovDotProduct: 0.15
@@ -409,12 +409,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 33339637a616ba2409928c3cb0de52bf, type: 2}
   - {fileID: 11400000, guid: fbce45537db9a1b47b7c9fea0c2b2cce, type: 2}
   - {fileID: 11400000, guid: d33eb43a2df357c408dc2fa19377ca67, type: 2}
-  GoingToCallThePoliceSounds:
-  - {fileID: 11400000, guid: ead38ef5b585d2b49b21c916edd1ef72, type: 2}
-  - {fileID: 11400000, guid: e49289f7d10833942be102c5a2a75a2b, type: 2}
-  CallingPoliceSounds:
-  - {fileID: 11400000, guid: 00359332b89fbe74a803f241b7cb20b9, type: 2}
-  - {fileID: 11400000, guid: 20c3de1c58b8a6545bd3c48344f9b835, type: 2}
+  GrabbingGunSounds: []
   ChasingSounds:
   - {fileID: 11400000, guid: 6e37e8b85c6659848aa18e378d59a36b, type: 2}
   - {fileID: 11400000, guid: a061a090232481c49bb06594dea42055, type: 2}
