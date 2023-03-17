@@ -377,7 +377,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9414aabddf48aa14ea1ad77e2da5cb37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DebugMode: 0
+  DebugMode: 1
   EyePosition: {fileID: 8272336163191410661}
   RedLight: {fileID: 6671474887497150355}
   PatrollingRoute:
@@ -391,9 +391,9 @@ MonoBehaviour:
   SightDistance: 8
   AwarenessRate: 0.8
   AwarenessMultiplier_BackTurned: 0.6
-  AwarenessDecayRate: 0.3
-  Awareness_IdleState_Duration: 0.5
-  Awareness_WarningState_Duration: 1.1
+  AwarenessDecayRate: 0.15
+  Awareness_IdleState_Duration: 1
+  Awareness_WarningState_Duration: 1.5
   InvestigateTime: 3.5
   CloseDistance: 2
   TimeUntilShoot: 1.8
