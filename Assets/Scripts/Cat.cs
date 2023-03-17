@@ -10,8 +10,6 @@ using Random = UnityEngine.Random;
  * I am aware this code needs refactoring
  * its a bit of a mess right now
  * 
- * It also needs a way to cancel the minigame.  Maybe right click?
- * Right click could also be the throw button for props.
  */
 [RequireComponent(typeof(AudioSource))]
 public class Cat : Interactable
@@ -38,8 +36,6 @@ public class Cat : Interactable
     public ParticleSystem lightningParticles;
     private float catTimer;
 
-    //events
-    public static event Action CompletedPetting;
 
     //Minigame
     private Vector3 catOriginalPos;
@@ -275,7 +271,7 @@ public class Cat : Interactable
         {
             EndMinigame();
             base.CanInteract = false;
-            CompletedPetting?.Invoke();
+            GameManager.instance.IncreaseCatsPet();
         }
     }
 
@@ -290,6 +286,8 @@ public class Cat : Interactable
         PlayerUI.instance.PettingMeter.gameObject.SetActive(false);
         playerController.Interaction.HideCrosshair = false;
         playerController.UI.Hamd.enabled = false;
+
+
     }
 
     public void CatsMeows()
@@ -297,15 +295,19 @@ public class Cat : Interactable
         float minTimeForMeow = 20f;
         float maxTimeForMeow = 60f;
         
-        if(catTimer <= 0f)
+        if(state == CatState.Pettable)
         {
-            MeowAudioSource.Play();
-            catTimer += Random.Range(minTimeForMeow, maxTimeForMeow);
+            if (catTimer <= 0f)
+            {
+                MeowAudioSource.Play();
+                catTimer += Random.Range(minTimeForMeow, maxTimeForMeow);
+            }
+            if (catTimer > 0f)
+            {
+                catTimer -= Time.deltaTime;
+            }
         }
-        if(catTimer > 0f)
-        {
-            catTimer -= Time.deltaTime;
-        }
+
        
         
     }
