@@ -104,7 +104,7 @@ public class GameManager : MonoBehaviour
         PlayerUI.instance.WinScreen.SetActive(true);
         FirstPersonController.instance.DisableMovement = true;
         yield return new WaitForSeconds(1.5f);
-        RestartLevel();
+        SceneManager.LoadScene("Main Menu");
     }
 
     public void RestartLevel()
