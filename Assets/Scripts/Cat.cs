@@ -6,6 +6,39 @@ using System.Threading;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+public class CatMeow : MonoBehaviour
+{
+    //the reason this happens in a seperate object is because the cat sounds were overlapping too much
+    private float catTimer;
+    float minTimeForMeow = 5f;
+    float maxTimeForMeow = 25f;
+
+    public void Awake()
+    {
+        if(Resources.FindObjectsOfTypeAll(typeof(CatMeow)).Length > 1) //not super performant, but it should only be called a few times at the beginning of the game
+        { Destroy(this.gameObject); return; } //there can only be one
+
+        catTimer += Random.Range(minTimeForMeow, maxTimeForMeow);
+    }
+
+    public void Update()
+    {
+        if (GameManager.instance.CatsToPet.Count > 0) //there are still unpetted cats
+        {
+            if (catTimer <= 0f)
+            {
+                Cat randomCat = GameManager.instance.CatsToPet[Random.Range(0, GameManager.instance.CatsToPet.Count)]; //meow a random cat
+                randomCat.MeowAudioSource.Play();
+                catTimer += Random.Range(minTimeForMeow, maxTimeForMeow);
+            }
+            if (catTimer > 0f)
+            {
+                catTimer -= Time.deltaTime;
+            }
+        }
+    }
+}
+
 /*
  * I am aware this code needs refactoring
  * its a bit of a mess right now
@@ -34,7 +67,6 @@ public class Cat : Interactable
     private CatState state;
     private Animator anim;
     public ParticleSystem lightningParticles;
-    private float catTimer;
 
 
     //Minigame
@@ -71,13 +103,14 @@ public class Cat : Interactable
         catOriginalPos = transform.position;
         catOriginalRot = transform.rotation;
         catOriginalScale = transform.localScale;
-        catTimer = Random.Range(5f, 30f);
+        GameObject g = new GameObject("CatMeowObject", typeof(CatMeow)); //create an external object to do the meowing sounds.
+
+        GameManager.instance.RegisterCat(this);
 
     }
 
     private void Update()
     {
-        CatsMeows();
         anim.SetBool("Excited", LookingAt && state == CatState.Pettable);
         anim.SetBool("DonePetting", state == CatState.DonePetting && !base.CanInteract);
 
@@ -271,7 +304,7 @@ public class Cat : Interactable
         {
             EndMinigame();
             base.CanInteract = false;
-            GameManager.instance.IncreaseCatsPet();
+            GameManager.instance.CatPetted(this);
         }
     }
 
@@ -286,32 +319,5 @@ public class Cat : Interactable
         PlayerUI.instance.PettingMeter.gameObject.SetActive(false);
         playerController.Interaction.HideCrosshair = false;
         playerController.UI.Hamd.enabled = false;
-
-
-    }
-
-    public void CatsMeows()
-    {
-        float minTimeForMeow = 20f;
-        float maxTimeForMeow = 60f;
-        
-        if(state == CatState.Pettable)
-        {
-            if (catTimer <= 0f)
-            {
-                if (state == CatState.Pettable)
-                {
-                    MeowAudioSource.Play();
-                    catTimer += Random.Range(minTimeForMeow, maxTimeForMeow);
-                }
-            }
-            if (catTimer > 0f)
-            {
-                catTimer -= Time.deltaTime;
-            }
-        }
-
-       
-        
     }
 }

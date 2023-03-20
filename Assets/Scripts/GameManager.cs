@@ -11,9 +11,7 @@ public class GameManager : MonoBehaviour
     public enum GameState { Normal, Loading, GameOver }
     public enum LoseState { Shot }
 
-    public List<Cat> CatList = new List<Cat>();
-    public int CatsPet { get; private set; }
-
+    [HideInInspector] public List<Cat> CatsToPet = new List<Cat>();
 
     public GameState State { get; private set; } = GameState.Loading;
     private LoseState loseState;
@@ -53,19 +51,19 @@ public class GameManager : MonoBehaviour
         State = GameState.Normal;
     }
 
-    public void IncreaseCatsPet()
+    public void CatPetted(Cat cat)
     {
-        CatsPet++;
-        if (GameManager.instance.CatsPet == GameManager.instance.CatList.Count)
-        {
-            AllCatsPetted?.Invoke();
-        }
+        CatsToPet.Remove(cat);
+        
+        if (CatsToPet.Count == 0)
+        { AllCatsPetted?.Invoke(); }
     }
     public void WinGame()
     {
         if (State == GameState.Loading)
             return;
         State = GameState.Loading;
+        ResetGameManager();
         StartCoroutine(TemporaryWinSequence());
     }
 
@@ -76,9 +74,17 @@ public class GameManager : MonoBehaviour
 
         State = GameState.GameOver;
         loseState = lose;
-
+        ResetGameManager();
         StartCoroutine(TemporaryGameOverSequence());
     }
+
+    private void ResetGameManager()
+    {
+        CatsToPet.Clear();
+    }
+
+    public void RegisterCat(Cat cat)
+    { CatsToPet.Add(cat); }
 
     IEnumerator TemporaryGameOverSequence()
     {
