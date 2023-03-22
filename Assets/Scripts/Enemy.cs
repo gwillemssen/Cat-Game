@@ -6,6 +6,7 @@ using UnityEngine.AI;
 using UnityEditor;
 using System;
 
+
 #region Awareness
 public class Awareness
 {
@@ -445,6 +446,7 @@ public class GrabbingGunState : EnemyState
 
         if (enemy.ArrivedAtDestinationOrStuck)
         {
+            enemy.GunModelInScene.GetComponent<MeshRenderer>().enabled = false;
             enemy.AudioPlayer.Play(enemy.ShotgunSound_Reload);
             enemy.SetState(PatrollingWithGunState);
         }
@@ -474,6 +476,8 @@ public class Enemy : MonoBehaviour
     public List<Waypoint> PatrollingRoute;
     public Waypoint GunWaypoint;
     public GameObject GunObject;
+    public GameObject GunModelInScene;
+    //Set enemy.GunModelInScene.GetComponent<MeshRenderer>().enabled = true; when granny puts the gun down!!!!
     public EnemyDebug DebugObject;
     public Animator Anim;
     public float SightDistance = 12f;
@@ -533,13 +537,10 @@ public class Enemy : MonoBehaviour
         sqrCloseDistance = CloseDistance * CloseDistance;
     }
 
-
-
     private void OnEnteredHidingSpotCallback(HidingSpot hidingSpot)
     {
         State.OnEnteredHidingSpotCallback(hidingSpot, this);
     }
-
 
     private void Start()
     {
@@ -712,9 +713,6 @@ public class Enemy : MonoBehaviour
 
         return hitPlayer;
     }
-
-
-
     public void SetState(EnemyState newState)
     {
         if(State == newState)
