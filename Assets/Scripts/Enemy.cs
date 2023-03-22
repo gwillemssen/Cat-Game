@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEditor;
 using System;
+using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 
 #region Awareness
@@ -492,7 +494,7 @@ public class Enemy : MonoBehaviour
     public float FovDotProduct = 0.15f;
     //public float AwarenessMultiplierBackTurned = 0.5f;
     [Tooltip("How visible does the player need to be to be spotted [0.0-1.0]")]
-    [Range(0f,1f)]
+    [Range(0f, 1f)]
     public float VisibilityThreshold = 0.5f;
     public float ReloadTime = 1.5f;
     public float RedLightIntensityNormal = 4f;
@@ -560,6 +562,9 @@ public class Enemy : MonoBehaviour
         State.Init(this, ai);
 
         GunObject.SetActive(false);
+
+        StartCoroutine(AWAKENGRANNY());
+
     }
 
     private void Update()
@@ -661,14 +666,14 @@ public class Enemy : MonoBehaviour
         PercentVisible = 0f;
         raycastsHit = 0;
 
-        if(!IsPlayerWithinFieldOfView())
+        if (!IsPlayerWithinFieldOfView())
         { return false; }
 
-        if(FirstPersonController.instance.Hiding)
+        if (FirstPersonController.instance.Hiding)
         {
             framesHiding++;
-            if(framesHiding > 3)
-            return false;
+            if (framesHiding > 3)
+                return false;
         }
         else
         { framesHiding = 0; }
@@ -698,14 +703,14 @@ public class Enemy : MonoBehaviour
         {
             hitPlayer = hit.collider.CompareTag("Player");
             if (DebugMode)
-            { Debug.DrawLine(EyePosition.position, hit.point, hitPlayer? Color.green : Color.red, 0.25f); }
+            { Debug.DrawLine(EyePosition.position, hit.point, hitPlayer ? Color.green : Color.red, 0.25f); }
 
             if (!hitPlayer)
             { return false; }
         }
         else
         {
-            if(!DebugMode)
+            if (!DebugMode)
             { return false; }
 
             Debug.DrawLine(EyePosition.position, EyePosition.position + direction * SightDistance, Color.red, 0.25f);
@@ -715,7 +720,7 @@ public class Enemy : MonoBehaviour
     }
     public void SetState(EnemyState newState)
     {
-        if(State == newState)
+        if (State == newState)
         { return; }
         LastState = State;
         State = newState;
@@ -773,7 +778,7 @@ public class Enemy : MonoBehaviour
 
     private void PlayQueuedVoicelines()
     {
-        if(voicelineQueue.Count <= 0)
+        if (voicelineQueue.Count <= 0)
         { return; }
 
         if (Time.time - lastTimePlayedVoiceline >= voiceLineDuration)
@@ -794,6 +799,17 @@ public class Enemy : MonoBehaviour
             Gizmos.DrawLine(s.transform.position, e.transform.position);
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(s.transform.position, 0.5f);
+        }
+    }
+
+    private IEnumerator AWAKENGRANNY()
+    {
+        int x = Random.Range(20, 35);
+        yield return new WaitForSeconds(x);
+        if (State == EnemyState.SittingState)
+        {
+            SetState(EnemyState.PatrollingState);
+            PlayVoiceline(VoiceLine.Alerted);
         }
     }
 }

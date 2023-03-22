@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class StartButton : MonoBehaviour
+public class MainMenu_Start : MonoBehaviour
 {
     // Start is called before the first frame update
     private Vector3 LoadPosition = new Vector3(-1.4104867f, 3.72687531f, 5.35491753f);
@@ -21,8 +21,10 @@ public class StartButton : MonoBehaviour
     }
 
         private IEnumerator Load()
-    {
+        {
+
         yield return new WaitForSeconds(1);
         SceneManager.LoadScene("Granny's House");
-    }
+
+        }
 }

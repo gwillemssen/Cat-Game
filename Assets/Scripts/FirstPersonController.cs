@@ -156,8 +156,9 @@ public class FirstPersonController : MonoBehaviour
             GroundedCheck();
             Move();
             Audio();
-            CameraRotation();
+            
         }
+        CameraRotation();
         Interaction.UpdateInteraction();
     }
 
