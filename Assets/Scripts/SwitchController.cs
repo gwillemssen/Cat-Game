@@ -24,28 +24,18 @@ public class SwitchController : Interactable
     void Start()
     {
         SwitchLoad();
-        foreach (Light light1 in lights)
-        {
-            light1.enabled = on;
-        }
-        if (on)
-        {
-            switchLerp.vecTarget = onPos;
-        }
-        else
-        {
-            switchLerp.vecTarget = offPos;
-        }
+        Apply();
+
+        switchLerp.vecTarget = on ? onPos : offPos;
     }
-    
+
     void Update()
     {
         Animate();
     }
 
-    void ToggleLight()
+    void Apply()
     {
-        on = !on;
         foreach (Light light1 in lights)
         {
             light1.enabled = on;
@@ -53,20 +43,29 @@ public class SwitchController : Interactable
         if (on)//when it's switched to on, the rotation target is moved to the on position and the on sound is played, then all lights in the array are toggled and the stored value is made equal so it doesn't loop the function
         {
             switchLerp.vecTarget = onPos;
-            PlaySound(0);
         }
         else
         {
             switchLerp.vecTarget = offPos;
-            PlaySound(1);
         }
-        
     }
 
 
     public override void Interact(FirstPersonController controller)
     {
-        ToggleLight();
+        on = !on;
+        bool onBefore = on;
+        Apply();
+        if(on == onBefore)
+        {
+            //I can't believe this works
+            on = !on; 
+            Apply();
+            on = !on;
+            //This allows multiple switches to control the same light, like a real home
+        } 
+        
+        PlaySound(on ? 0 : 1);
     }
 
     private void SwitchLoad()
@@ -75,7 +74,7 @@ public class SwitchController : Interactable
         sounds[0] = Resources.Load("Sound/LightSwitch/So_SwitchOn") as AudioClip;
         sounds[1] = Resources.Load("Sound/LightSwitch/So_SwitchOff") as AudioClip;
         //Debug.Log($"{gameObject.name} sounds loaded");
-        
+
         //initialization
         lightSwitchPlayer = GetComponent<AudioSource>();
         switchBone = transform.GetChild(2).GetChild(0).gameObject;
@@ -94,12 +93,10 @@ public class SwitchController : Interactable
 
     private void Animate()
     {
-    
+
         if (switchBone.transform.localRotation != Quaternion.Euler(switchLerp.vecVal))//updates rotation of the switch to match the desired value while it's not the same
         {
             switchBone.transform.localRotation = Quaternion.Euler(switchLerp.vecVal);
         }
     }
-
-    
 }
