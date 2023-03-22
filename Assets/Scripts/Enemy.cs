@@ -85,7 +85,6 @@ public class EnemyState
     public static PatrollingWithGunState PatrollingWithGunState = new PatrollingWithGunState();
     public static ReloadingState ReloadingState = new ReloadingState();
 
-    public bool ShowScreenSpaceUI { get; protected set; } = true;
     public Awareness.AwarenessEnum MinimumAlertness { get; protected set; } = Awareness.AwarenessEnum.Idle; //the minimum alertness state the enemy can be in
 
     public virtual void Init(Enemy enemy, NavMeshAgent ai) 
@@ -183,7 +182,6 @@ public class SittingState : EnemyState
     {
         base.Init(enemy, ai);
         enemy.RedLightTargetIntensity = 0f;
-        base.ShowScreenSpaceUI = true;
         base.MinimumAlertness = Awareness.AwarenessEnum.Idle;
     }
 
@@ -240,7 +238,6 @@ public class PatrollingState : EnemyState
     {
         base.Init(enemy, ai);
         enemy.RedLightTargetIntensity = 0f;
-        base.ShowScreenSpaceUI = true;
         base.MinimumAlertness = Awareness.AwarenessEnum.Idle;
     }
 
@@ -261,7 +258,6 @@ public class ReloadingState : EnemyState
     {
         //PLAY I MISSED AUDIO
         timeStartedReloading = Time.time;
-        base.ShowScreenSpaceUI = false;
         base.MinimumAlertness = Awareness.AwarenessEnum.Alerted;
     }
 
@@ -275,6 +271,8 @@ public class ReloadingState : EnemyState
 
 public class PatrollingWithGunState : PatrollingState
 {
+    public event Action OnShoot;
+
     private float lastTimePlayedChasingVoiceline = -420f;
     private float chasingVoicelineDuration = -420f;
     private int timesShot = 0;
@@ -288,7 +286,6 @@ public class PatrollingWithGunState : PatrollingState
         base.Init(enemy, ai);
         enemy.GunObject.SetActive(true);
         lastTimePlayedReloadSound = -420f;
-        base.ShowScreenSpaceUI = false;
         base.MinimumAlertness = Awareness.AwarenessEnum.Alerted;
         enemy.FovDotProduct = -.85f; //make the FOV of the enemy really high
     }
@@ -314,8 +311,10 @@ public class PatrollingWithGunState : PatrollingState
                 enemy.enabled = false;
                 GameManager.instance.GameOver(GameManager.LoseState.Shot);
             }
-            else
-            { } //missed
+            else //first hit
+            {
+                OnShoot?.Invoke();
+            } 
 
             enemy.AudioPlayer.Play(enemy.ShotgunSound_Fire);
             timesShot++;
@@ -426,7 +425,6 @@ public class InvestigatingState : EnemyState
     {
         base.Init(enemy, ai);
         enemy.RedLightTargetIntensity = enemy.RedLightIntensityHigh;
-        base.ShowScreenSpaceUI = true;
         base.MinimumAlertness = Awareness.AwarenessEnum.Warning;
         investigatingTimer = 0f;
         GrannyInteractable = null;
@@ -460,7 +458,6 @@ public class GrabbingGunState : EnemyState
     {
         base.Init(enemy, ai);
         enemy.RedLightTargetIntensity = 0f;
-        base.ShowScreenSpaceUI = false;
         base.MinimumAlertness = Awareness.AwarenessEnum.Alerted;
     }
 }

@@ -28,6 +28,7 @@ public class PlayerUI : MonoBehaviour
     private GameObject spottedGradient_Right;
     private Image grannyScreenSpaceUI;
     private Image grannyScreenSpaceUI_Fill;
+    private Image bloodOverlay;
     public GameObject WinScreen { get; private set; }
     public GameObject LoseScreen { get; private set; }
     public GameObject LoseCopsScreen { get; private set; }
@@ -38,8 +39,8 @@ public class PlayerUI : MonoBehaviour
 
     private void Awake()
     {
-        if(instance != null)
-        { 
+        if (instance != null)
+        {
             Destroy(this);
             return;
         }
@@ -47,13 +48,13 @@ public class PlayerUI : MonoBehaviour
     }
 
     public void Init(FirstPersonController controller)
-    {        
+    {
         Transform t;
-        for(int i = 0; i < Canvas.transform.childCount; i++)
+        for (int i = 0; i < Canvas.transform.childCount; i++)
         {
             t = Canvas.transform.GetChild(i);
 
-            switch(t.gameObject.name)
+            switch (t.gameObject.name)
             {
                 case "PettingMeter":
                     PettingMeter = t.GetComponent<Slider>();
@@ -95,6 +96,9 @@ public class PlayerUI : MonoBehaviour
                     grannyScreenSpaceUI = t.GetComponent<Image>();
                     grannyScreenSpaceUI_Fill = t.GetChild(0).GetComponent<Image>();
                     break;
+                case "BloodOverlay":
+                    bloodOverlay = t.GetComponent<Image>();
+                    break;
             }
         }
         PettingMeter.gameObject.SetActive(false);
@@ -108,6 +112,8 @@ public class PlayerUI : MonoBehaviour
         debugText.text = "";
         spottedGradient_Left.SetActive(false);
         spottedGradient_Right.SetActive(false);
+        bloodOverlay.enabled = false;
+        EnemyState.PatrollingWithGunState.OnShoot += OnShootCallback;
     }
 
     private void Update()
@@ -119,26 +125,23 @@ public class PlayerUI : MonoBehaviour
         Color targetColor = Color.white;
         targetColor.a = 0f;
 
-        if (true || Enemy.instance.State.ShowScreenSpaceUI)
+        switch (Enemy.instance.Awareness.AwarenessValue)
         {
-            switch (Enemy.instance.Awareness.AwarenessValue)
-            {
-                case Awareness.AwarenessEnum.Idle:
-                    targetColor = Color.white;
-                    targetColor.a = 0.25f;
-                    break;
-                case Awareness.AwarenessEnum.Warning:
-                    targetColor = Color.yellow;
-                    targetColor.a = 0.25f;
-                    break;
-                case Awareness.AwarenessEnum.Alerted:
-                    targetColor = Color.red;
-                    targetColor.a = 1f;
-                    break;
-            }
+            case Awareness.AwarenessEnum.Idle:
+                targetColor = Color.white;
+                targetColor.a = 0.25f;
+                break;
+            case Awareness.AwarenessEnum.Warning:
+                targetColor = Color.yellow;
+                targetColor.a = 0.25f;
+                break;
+            case Awareness.AwarenessEnum.Alerted:
+                targetColor = Color.red;
+                targetColor.a = 1f;
+                break;
         }
 
-        if(Enemy.instance != null)
+        if (Enemy.instance != null)
         {
             grannyScreenSpaceUI.color = Color.Lerp(grannyScreenSpaceUI.color, targetColor, Time.deltaTime * 3f);
             bool enabled = Vector3.Dot(FirstPersonController.instance.transform.forward, (FirstPersonController.instance.transform.position - Enemy.instance.transform.position)) < 0f;
@@ -151,6 +154,11 @@ public class PlayerUI : MonoBehaviour
         targetColor.a = 1f;
         grannyScreenSpaceUI_Fill.color = targetColor;
 
+    }
+
+    private void OnShootCallback()
+    {
+        bloodOverlay.enabled = true;
     }
 
     public void SetSpottedGradient(bool enable, Vector3 pos)
@@ -188,7 +196,7 @@ public class PlayerUI : MonoBehaviour
     {
         timeUI.fillAmount = p;
         catTimerUI.gameObject.SetActive(p != 0f);
-        if(!catTimerAnim.isPlaying)
+        if (!catTimerAnim.isPlaying)
         { catTimerAnim.Play(); }
     }
 }
