@@ -70,9 +70,11 @@ public class HidingSpot : Interactable, IGrannyInteractable
                 }
                 else
                 {
+                    
                     player.DisableMovement = false;
                     player.Hiding = false;
                     player = null;
+                    
                 }
             }
 
@@ -83,7 +85,7 @@ public class HidingSpot : Interactable, IGrannyInteractable
         }
     }
 
-    public virtual void OnExitHidingSpot() { }
+    public virtual void OnExitHidingSpot() {}
 
     public void GrannyInteract()
     {

@@ -37,6 +37,14 @@ public class GameManager : MonoBehaviour
         StartGame();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            RestartLevel();
+        }
+    }
+
     private void OnLevelWasLoaded(int level)
     {
         StartGame();

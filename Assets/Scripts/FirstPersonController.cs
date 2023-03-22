@@ -259,7 +259,7 @@ public class FirstPersonController : MonoBehaviour
             if (Input.jump && jumpTimeoutDelta <= 0.0f)
             {
                 // the square root of H * -2 * G = how much velocity needed to reach desired height
-                verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+                verticalVelocity = Mathf.Sqrt(JumpHeight * -1.15f * Gravity);
             }
 
             // jump timeout

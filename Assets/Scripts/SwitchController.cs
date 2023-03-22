@@ -28,6 +28,14 @@ public class SwitchController : Interactable
         {
             light1.enabled = on;
         }
+        if (on)
+        {
+            switchLerp.vecTarget = onPos;
+        }
+        else
+        {
+            switchLerp.vecTarget = offPos;
+        }
     }
     
     void Update()
