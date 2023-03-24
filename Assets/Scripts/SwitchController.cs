@@ -54,7 +54,7 @@ public class SwitchController : Interactable
     public override void Interact(FirstPersonController controller)
     {
         on = !on;
-        bool onBefore = on;
+        bool onBefore = lights[0].enabled;
         Apply();
         if(on == onBefore)
         {
