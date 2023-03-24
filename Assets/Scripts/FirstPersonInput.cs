@@ -10,6 +10,7 @@ public class FirstPersonInput : MonoBehaviour
     public bool jump;
     public bool sprint;
     public bool crouch;
+    public bool crouchOnce;
     public bool interacting;
     public bool interactedOnce;
     public bool throwing;
@@ -40,6 +41,7 @@ public class FirstPersonInput : MonoBehaviour
         interacting = Input.GetButton("Interact");
         mousePosition = Input.mousePosition;
         crouch = Input.GetButton("Crouch");
+        crouchOnce = Input.GetButtonDown("Crouch");
     }
 
     private void SetCursorState(bool newState)

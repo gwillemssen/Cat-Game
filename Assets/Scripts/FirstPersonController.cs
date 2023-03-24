@@ -114,6 +114,7 @@ public class FirstPersonController : MonoBehaviour
     private const bool isCurrentDeviceMouse = true;
     private const bool useAnalogMovement = false; //enable this if we want to use a controller
     private float crouchAmount;
+    private bool crouching = false;
     private int lastRng;
 
     private void Awake()
@@ -272,19 +273,14 @@ public class FirstPersonController : MonoBehaviour
             }
 
             //Crouch
-         
-
-            if (Input.crouch) // If the crouch button is held down
-            {
-                crouchAmount += Time.deltaTime * CrouchTransitionSpeed;
-              
-                
-            }
-            else if (!Input.crouch)
-            {
-                crouchAmount -= Time.deltaTime* CrouchTransitionSpeed;
             
-            }
+            if(Input.crouchOnce)
+            { crouching = !crouching; }
+
+            if (crouching) // If the crouch button is held down
+            { crouchAmount += Time.deltaTime * CrouchTransitionSpeed; }
+            else
+            { crouchAmount -= Time.deltaTime* CrouchTransitionSpeed; }
 
             crouchAmount = Mathf.Clamp01(crouchAmount);
             transform.localScale = Vector3.Lerp(resetScale, crouchScale, crouchAmount);
