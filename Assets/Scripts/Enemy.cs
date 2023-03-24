@@ -156,13 +156,79 @@ public class EnemyState
 
 public class SittingState : EnemyState
 {
+    private Waypoint currentWaypoint;
+    private State state = State.Idle;
+    private bool lastTimeAtWaypoint;
+    private float waypointTimer;
+    private float goingToVoicelineTimer;
+    private bool playedGoingToVoiceline;
+    private float sittingTimer = -1;
+    private float sittingDuration = -1;
+
+    private enum State { Idle, GoingToWaypoint, GoingBackToSitting }
+
     public override void Update(Enemy enemy, NavMeshAgent ai)
     {
         enemy.RedLightTargetIntensity = enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Warning ? enemy.RedLightIntensityNormal : 0f;
 
         //Movement
-        ai.isStopped = true;
-        enemy.NavigateToPosition(enemy.transform.position);
+        ai.isStopped = false;
+        switch(state)
+        {
+            case State.Idle:
+                if(sittingTimer < 0)
+                {
+                    sittingTimer = Random.Range(enemy.SittingDownDurationMin, enemy.SittingDownDurationMax);
+                    sittingDuration = 0f;
+                }
+                sittingDuration += Time.deltaTime;
+                if(sittingDuration >= sittingTimer)
+                {
+                    state = State.GoingToWaypoint;
+                    currentWaypoint = enemy.Waypoints[Random.Range(0, enemy.Waypoints.Count)];
+                    Debug.Log("granny navigating to " + currentWaypoint.name);
+                }
+                waypointTimer = 0f;
+                goingToVoicelineTimer = 0f;
+                playedGoingToVoiceline = false;
+                enemy.NavigateToPosition(enemy.transform.position);
+                break;
+            case State.GoingToWaypoint:
+                sittingTimer = -1f;
+                enemy.NavigateToPosition(currentWaypoint.transform.position);
+                break;
+            case State.GoingBackToSitting:
+                enemy.NavigateToPosition(enemy.StartPosition);
+                break;
+        }
+
+        //Waypoint bits
+        if (state == State.GoingBackToSitting && enemy.ArrivedAtDestinationOrStuck)
+        {
+            state = State.Idle;
+            enemy.PlayVoiceline(Enemy.VoiceLine.WatchingTV);
+        }
+        if (state == State.GoingToWaypoint)
+        {
+            goingToVoicelineTimer += Time.deltaTime;
+            if(goingToVoicelineTimer > 1.5f && !playedGoingToVoiceline)
+            {
+                if (currentWaypoint.RandomGoingToVoicelines != null)
+                { enemy.PlayVoiceline(currentWaypoint.RandomGoingToVoicelines.Random()); }
+                playedGoingToVoiceline = true;
+            }
+
+            if(enemy.ArrivedAtDestinationOrStuck)
+            {
+                waypointTimer += Time.deltaTime;
+                if(!lastTimeAtWaypoint && currentWaypoint.RandomArrivedVoicelines != null) //just arrived at destination
+                { enemy.PlayVoiceline(currentWaypoint.RandomArrivedVoicelines.Random()); }
+            }
+            if(waypointTimer > currentWaypoint.StopTime)
+            { state = State.GoingBackToSitting; }
+        }
+        lastTimeAtWaypoint = enemy.ArrivedAtDestinationOrStuck;
+
 
         //Spotting
         if(enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Alerted)
@@ -180,6 +246,7 @@ public class SittingState : EnemyState
 
     public override void Init(Enemy enemy, NavMeshAgent ai)
     {
+        enemy.PlayVoiceline(Enemy.VoiceLine.WatchingTV);
         base.Init(enemy, ai);
         enemy.RedLightTargetIntensity = 0f;
         base.MinimumAlertness = Awareness.AwarenessEnum.Idle;
@@ -204,17 +271,17 @@ public class PatrollingState : EnemyState
 
         //Movement
         ai.isStopped = false;
-        enemy.SetWaypoint(enemy.PatrollingRoute[currentWaypointIndex]);
+        enemy.SetWaypoint(enemy.Waypoints[currentWaypointIndex]);
 
         //Patrolling
         if(enemy.ArrivedAtDestinationOrStuck)
         {
             int last = currentWaypointIndex;
-            currentWaypointIndex = UnityEngine.Random.Range(0, enemy.PatrollingRoute.Count);
+            currentWaypointIndex = UnityEngine.Random.Range(0, enemy.Waypoints.Count);
             if(currentWaypointIndex == last)
             { currentWaypointIndex++; }
         }
-        if(currentWaypointIndex >= enemy.PatrollingRoute.Count)
+        if(currentWaypointIndex >= enemy.Waypoints.Count)
         { currentWaypointIndex = 0; }
 
         //Spotting
@@ -396,7 +463,7 @@ public class InvestigatingState : EnemyState
 
             investigatingTimer += Time.deltaTime;
             if(investigatingTimer > enemy.InvestigateTime)
-            {/*enemy.SetState(enemy.LastState);*/ enemy.SetState(PatrollingState); } //for now, the only outcome of this state is Patrolling
+            {/*enemy.SetState(enemy.LastState);*/ enemy.SetState(SittingState); } //for now, the only outcome of this state is SittingState
         }
 
         lastTimeAtDestination = enemy.ArrivedAtDestinationOrStuck;
@@ -472,7 +539,7 @@ public class Enemy : MonoBehaviour
     public bool DebugMode;
     public Transform EyePosition;
     public Light RedLight;
-    public List<Waypoint> PatrollingRoute;
+    public List<Waypoint> Waypoints;
     public Waypoint GunWaypoint;
     public GameObject GunObject;
     public GameObject GunModelInScene;
@@ -485,6 +552,8 @@ public class Enemy : MonoBehaviour
     public float AwarenessDecayRate = 0.3f;
     public float Awareness_IdleState_Duration = 0.4f;
     public float Awareness_WarningState_Duration = 1.8f;
+    public float SittingDownDurationMin = 13f;
+    public float SittingDownDurationMax = 20f;
     public float InvestigateTime = 3.5f;
     public float CloseDistance = 1.5f;
     public float TimeUntilShoot = 1.2f;
@@ -501,6 +570,7 @@ public class Enemy : MonoBehaviour
     public Sound[] GrabbingGunSounds;
     public Sound[] ChasingSounds;
     public Sound[] AlertedSounds;
+    public Sound[] WatchingTVSounds;
     public Sound ShotgunSound_Reload;
     public Sound ShotgunSound_Fire;
 
@@ -514,6 +584,7 @@ public class Enemy : MonoBehaviour
     public float PercentVisible { get; private set; }
     public Transform PlayerTransform { get; private set; }
     public bool SeesPlayer { get; private set; }
+    public Vector3 StartPosition { get; private set; }
 
     private NavMeshAgent ai;
     private bool raycastedToPlayer;
@@ -549,19 +620,19 @@ public class Enemy : MonoBehaviour
         chasingRandomSound = new NonRepeatingSound(ChasingSounds);
         spotPlayerRandomSound = new NonRepeatingSound(SpotPlayerSounds);
         alertedRandomSound = new NonRepeatingSound(AlertedSounds);
-        grabbingGunRandonSound = new NonRepeatingSound(GrabbingGunSounds);
+        grabbingGunRandomSound = new NonRepeatingSound(GrabbingGunSounds);
+        watchingTVRandomSound = new NonRepeatingSound(WatchingTVSounds);
 
         sightDistance = SightDistance;
         sightDistanceTarget = SightDistance;
+
+        StartPosition = transform.position;
 
         RedLightTargetIntensity = 0f;
         RedLight.intensity = RedLightTargetIntensity;
         State.Init(this, ai);
 
         GunObject.SetActive(false);
-
-        StartCoroutine(AWAKENGRANNY());
-
     }
 
     private void Update()
@@ -725,7 +796,7 @@ public class Enemy : MonoBehaviour
         Awareness.SetMinimum(newState.MinimumAlertness);
     }
 
-    public enum VoiceLine { SpotPlayer, GrabbingGun, Chasing, Alerted }
+    public enum VoiceLine { SpotPlayer, GrabbingGun, Chasing, Alerted, WatchingTV }
     private float lastTimePlayedVoiceline = -420f;
     private float voiceLineDuration;
     private float lastTimePlayedChasingVoiceline = -420f;
@@ -733,19 +804,30 @@ public class Enemy : MonoBehaviour
     private NonRepeatingSound chasingRandomSound;
     private NonRepeatingSound spotPlayerRandomSound;
     private NonRepeatingSound alertedRandomSound;
-    private NonRepeatingSound grabbingGunRandonSound;
-    private Queue<VoiceLine> voicelineQueue = new Queue<VoiceLine>();
+    private NonRepeatingSound grabbingGunRandomSound;
+    private NonRepeatingSound watchingTVRandomSound;
+    private Queue<Sound> voicelineQueue = new Queue<Sound>();
 
-    //returns a reference to the sound that was played
-    public Sound PlayVoiceline(VoiceLine voiceLine)
+    public Sound PlayVoiceline(Sound sound)
     {
         if (Time.time - lastTimePlayedVoiceline < voiceLineDuration) //make sure we dont overlap voicelines
         {
-            print("Queueing voiceline " + voiceLine);
-            voicelineQueue.Enqueue(voiceLine);
+            print("Queueing voiceline " + sound.name);
+            voicelineQueue.Enqueue(sound);
             return null;
         }
 
+        AudioPlayer.Play(sound);
+        print("Playing voiceline " + sound.name);
+        voiceLineDuration = sound.Clip.length;
+
+
+        lastTimePlayedVoiceline = Time.time;
+        return sound;
+    }
+    //returns a reference to the sound that was played
+    public Sound PlayVoiceline(VoiceLine voiceLine)
+    {
         NonRepeatingSound randomSound = null;
         switch (voiceLine)
         {
@@ -758,19 +840,16 @@ public class Enemy : MonoBehaviour
             case VoiceLine.Alerted:
                 randomSound = alertedRandomSound;
                 break;
+            case VoiceLine.WatchingTV:
+                randomSound = watchingTVRandomSound;
+                break;
         }
 
         if (randomSound == null)
-        { Debug.LogError("Random Sound null"); return null; }
+        { Debug.LogWarning("Random Sound null"); return null; }
 
         Sound sound = randomSound.Random();
-        AudioPlayer.Play(sound);
-        print("Playing voiceline " + voiceLine);
-        voiceLineDuration = sound.Clip.length;
-
-
-        lastTimePlayedVoiceline = Time.time;
-        return sound;
+        return PlayVoiceline(sound);
     }
 
     private void PlayQueuedVoicelines()
@@ -786,27 +865,17 @@ public class Enemy : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         return;
-        if (PatrollingRoute == null || PatrollingRoute.Count == 0)
+        if (Waypoints == null || Waypoints.Count == 0)
         { return; }
-        for (int i = 0; i < PatrollingRoute.Count; i++)
+        for (int i = 0; i < Waypoints.Count; i++)
         {
-            Waypoint s = PatrollingRoute[i];
-            Waypoint e = PatrollingRoute[Mathf.Clamp(i + 1, 0, PatrollingRoute.Count - 1)];
-            Gizmos.color = Color.Lerp(Color.green, Color.red, ((float)i / PatrollingRoute.Count));
+            Waypoint s = Waypoints[i];
+            Waypoint e = Waypoints[Mathf.Clamp(i + 1, 0, Waypoints.Count - 1)];
+            Gizmos.color = Color.Lerp(Color.green, Color.red, ((float)i / Waypoints.Count));
             Gizmos.DrawLine(s.transform.position, e.transform.position);
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(s.transform.position, 0.5f);
         }
     }
 
-    private IEnumerator AWAKENGRANNY()
-    {
-        int x = Random.Range(20, 35);
-        yield return new WaitForSeconds(x);
-        if (State == EnemyState.SittingState)
-        {
-            SetState(EnemyState.PatrollingState);
-            PlayVoiceline(VoiceLine.Alerted);
-        }
-    }
 }
