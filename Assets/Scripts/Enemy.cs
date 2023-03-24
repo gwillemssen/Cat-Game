@@ -246,6 +246,7 @@ public class SittingState : EnemyState
 
     public override void Init(Enemy enemy, NavMeshAgent ai)
     {
+        currentWaypoint = null;
         enemy.PlayVoiceline(Enemy.VoiceLine.WatchingTV);
         base.Init(enemy, ai);
         enemy.RedLightTargetIntensity = 0f;

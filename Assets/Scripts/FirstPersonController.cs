@@ -102,6 +102,8 @@ public class FirstPersonController : MonoBehaviour
     [HideInInspector]
     public bool DisableMovement = false;
     [HideInInspector]
+    public bool DisableCamera = false;
+    [HideInInspector]
     public bool Hiding = false;
 
     //Private References
@@ -156,9 +158,9 @@ public class FirstPersonController : MonoBehaviour
             GroundedCheck();
             Move();
             Audio();
-            
         }
-        CameraRotation();
+        if (!DisableCamera)
+        { CameraRotation(); }
         Interaction.UpdateInteraction();
     }
 

@@ -17,14 +17,20 @@ public class MainMenu_Start : MonoBehaviour
             Camera.main.transform.position = LoadPosition;
             StartCoroutine(Load());
         }
-            
+
     }
 
-        private IEnumerator Load()
-        {
+    private IEnumerator Load()
+    {
 
         yield return new WaitForSeconds(1);
         SceneManager.LoadScene("Granny's House");
 
-        }
+    }
+
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
 }

@@ -223,6 +223,7 @@ public class Cat : Interactable
         timeStartedMovingCat = Time.time;
         state = CatState.PettingMinigame;
         playerController.DisableMovement = true;
+        playerController.DisableCamera = true;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.None;
         PlayerUI.instance.PettingMeter.gameObject.SetActive(true);
@@ -314,6 +315,7 @@ public class Cat : Interactable
         state = CatState.DonePetting;
         timeStartedMovingCat = Time.time;
         playerController.DisableMovement = false;
+        playerController.DisableCamera = false;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         PlayerUI.instance.PettingMeter.gameObject.SetActive(false);

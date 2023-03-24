@@ -45,12 +45,12 @@ public class HidingSpot : Interactable, IGrannyInteractable
     {
         if(player != null)
         {
-            if (entering)
+            if (entering && lerp != 1f)
             {
                 player.transform.position = Vector3.Lerp(startPos, HidingPosition.position, lerp);
                 player.transform.rotation = Quaternion.Lerp(startRot, HidingPosition.rotation, lerp);
             }
-            else
+            else if(lerp != 1f)
             {
                 player.transform.position = Vector3.Lerp(HidingPosition.position, startPos, lerp);
                 //player.transform.rotation = Quaternion.Lerp(HidingPosition.rotation, startRot, lerp);
