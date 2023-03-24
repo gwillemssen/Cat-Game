@@ -845,7 +845,7 @@ public class Enemy : MonoBehaviour
                 break;
         }
 
-        if (randomSound == null)
+        if (randomSound == null || randomSound.Sounds.Length == 0)
         { Debug.LogWarning("Random Sound null"); return null; }
 
         Sound sound = randomSound.Random();
