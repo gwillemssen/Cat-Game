@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,6 +16,11 @@ public class GameManager : MonoBehaviour
 
     public GameState State { get; private set; } = GameState.Loading;
     private LoseState loseState;
+
+    public Text timerText;
+    private float secondsCount;
+    private int minuteCount;
+    private int hourCount;
 
 
     void Awake()
@@ -43,6 +49,7 @@ public class GameManager : MonoBehaviour
         {
             RestartLevel();
         }
+        UpdateTimerUI();
     }
 
     private void OnLevelWasLoaded(int level)
@@ -127,4 +134,22 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         FirstPersonController.instance.DisableMovement = false;
     }
+
+    public void UpdateTimerUI()
+    {
+        //set timer UI
+        secondsCount += Time.deltaTime;
+        timerText.text = hourCount + "h:" + minuteCount + "m:" + (int)secondsCount + "s";
+        if (secondsCount >= 60)
+        {
+            minuteCount++;
+            secondsCount %= 60;
+            if (minuteCount >= 60)
+            {
+                hourCount++;
+                minuteCount %= 60;
+            }
+        }
+    }
+
 }
