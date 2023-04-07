@@ -289,7 +289,7 @@ public class PatrollingState : EnemyState
         if (enemy.Awareness.AwarenessValue == Awareness.AwarenessEnum.Alerted)
         { OnSpotted(enemy); }
 
-        //base.InvestigateHidingSpotIfSeen(enemy);
+        base.InvestigateHidingSpotIfSeen(enemy);
         //base.InvestigateLastSeenPositionIfAlerted(enemy);
         base.StopAndRotateToFacePlayerIfVisible(enemy, ai);
         base.PlayAlertedVoicelineIfInWarningState(enemy);
@@ -311,11 +311,10 @@ public class PatrollingState : EnemyState
 
     public override void OnDistract(Enemy enemy, Vector3 position)
     {
-        return;
-        if(enemy.SeesPlayer) //ignore if we already see the player - cannot be distracted
-        { return; }
-        enemy.SetState(InvestigatingState);
-        InvestigatingState.Position = position;
+        //if(enemy.SeesPlayer) //ignore if we already see the player - cannot be distracted
+        //{ return; }
+        //enemy.SetState(InvestigatingState);
+        //InvestigatingState.Position = position;
     }
 }
 
@@ -465,7 +464,7 @@ public class InvestigatingState : EnemyState
 
             investigatingTimer += Time.deltaTime;
             if(investigatingTimer > enemy.InvestigateTime)
-            {/*enemy.SetState(enemy.LastState);*/ enemy.SetState(SittingState); } //for now, the only outcome of this state is SittingState
+            {enemy.SetState(enemy.LastState); }
         }
 
         lastTimeAtDestination = enemy.ArrivedAtDestinationOrStuck;
