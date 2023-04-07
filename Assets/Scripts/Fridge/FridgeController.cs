@@ -16,8 +16,7 @@ namespace Fridge
         private FridgeDoorController[] doorScripts = new FridgeDoorController[] {null,null};
         private LerpScript lightLerp;
         private LerpScript lightLerp2;
-        private Light topLight;
-        private Light bottomLight;
+
 
         void Start()
         {
@@ -27,8 +26,7 @@ namespace Fridge
         // Update is called once per frame
         void Update()
         {
-            LightHandler(topLight,"Top",lightLerp);
-            LightHandler(bottomLight,"Bottom",lightLerp2);
+
         }
 
         void Initialize()
@@ -43,8 +41,6 @@ namespace Fridge
             lightLerp2 = this.AddComponent<LerpScript>();
             lightLerp2.typeOfLerp = LerpScript.LerpType.Float;
             lightLerp2.lerpSpeed = 2;
-            topLight = transform.GetChild(3).GetComponent<Light>();
-            bottomLight = transform.GetChild(2).GetComponent<Light>();
             initialized = true;
             //Debug.Log($"{gameObject.name} initialized.");
 
