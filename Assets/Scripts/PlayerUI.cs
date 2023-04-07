@@ -113,7 +113,7 @@ public class PlayerUI : MonoBehaviour
         spottedGradient_Left.SetActive(false);
         spottedGradient_Right.SetActive(false);
         bloodOverlay.enabled = false;
-        EnemyState.PatrollingWithGunState.OnShoot += OnShootCallback;
+        Enemy.instance.AggroState.OnShoot += OnShootCallback;
     }
 
     private void Update()
@@ -125,20 +125,21 @@ public class PlayerUI : MonoBehaviour
         Color targetColor = Color.white;
         targetColor.a = 0f;
 
-        switch (Enemy.instance.Awareness.AwarenessValue)
+        targetColor = Color.white;
+        targetColor.a = 0.25f;
+
+        if (Enemy.instance.State == Enemy.instance.PatrollingState)
         {
-            case Awareness.AwarenessEnum.Idle:
-                targetColor = Color.white;
-                targetColor.a = 0.25f;
-                break;
-            case Awareness.AwarenessEnum.Warning:
+            if(Enemy.instance.PatrollingState.AwarenessValue > Enemy.instance.Awareness_IdleState_Duration)
+            {
                 targetColor = Color.yellow;
                 targetColor.a = 0.25f;
-                break;
-            case Awareness.AwarenessEnum.Alerted:
-                targetColor = Color.red;
-                targetColor.a = 1f;
-                break;
+            }
+        }
+        else
+        {
+            targetColor = Color.red;
+            targetColor.a = 1f;
         }
 
         if (Enemy.instance != null)
@@ -150,25 +151,30 @@ public class PlayerUI : MonoBehaviour
             grannyScreenSpaceUI.rectTransform.position = FirstPersonController.instance.MainCamera.WorldToScreenPoint(Enemy.instance.transform.position + Vector3.up * 2f);
         }
 
-        grannyScreenSpaceUI_Fill.fillAmount = Enemy.instance.Awareness.AwarenessPercentage;
+        float fillAmount = 1f;
+
+        if(Enemy.instance.State == Enemy.instance.PatrollingState)
+        {
+            fillAmount = Enemy.instance.PatrollingState.AwarenessValue / (Enemy.instance.Awareness_IdleState_Duration + Enemy.instance.Awareness_WarningState_Duration);
+        }
+
+        grannyScreenSpaceUI_Fill.fillAmount = fillAmount;
         targetColor.a = 1f;
         grannyScreenSpaceUI_Fill.color = targetColor;
+
+
+        EnemyOnScreen = Vector3.Dot(transform.TransformDirection(Vector3.forward), (Enemy.instance.transform.position - transform.position)) >= .65;
+        //enable both if enemy is on the screen
+        bool onRightSide = Vector3.Cross(transform.TransformDirection(Vector3.forward), (Enemy.instance.transform.position - transform.position)).y > 0;
+
+        spottedGradient_Left.SetActive(Enemy.instance.SeesPlayer && EnemyOnScreen || Enemy.instance.SeesPlayer && !onRightSide);
+        spottedGradient_Right.SetActive(Enemy.instance.SeesPlayer && EnemyOnScreen || Enemy.instance.SeesPlayer && onRightSide);
 
     }
 
     private void OnShootCallback()
     {
         bloodOverlay.enabled = true;
-    }
-
-    public void SetSpottedGradient(bool enable, Vector3 pos)
-    {
-        EnemyOnScreen = Vector3.Dot(transform.TransformDirection(Vector3.forward), (pos - transform.position)) >= .65;
-        //enable both if enemy is on the screen
-        bool onRightSide = Vector3.Cross(transform.TransformDirection(Vector3.forward), (pos - transform.position)).y > 0;
-
-        spottedGradient_Left.SetActive(enable && EnemyOnScreen || enable && !onRightSide);
-        spottedGradient_Right.SetActive(enable && EnemyOnScreen || enable && onRightSide);
     }
 
     public void SetInfoText(string text) { SetInfoText(text, 64, true); }

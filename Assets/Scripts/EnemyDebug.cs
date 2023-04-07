@@ -21,17 +21,16 @@ public class EnemyDebug : MonoBehaviour
 
     string GetDebugStatus()
     {
-        //alertnessPercentage = Mathf.Lerp(0f, 100f, (Enemy.PercentVisible / 1f));
-        string alertnessBar = "";
-        for (int i = 0; i < 20; i++)
-        {
-            if(alertnessPercentage >= 5f * i)
-            { alertnessBar += "|"; }
-        }
-        return $"{Enemy.State.ToString()}\n" +
-            $"{Enemy.Awareness.ToString()}\n" +
+        string output = "";
+        output += $"{Enemy.State.ToString()}\n" +
             $"PercentVisible : {Enemy.PercentVisible}\n" +
-            $"ArrivedAtDestination : {Enemy.ArrivedAtDestinationOrStuck}";
+            $"AtDestination : {Enemy.AtDestination}";
+        if(Enemy.State == Enemy.PatrollingState)
+        {
+            output += "Awareness: " + Enemy.PatrollingState.AwarenessValue + "\n";
+            output += "GoingToWaypoint: " + Enemy.PatrollingState.GoingToWaypoint + "\n";
+        }
+        return output;
     }
 
     void FixedUpdate()

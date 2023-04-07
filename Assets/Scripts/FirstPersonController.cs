@@ -136,11 +136,11 @@ public class FirstPersonController : MonoBehaviour
         audioPlayer = GetComponent<AudioPlayer>();
         Interaction = GetComponent<FirstPersonInteraction>();
         Interaction.Init(this);
-        UI.Init(this);
     }
 
     private void Start()
     {
+        UI.Init(this);
         crouchScale = new(transform.localScale.x, transform.localScale.y / 2, transform.localScale.z); //makes it half constantly. Only need it to half once.
         resetScale = transform.localScale;
 
