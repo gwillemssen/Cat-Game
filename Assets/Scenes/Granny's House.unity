@@ -15904,7 +15904,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1143152683
 Transform:
   m_ObjectHideFlags: 0
@@ -21293,6 +21293,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1f9c299144b7594cac9118b6a0b06d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  catMats:
+  - {fileID: 2100000, guid: ca7b4e6516c996246be496e6f955f200, type: 2}
+  - {fileID: 2100000, guid: bd59bba60dd03a941b2139453a806871, type: 2}
+  - {fileID: 2100000, guid: e9fbd3ebf472c1545ba79e52f91b9f5a, type: 2}
+  - {fileID: 2100000, guid: a689fd8fb5d5fd04cb5d530785663335, type: 2}
+  catPos:
+  - {fileID: 767150656}
+  - {fileID: 53153527}
+  - {fileID: 902994774}
+  - {fileID: 1531170070}
+  - {fileID: 2021316821}
+  - {fileID: 1567454278}
+  - {fileID: 829158027}
+  catPrefab: {fileID: 5455302812654860102, guid: aca54db8f0a2e2649aa881d43cb5b80b,
+    type: 3}
+  catEyeMats:
+  - {fileID: 2100000, guid: 1a04afc33277faa4bb67e170caab4ab6, type: 2}
+  - {fileID: 2100000, guid: 43c17acfe53a39b449695c6e8fdc7d68, type: 2}
+  - {fileID: 2100000, guid: e819e996124a8bc4ab4ef154b5223525, type: 2}
+  - {fileID: 2100000, guid: 70e02972e8de48f498e554c81b5998bd, type: 2}
 --- !u!4 &1620598880
 Transform:
   m_ObjectHideFlags: 0
