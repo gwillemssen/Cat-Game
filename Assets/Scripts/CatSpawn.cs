@@ -24,7 +24,7 @@ public class CatSpawn : MonoBehaviour
         {
             int matIndex = Random.Range(0, tempMats.Count);
             int posIndex = Random.Range(0, tempPos.Count);
-            GameObject cat = Instantiate(catPrefab, tempPos[posIndex].position, Quaternion.identity);
+            GameObject cat = Instantiate(catPrefab, tempPos[posIndex].position, tempPos[posIndex].rotation);
             cat.transform.GetChild(3).GetComponent<Renderer>().material = tempMats[matIndex];
             cat.transform.GetChild(1).GetComponent<Renderer>().material = tempEyeMats[matIndex];
             tempMats.RemoveAt(matIndex);
@@ -33,8 +33,5 @@ public class CatSpawn : MonoBehaviour
         }
     }
 
-    public void cum()
-    {
-        print("UNG");
-    }
+
 }
