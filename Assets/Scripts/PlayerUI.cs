@@ -27,6 +27,8 @@ public class PlayerUI : MonoBehaviour
     private GameObject spottedGradient_Left;
     private GameObject spottedGradient_Right;
     private Image grannyScreenSpaceUI;
+    private Sprite grannyScreenSpaceUI_NormalTexture;
+    [SerializeField] private Sprite grannyScreenSpaceUI_ExclaimationPoint;
     private Image grannyScreenSpaceUI_Fill;
     private Image bloodOverlay;
     public GameObject WinScreen { get; private set; }
@@ -36,6 +38,9 @@ public class PlayerUI : MonoBehaviour
     public bool EnemyOnScreen { get; private set; }
 
     string debugOutput = "";
+    private float exclaimationPointTimer = 1337f;
+    private bool lastTimeSeenPlayer;
+    private const float exclaimationPointDuration = 0.35f;
 
     private void Awake()
     {
@@ -95,6 +100,7 @@ public class PlayerUI : MonoBehaviour
                 case "GrannyScreenSpaceUI":
                     grannyScreenSpaceUI = t.GetComponent<Image>();
                     grannyScreenSpaceUI_Fill = t.GetChild(0).GetComponent<Image>();
+                    grannyScreenSpaceUI_NormalTexture = grannyScreenSpaceUI.sprite;
                     break;
                 case "BloodOverlay":
                     bloodOverlay = t.GetComponent<Image>();
@@ -161,6 +167,15 @@ public class PlayerUI : MonoBehaviour
         grannyScreenSpaceUI_Fill.fillAmount = fillAmount;
         targetColor.a = 1f;
         grannyScreenSpaceUI_Fill.color = targetColor;
+
+        if(Enemy.instance.SeesPlayer && !lastTimeSeenPlayer)
+        { exclaimationPointTimer = exclaimationPointDuration; }
+        exclaimationPointTimer = Mathf.Clamp(exclaimationPointTimer - Time.deltaTime, 0f, exclaimationPointDuration);
+        grannyScreenSpaceUI.sprite = exclaimationPointTimer == 0 ? grannyScreenSpaceUI_NormalTexture : grannyScreenSpaceUI_ExclaimationPoint;
+        grannyScreenSpaceUI.sprite = grannyScreenSpaceUI_ExclaimationPoint;
+        grannyScreenSpaceUI.transform.localScale = Vector3.Lerp(Vector3.one, Vector3.one * 1.25f, Mathf.InverseLerp(0f, exclaimationPointDuration, exclaimationPointTimer));
+
+        lastTimeSeenPlayer = Enemy.instance.SeesPlayer;
 
 
         EnemyOnScreen = Vector3.Dot(transform.TransformDirection(Vector3.forward), (Enemy.instance.transform.position - transform.position)) >= .65;

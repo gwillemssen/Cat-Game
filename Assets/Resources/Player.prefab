@@ -2566,6 +2566,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Canvas: {fileID: 9112439931370173221}
   PettingMeter: {fileID: 0}
+  grannyScreenSpaceUI_ExclaimationPoint: {fileID: 21300000, guid: 733c67146f5986f4ea7af39827c27796,
+    type: 3}
 --- !u!1 &3795812282610944445
 GameObject:
   m_ObjectHideFlags: 0
@@ -5771,6 +5773,7 @@ MonoBehaviour:
   PickupPosition: {fileID: 5717659796745285548}
   PickupPositionWindup: {fileID: 1558736933416766552}
   DisableMovement: 0
+  DisableCamera: 0
   Hiding: 0
 --- !u!114 &677619157729981178
 MonoBehaviour:
@@ -5833,6 +5836,7 @@ MonoBehaviour:
   jump: 0
   sprint: 0
   crouch: 0
+  crouchOnce: 0
   interacting: 0
   interactedOnce: 0
   throwing: 0
