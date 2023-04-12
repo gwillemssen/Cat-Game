@@ -36,15 +36,6 @@ public class FirstPersonInteraction : MonoBehaviour
     private float lastTimeNewInteractable = -420f;
     private float throwForce;
 
-    [HideInInspector]
-    public bool VisiblyLocked;
-
-
-
-    public void Start()
-    {
-        VisiblyLocked = interactable.VisiblyLocked;
-    }
     public void Init(FirstPersonController con)
     {
         controller = con;
@@ -56,7 +47,7 @@ public class FirstPersonInteraction : MonoBehaviour
     {
         RaycastForInteractable();
         HandleInteraction();
-        LoadCorrectCrosshair();
+        UpdateCrosshair();
     }
 
     private void PickupInteractable()
@@ -159,40 +150,36 @@ public class FirstPersonInteraction : MonoBehaviour
         { interactable = null; }
     }
 
-    private void LoadCorrectCrosshair()
+    private void UpdateCrosshair()
     {
         
-        if (interactable == null) UpdateCrosshair("Normal");
-        else if (interactable != null && !VisiblyLocked ) UpdateCrosshair("Interactable");
-        else if(interactable != null && VisiblyLocked) UpdateCrosshair("Locked");
+        if (interactable == null) SetCrosshair("Normal");
+        else if (interactable != null && !interactable.VisiblyLocked ) SetCrosshair("Interactable");
+        else if(interactable != null && interactable.VisiblyLocked) SetCrosshair("Locked");
     }
-    public void UpdateCrosshair(string crosshairInput)
+    public void SetCrosshair(string crosshairInput)
     {
         Texture2D newCrosshair;
         switch (crosshairInput)
         {
             case "Normal":
                 newCrosshair = CrosshairSprite_Normal;
-                VisiblyLocked = false;
                 break;
 
-                case "Interactable":
+            case "Interactable":
                 newCrosshair = CrosshairSprite_Interactable;
-                VisiblyLocked = false;
                 break;
 
-                case "Noise":
+            case "Noise":
                 newCrosshair = CrosshairSprite_Noise;
-                VisiblyLocked = false;
                 break;
 
-                case "Locked":
+            case "Locked":
                 newCrosshair = CrosshairSprite_Locked;
                 break;
 
-                default:
+            default:
                 newCrosshair = CrosshairSprite_Normal;
-                VisiblyLocked = false;
                 break;
         }
         crosshairImage = newCrosshair;

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Car : Interactable
 {
-
+    [SerializeField] private string keyName = "Car Keys";
     bool Open = false;
     bool locked = true;
 
@@ -13,33 +13,29 @@ public class Car : Interactable
     // Start is called before the first frame update
     void Start()
     {
-        
+        base.VisiblyLocked = locked;
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void InteractWith(FirstPersonController controller, Interactable withInteractable)
     {
-        
+        if (locked)
+        {
+            if (withInteractable.name == keyName)
+            {
+                locked = false;
+                base.VisiblyLocked = false;
+            }
+            else
+            {
+                base.VisiblyLocked = true;
+            }
+        }
     }
 
     public override void Interact(FirstPersonController controller)
     {
-        if (locked)
-        {
-            if (controller.Interaction.Pickup != null && controller.Interaction.Pickup.name == "Car Keys")
-            {
-                locked = false;
-                controller.Interaction.VisiblyLocked = false;
-            }
-            else
-            {
-                controller.Interaction.VisiblyLocked = true;
-                
-            }
-        }
-        if (!locked) MoveDoor();
-        
-        
+        if (!locked)
+        { MoveDoor(); }
     }
 
     private void MoveDoor()
@@ -54,8 +50,6 @@ public class Car : Interactable
             LeanTween.rotate(Hinge, new Vector3(0, 169.12f, 0), .8f).setEaseInOutExpo();
             Open = false;
         }
-            
-
     }
    
 }
