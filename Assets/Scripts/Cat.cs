@@ -89,7 +89,8 @@ public class Cat : Interactable
     private Vector2 mouseSpeed;
     private float lastTimePet = -420f;
     private static float petPushCatAmt = 0.03f;
-    private static float petStretchCatAmt = 0.007f;
+    private static float petStretchCatAmtHorizontal = 0.003f;
+    private static float petStretchCatAmtVertical = 0.008f;
     private static float petPushLerpSmoothing = .5f;
     private static float petStretchLerpSmoothing = 8f;
     public float colorDampener;
@@ -179,9 +180,9 @@ public class Cat : Interactable
                 //cat gets stretched by petting
                 //choose greater one
                 if (Mathf.Abs(mouseDelta.x) > Mathf.Abs(mouseDelta.y))
-                { offsetScale.x += Mathf.Abs(mouseDelta.x * petStretchCatAmt); }
+                { offsetScale.x += Mathf.Abs(mouseDelta.x * petStretchCatAmtHorizontal); }
                 else
-                { offsetScale.y += Mathf.Abs(mouseDelta.y * petStretchCatAmt); }
+                { offsetScale.y += Mathf.Abs(mouseDelta.y * petStretchCatAmtVertical); }
 
             }
 

@@ -38,9 +38,9 @@ public class PlayerUI : MonoBehaviour
     public bool EnemyOnScreen { get; private set; }
 
     string debugOutput = "";
-    private float exclaimationPointTimer = 1337f;
+    private float exclaimationPointTimer = 0f;
     private bool lastTimeSeenPlayer;
-    private const float exclaimationPointDuration = 0.35f;
+    private const float exclaimationPointDuration = 0.8f;
 
     private void Awake()
     {
@@ -170,10 +170,14 @@ public class PlayerUI : MonoBehaviour
 
         if(Enemy.instance.SeesPlayer && !lastTimeSeenPlayer)
         { exclaimationPointTimer = exclaimationPointDuration; }
-        exclaimationPointTimer = Mathf.Clamp(exclaimationPointTimer - Time.deltaTime, 0f, exclaimationPointDuration);
+
+        exclaimationPointTimer -= Time.deltaTime;
+        if(exclaimationPointTimer < 0)
+        { exclaimationPointTimer = 0f; }
+
         grannyScreenSpaceUI.sprite = exclaimationPointTimer == 0 ? grannyScreenSpaceUI_NormalTexture : grannyScreenSpaceUI_ExclaimationPoint;
-        grannyScreenSpaceUI.sprite = grannyScreenSpaceUI_ExclaimationPoint;
-        grannyScreenSpaceUI.transform.localScale = Vector3.Lerp(Vector3.one, Vector3.one * 1.25f, Mathf.InverseLerp(0f, exclaimationPointDuration, exclaimationPointTimer));
+        grannyScreenSpaceUI_Fill.sprite = exclaimationPointTimer == 0 ? grannyScreenSpaceUI_NormalTexture : grannyScreenSpaceUI_ExclaimationPoint;
+        grannyScreenSpaceUI.transform.localScale = Vector3.Lerp(Vector3.one, Vector3.one * 1.65f, Mathf.InverseLerp(0f, exclaimationPointDuration, exclaimationPointTimer));
 
         lastTimeSeenPlayer = Enemy.instance.SeesPlayer;
 
