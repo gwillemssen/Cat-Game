@@ -19,11 +19,15 @@ public class InteractablePickup : Interactable
     private float sqrImpactVelocity;
     private bool canImpact = false;
 
+    public bool FrozenOnAwake;
+    RigidbodyConstraints originalConstraints;
     private void Awake()
     {
         Rigidbody = GetComponent<Rigidbody>();
         audioPlayer = GetComponent<AudioPlayer>();
         sqrImpactVelocity = ImpactVelocity * ImpactVelocity;
+        originalConstraints = Rigidbody.constraints;
+        if (FrozenOnAwake) Freeze();
     }
 
     public void OnCollisionEnter(Collision collision)
@@ -47,7 +51,13 @@ public class InteractablePickup : Interactable
     public override void Interact(FirstPersonController controller)
     {
         PlayerUI.instance.SetInfoText("Press Right Click to Drop\nHold Right Click to Throw");
+        Rigidbody.constraints = originalConstraints;
         canImpact = true;
+    }
+
+    private void Freeze()
+    {
+        Rigidbody.constraints = RigidbodyConstraints.FreezeAll;
     }
 
 

@@ -212,6 +212,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4265643124501424685}
   - component: {fileID: 1015791020981716089}
+  - component: {fileID: 667346451}
   m_Layer: 0
   m_Name: BIG
   m_TagString: Untagged
@@ -292,6 +293,20 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.09581724, y: -0.1393074, z: 0.31615424}
     m_Extent: {x: 0.1443448, y: 0.14964448, z: 0.28992236}
   m_DirtyAABB: 0
+--- !u!64 &667346451
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2345244584200221487}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
 --- !u!1 &2976269531948120119
 GameObject:
   m_ObjectHideFlags: 0
@@ -317,7 +332,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2976269531948120119}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 7.6968927, y: -1.0900967, z: -9.356543}
   m_LocalScale: {x: 1.4243, y: 1.4243, z: 1.4243}
   m_ConstrainProportionsScale: 0
