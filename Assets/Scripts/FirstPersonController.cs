@@ -105,7 +105,7 @@ public class FirstPersonController : MonoBehaviour
     public bool DisableCamera = false;
     [HideInInspector]
     public bool Hiding = false;
-
+    
     //Private References
     private CharacterController controller;
     //Constants

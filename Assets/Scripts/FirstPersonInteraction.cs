@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class FirstPersonInteraction : MonoBehaviour
@@ -14,8 +15,10 @@ public class FirstPersonInteraction : MonoBehaviour
     public Texture2D CrosshairSprite_Normal;
     public Texture2D CrosshairSprite_Interactable;
     public Texture2D CrosshairSprite_Noise;
+    public Texture2D CrosshairSprite_Locked;
     [HideInInspector]
     public bool HideCrosshair = false;
+    
 
     private FirstPersonController controller;
     private Interactable interactable = null;
@@ -33,19 +36,27 @@ public class FirstPersonInteraction : MonoBehaviour
     private float lastTimeNewInteractable = -420f;
     private float throwForce;
 
+    [HideInInspector]
+    public bool VisiblyLocked;
+
+
+
+    public void Start()
+    {
+        VisiblyLocked = interactable.VisiblyLocked;
+    }
     public void Init(FirstPersonController con)
     {
         controller = con;
         CalculateCrosshair();
+        
     }
 
     public void UpdateInteraction()
     {
         RaycastForInteractable();
-
         HandleInteraction();
-
-        UpdateCrosshair();
+        LoadCorrectCrosshair();
     }
 
     private void PickupInteractable()
@@ -80,6 +91,7 @@ public class FirstPersonInteraction : MonoBehaviour
         if (controller.Input.interactedOnce)
         { interactable.Interact(controller); }
         interactable.InteractBase();
+        
     }
 
     private void HandleInteraction()
@@ -88,8 +100,9 @@ public class FirstPersonInteraction : MonoBehaviour
         if (controller.Input.interacting && interactable != null)
         {
             interactablePickup = interactable as InteractablePickup;
+            
 
-            if(interactablePickup != null)
+            if (interactablePickup != null)
             {
                 if (Pickup == null)
                 { PickupInteractable(); }
@@ -146,13 +159,43 @@ public class FirstPersonInteraction : MonoBehaviour
         { interactable = null; }
     }
 
-    private void UpdateCrosshair()
+    private void LoadCorrectCrosshair()
     {
-        if(interactable == null)
-        { crosshairImage = CrosshairSprite_Normal; }
-        else
-        { crosshairImage = CrosshairSprite_Interactable; }
+        
+        if (interactable == null) UpdateCrosshair("Normal");
+        else if (interactable != null && !VisiblyLocked ) UpdateCrosshair("Interactable");
+        else if(interactable != null && VisiblyLocked) UpdateCrosshair("Locked");
+    }
+    public void UpdateCrosshair(string crosshairInput)
+    {
+        Texture2D newCrosshair;
+        switch (crosshairInput)
+        {
+            case "Normal":
+                newCrosshair = CrosshairSprite_Normal;
+                VisiblyLocked = false;
+                break;
 
+                case "Interactable":
+                newCrosshair = CrosshairSprite_Interactable;
+                VisiblyLocked = false;
+                break;
+
+                case "Noise":
+                newCrosshair = CrosshairSprite_Noise;
+                VisiblyLocked = false;
+                break;
+
+                case "Locked":
+                newCrosshair = CrosshairSprite_Locked;
+                break;
+
+                default:
+                newCrosshair = CrosshairSprite_Normal;
+                VisiblyLocked = false;
+                break;
+        }
+        crosshairImage = newCrosshair;
     }
 
     public void CalculateCrosshair()
@@ -179,7 +222,7 @@ public class FirstPersonInteraction : MonoBehaviour
         size.x = crosshairImage.width;
         size.y = crosshairImage.height;
 
-        if (crosshairImage == CrosshairSprite_Interactable || crosshairImage == CrosshairSprite_Noise)
+        if (crosshairImage != CrosshairSprite_Normal)
         {
             t = (Time.time - lastTimeNewInteractable) / .5f;
             t = Mathf.Clamp01(t);

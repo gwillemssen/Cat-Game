@@ -9,6 +9,7 @@ public class Interactable : MonoBehaviour
     [HideInInspector] public bool Disabled = false;
     public bool CanInteract = true;
     public float Cooldown;
+    public bool VisiblyLocked = false;
 
     [Tooltip("Called when we click on the object")]
     public UnityEvent OnInteract;
