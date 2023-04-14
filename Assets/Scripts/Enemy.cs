@@ -12,7 +12,7 @@ public class EnemyState
     protected Enemy enemy;
     protected Vector3? target = null;
 
-    private Waypoint waypoint;
+    public Waypoint Waypoint {get; private set; }
     private float timeAtWaypoint;
     private float stopAndLookTimer;
     private Vector3 lookAtPosition;
@@ -23,14 +23,14 @@ public class EnemyState
     
     public virtual void Init()
     {
-        waypoint = null;
+        Waypoint = null;
         timeAtWaypoint = 0f;
         target = null;
     }
 
     protected void SetWaypoint(Waypoint waypoint)
     {
-        this.waypoint = waypoint;
+        this.Waypoint = waypoint;
         target = waypoint.transform.position;
     }
 
@@ -52,19 +52,19 @@ public class EnemyState
         //prioritize target over waypoint
         if(target.HasValue)
         { enemy.AI.destination = target.Value; }
-        else if(waypoint != null)
-        { enemy.AI.destination = waypoint.transform.position; }
+        else if(Waypoint != null)
+        { enemy.AI.destination = Waypoint.transform.position; }
 
         if(enemy.AtDestination)
         {
             //we arrived at a waypoint. (target gets priority, must be null)
-            if(waypoint != null && !target.HasValue)
+            if(Waypoint != null && !target.HasValue)
             {
                 timeAtWaypoint += Time.deltaTime;
-                if(timeAtWaypoint >= waypoint.StopTime)
+                if(timeAtWaypoint >= Waypoint.StopTime)
                 {
                     timeAtWaypoint = 0f;
-                    waypoint = null;
+                    Waypoint = null;
                     OnWaypointComplete();
                     return;
                 }
@@ -155,12 +155,21 @@ public class PatrollingState : EnemyState
         {
             if(enemy.AtDestination)
             {
+                if(sittingTimer == 0f)
+                {
+                    //Play voiceline
+                    if(Waypoint != null && Waypoint.RandomArrivedVoicelines != null)
+                    { enemy.PlayVoiceline(Waypoint.RandomArrivedVoicelines.Random());  }
+                }
                 sittingTimer += Time.deltaTime; //sit and wait
                 if (sittingTimer >= sittingDuration)
                 {
                     sittingTimer = 0f;
                     sittingDuration = Random.Range(enemy.SittingDownDurationMin, enemy.SittingDownDurationMax);
                     SetWaypoint(enemy.Waypoints[Random.Range(0, enemy.Waypoints.Count)]); //go to random waypoint
+                    //Play voiceline
+                    if (Waypoint != null && Waypoint.RandomGoingToVoicelines != null)
+                    { enemy.PlayVoiceline(Waypoint.RandomGoingToVoicelines.Random()); }
                     GoingToWaypoint = true;
                 }
             } 
@@ -187,6 +196,8 @@ public class PatrollingState : EnemyState
 
 public class AggroState : EnemyState
 {
+    public float AggroPercent { get { return (enemy.AggroTime - aggroTimer) / enemy.AggroTime; } }
+
     private Vector3? lastSeenPosition = null;
     private float aggroTimer;
 
@@ -332,6 +343,8 @@ public class Enemy : MonoBehaviour
 
     public void Stun()
     {
+        if(stunTimer != 0)
+        { return; }
         Debug.Log("stunned");
         stunTimer = StunTime;
         AudioPlayer.Play(BonkSound);

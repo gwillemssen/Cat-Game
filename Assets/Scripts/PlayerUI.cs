@@ -147,15 +147,17 @@ public class PlayerUI : MonoBehaviour
         else
         {
             targetColor = Color.red;
-            targetColor.a = 1f;
+            targetColor.a = 0.3f;
         }
+
+        bool uiEnabled = true;
 
         if (Enemy.instance != null)
         {
             grannyScreenSpaceUI.color = Color.Lerp(grannyScreenSpaceUI.color, targetColor, Time.deltaTime * 3f);
-            bool enabled = Vector3.Dot(FirstPersonController.instance.transform.forward, (FirstPersonController.instance.transform.position - Enemy.instance.transform.position)) < 0f;
-            grannyScreenSpaceUI.enabled = enabled; //disable if it is behind
-            grannyScreenSpaceUI_Fill.enabled = enabled; //disable if it is behind
+            uiEnabled = Vector3.Dot(FirstPersonController.instance.transform.forward, (FirstPersonController.instance.transform.position - Enemy.instance.transform.position)) < 0f;
+            grannyScreenSpaceUI.enabled = uiEnabled; //disable if it is behind
+            grannyScreenSpaceUI_Fill.enabled = uiEnabled; //disable if it is behind
             grannyScreenSpaceUI.rectTransform.position = FirstPersonController.instance.MainCamera.WorldToScreenPoint(Enemy.instance.transform.position + Vector3.up * 2f);
         }
 
@@ -164,6 +166,10 @@ public class PlayerUI : MonoBehaviour
         if(Enemy.instance.State == Enemy.instance.PatrollingState)
         {
             fillAmount = Enemy.instance.PatrollingState.AwarenessValue / (Enemy.instance.Awareness_IdleState_Duration + Enemy.instance.Awareness_WarningState_Duration);
+        }
+        if(Enemy.instance.State == Enemy.instance.AggroState)
+        {
+            fillAmount = Enemy.instance.AggroState.AggroPercent;
         }
 
         grannyScreenSpaceUI_Fill.fillAmount = fillAmount;
@@ -195,7 +201,7 @@ public class PlayerUI : MonoBehaviour
                 exclaimationPointTimer = exclaimationPointDuration;
             }
         }
-        else
+        else if(uiEnabled)
         {
             grannyScreenSpaceUI.enabled = true;
         }
@@ -236,13 +242,5 @@ public class PlayerUI : MonoBehaviour
     {
         throwStrengthMeter.gameObject.SetActive(p > 0.15f);
         throwStrengthMeter.value = p;
-    }
-
-    public void SetTimeUI(float p)
-    {
-        timeUI.fillAmount = p;
-        catTimerUI.gameObject.SetActive(p != 0f);
-        if (!catTimerAnim.isPlaying)
-        { catTimerAnim.Play(); }
     }
 }
