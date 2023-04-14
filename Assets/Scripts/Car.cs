@@ -22,24 +22,25 @@ public class Car : Interactable
 
     public override void InteractWith(FirstPersonController controller, Interactable withInteractable)
     {
+
         if (locked)
         {
             if (withInteractable.name == keyName)
             {
                 locked = false;
                 base.PlayRandomInteractionSound(UnlockSounds);
-                base.VisiblyLocked = false;
-            }
-            else
-            {
-                base.VisiblyLocked = true;
+                VisiblyLocked = false;
             }
         }
+
     }
 
     public override void Interact(FirstPersonController controller)
     {
-
+        if(locked)
+        {
+            base.VisiblyLocked = true;
+        }
         if (!locked)
         { base.OpenHinge(Hinge, new Vector3(0, 110, 0), new Vector3(0, 169.12f, 0), 1.5f, .8f); }
     }
