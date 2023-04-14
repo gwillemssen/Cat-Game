@@ -10,6 +10,9 @@ public class Interactable : MonoBehaviour
     public bool CanInteract = true;
     public float Cooldown;
     public bool VisiblyLocked = false;
+    public bool Open;
+
+    public AudioPlayer player;
 
     [Tooltip("Called when we click on the object")]
     public UnityEvent OnInteract;
@@ -58,4 +61,29 @@ public class Interactable : MonoBehaviour
     {
 
     }
+
+    public virtual void OpenHinge(GameObject Hinge, Vector3 startingLocation, Vector3 endingLocation, float openTime, float closeTime)
+    {
+        if (!Open) //OPEN
+        {
+            Open = true;
+            LeanTween.rotate(Hinge, startingLocation, openTime).setEaseInOutExpo();
+        }
+        else if (Open) //CLOSED
+        {
+            LeanTween.rotate(Hinge, endingLocation, closeTime).setEaseInOutExpo();
+            Open = false;
+        }
+    }
+
+    public virtual void PlayInteractionSound(Sound sound)
+    {
+        player.Play(sound);
+    }
+
+    public virtual void PlayRandomInteractionSound(List<Sound> sounds)
+    {
+        player.Play(sounds[Random.Range(0, sounds.Count)]);
+    }
+
 }

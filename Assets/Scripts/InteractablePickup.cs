@@ -13,7 +13,8 @@ public class InteractablePickup : Interactable
     public Rigidbody Rigidbody { get; private set; }
     public float ImpactVelocity = 1f;
 
-    public Sound ImpactSound;
+    public List<Sound> PickupSounds;
+    public List<Sound> ImpactSounds;
 
     private AudioPlayer audioPlayer;
     private float sqrImpactVelocity;
@@ -32,12 +33,13 @@ public class InteractablePickup : Interactable
 
     public void OnCollisionEnter(Collision collision)
     {
-        if(ImpactSound == null || !canImpact)
+        if(ImpactSounds.Count == 0 || !canImpact)
         { return; }
 
         if(Rigidbody.velocity.sqrMagnitude > sqrImpactVelocity)
         {
-            audioPlayer.Play(ImpactSound);
+            if(ImpactSounds.Count > 0)
+            { audioPlayer.Play(ImpactSounds[Random.Range(0, ImpactSounds.Count)]); }
             Enemy.instance.Distract(transform.position);
             Impacted();
         }
@@ -52,6 +54,8 @@ public class InteractablePickup : Interactable
     {
         PlayerUI.instance.SetInfoText("Press Right Click to Drop\nHold Right Click to Throw");
         Rigidbody.constraints = originalConstraints;
+        if (PickupSounds.Count > 0)
+        { audioPlayer.Play(PickupSounds[Random.Range(0, PickupSounds.Count)]); }
         canImpact = true;
     }
 
