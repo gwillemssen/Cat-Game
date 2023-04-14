@@ -24,7 +24,7 @@ public class EnemyDebug : MonoBehaviour
         string output = "";
         output += $"{Enemy.State.ToString()}\n" +
             $"PercentVisible : {Enemy.PercentVisible}\n" +
-            $"AtDestination : {Enemy.AtDestination}";
+            $"AtDestination : {Enemy.AtDestination} | isStopped : {Enemy.AI.isStopped}";
         if(Enemy.State == Enemy.PatrollingState)
         {
             output += "Awareness: " + Enemy.PatrollingState.AwarenessValue + "\n";

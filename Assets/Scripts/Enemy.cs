@@ -169,7 +169,53 @@ public class PatrollingState : EnemyState
 
 public class AggroState : EnemyState
 {
+    private bool goingToGun = true;
+    private Vector3? lastSeenPosition = null;
+
     public AggroState(Enemy enemy) : base(enemy) { }
+
+    public override void Init()
+    {
+        base.Init();
+        goingToGun = true;
+        base.SetWaypoint(enemy.GunWaypoint);
+        enemy.AI.isStopped = false;
+    }
+
+    public override void Update()
+    {
+        base.Update();
+
+        if(goingToGun)
+        {
+            if(enemy.AtDestination)
+            { goingToGun = false; }
+
+            return; 
+        }
+
+
+        if (enemy.SeesPlayer)
+        {
+            base.StopAndLook(enemy.PlayerTransform.position); //stop and look at player
+            lastSeenPosition = enemy.PlayerTransform.position;
+        }
+        else
+        {
+            if (lastSeenPosition.HasValue)
+            {
+                target = lastSeenPosition; //go to last seen position
+                if(enemy.AtDestination)
+                {
+                    lastSeenPosition = null;
+                }
+            } 
+            else if (enemy.AtDestination)
+            {
+                SetWaypoint(enemy.Waypoints[Random.Range(0, enemy.Waypoints.Count)]); //nothing to do, go to random waypoint
+            }
+        }
+    }
 
     public event Action OnShoot;
 }
@@ -227,7 +273,7 @@ public class Enemy : MonoBehaviour
     public Transform PlayerTransform { get; private set; }
     public bool SeesPlayer { get; private set; }
     public Vector3 StartPosition { get; private set; }
-    public bool AtDestination { get { return !AI.hasPath || (AI.hasPath && AI.remainingDistance <= 0.1f); } }
+    public bool AtDestination { get { return !AI.pathPending && !AI.hasPath || (AI.hasPath && AI.remainingDistance <= 0.1f); } }
 
     private bool raycastedToPlayer;
     private float sightDistanceTarget;
@@ -383,6 +429,7 @@ public class Enemy : MonoBehaviour
     }
     public void SetState(EnemyState newState)
     {
+        //AI.isStopped = false;
         if (State == newState)
         { return; }
         State = newState;
