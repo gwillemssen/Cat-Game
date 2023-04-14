@@ -91,7 +91,10 @@ public class EnemyState
 
     public virtual void OnWaypointComplete() { }
     public virtual void SetAnimationState(Enemy enemy, Animator anim)
-    { anim.SetBool("isWalking", enemy.Moving); }
+    {
+        anim.SetBool("isWalking", enemy.Moving || enemy.GunObject.activeSelf);
+        anim.SetBool("isRifleRunning", enemy.GunObject.activeSelf);
+    }
     public virtual void OnDistract(Vector3 pos) { }
     public virtual void OnEnteredHidingSpotCallback(Enemy enemy, HidingSpot hidingSpot) { }
 }
@@ -277,6 +280,7 @@ public class Enemy : MonoBehaviour
     public float StopAndLookTime = 2.5f;
     public float CloseDistance = 1.5f;
     public float AggroTime = 18f;
+    public float StunTime = 1.5f;
     public float TimeUntilShoot = 1.2f;
     public float FovDotProduct = 0.15f;
     //public float AwarenessMultiplierBackTurned = 0.5f;
@@ -290,6 +294,7 @@ public class Enemy : MonoBehaviour
     public Sound[] ChasingSounds;
     public Sound[] AlertedSounds;
     public Sound[] WatchingTVSounds;
+    public Sound BonkSound;
     public Sound ShotgunSound_Reload;
     public Sound ShotgunSound_Fire;
     [HideInInspector] public AudioPlayer AudioPlayer;
@@ -298,6 +303,7 @@ public class Enemy : MonoBehaviour
     public float PercentVisible { get; private set; }
     public Transform PlayerTransform { get; private set; }
     public bool SeesPlayer { get; private set; }
+    public bool Stunned { get { return stunTimer > 0f; } }
     public Vector3 StartPosition { get; private set; }
     public bool AtDestination { get { return !AI.pathPending && !AI.hasPath || (AI.hasPath && AI.remainingDistance <= 0.1f); } }
 
@@ -305,6 +311,7 @@ public class Enemy : MonoBehaviour
     private float sightDistanceTarget;
     private float sightDistance;
     private float sqrCloseDistance;
+    private float stunTimer;
 
     private void Awake()
     {
@@ -321,6 +328,13 @@ public class Enemy : MonoBehaviour
         HidingSpot.OnEnteredHidingSpot += OnEnteredHidingSpotCallback;
 
         sqrCloseDistance = CloseDistance * CloseDistance;
+    }
+
+    public void Stun()
+    {
+        Debug.Log("stunned");
+        stunTimer = StunTime;
+        AudioPlayer.Play(BonkSound);
     }
 
     private void OnEnteredHidingSpotCallback(HidingSpot hidingSpot)
@@ -367,8 +381,21 @@ public class Enemy : MonoBehaviour
         { sightDistanceTarget = SightDistance * 2f; } //give her more range once were spotted
         sightDistance = Mathf.Lerp(sightDistance, sightDistanceTarget, Time.deltaTime);
 
-        State.Update();
-        State.SetAnimationState(this, Anim);
+        if (stunTimer <= 0)
+        {
+            stunTimer = 0f;
+            Anim.speed = 1f;
+            State.Update();
+            State.SetAnimationState(this, Anim);
+            transform.localScale = Vector3.one;
+        }
+        else
+        {
+            AI.isStopped = true;
+            Anim.speed = 0f;
+            stunTimer -= Time.deltaTime;
+            transform.localScale = Vector3.Lerp(Vector3.one, new Vector3(1f, 0.75f, 1f), Mathf.InverseLerp(0f, StunTime, stunTimer));
+        }
 
         PlayQueuedVoicelines();
     }

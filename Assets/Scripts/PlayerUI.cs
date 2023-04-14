@@ -29,6 +29,7 @@ public class PlayerUI : MonoBehaviour
     private Image grannyScreenSpaceUI;
     private Sprite grannyScreenSpaceUI_NormalTexture;
     [SerializeField] private Sprite grannyScreenSpaceUI_ExclaimationPoint;
+    [SerializeField] private Sprite grannyScreenSpaceUI_Stunned;
     private Image grannyScreenSpaceUI_Fill;
     private Image bloodOverlay;
     public GameObject WinScreen { get; private set; }
@@ -39,6 +40,7 @@ public class PlayerUI : MonoBehaviour
 
     string debugOutput = "";
     private float exclaimationPointTimer = 0f;
+    private float blinkTimer = 0f;
     private bool lastTimeSeenPlayer;
     private const float exclaimationPointDuration = 0.8f;
 
@@ -177,7 +179,26 @@ public class PlayerUI : MonoBehaviour
 
         grannyScreenSpaceUI.sprite = exclaimationPointTimer == 0 ? grannyScreenSpaceUI_NormalTexture : grannyScreenSpaceUI_ExclaimationPoint;
         grannyScreenSpaceUI_Fill.sprite = exclaimationPointTimer == 0 ? grannyScreenSpaceUI_NormalTexture : grannyScreenSpaceUI_ExclaimationPoint;
+        if(Enemy.instance.Stunned)
+        {
+            grannyScreenSpaceUI.sprite = grannyScreenSpaceUI_Stunned;
+            grannyScreenSpaceUI_Fill.sprite = grannyScreenSpaceUI_Stunned;
+        }
         grannyScreenSpaceUI.transform.localScale = Vector3.Lerp(Vector3.one, Vector3.one * 1.65f, Mathf.InverseLerp(0f, exclaimationPointDuration, exclaimationPointTimer));
+
+        if(Enemy.instance.GunObject.activeSelf && Enemy.instance.SeesPlayer)
+        {
+            blinkTimer += Time.deltaTime;
+            if(blinkTimer > 0.25f)
+            {
+                blinkTimer = 0f;
+                exclaimationPointTimer = exclaimationPointDuration;
+            }
+        }
+        else
+        {
+            grannyScreenSpaceUI.enabled = true;
+        }
 
         lastTimeSeenPlayer = Enemy.instance.SeesPlayer;
 

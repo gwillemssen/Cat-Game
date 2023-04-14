@@ -378,7 +378,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DebugMode: 1
   EyePosition: {fileID: 8272336163191410661}
-  Waypoints: []
+  Waypoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   GunWaypoint: {fileID: 0}
   GunObject: {fileID: 5722006649426265206}
   GunModelInScene: {fileID: 0}
@@ -667,57 +670,62 @@ PrefabInstance:
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.019
+      value: -0.031
       objectReference: {fileID: 0}
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.18
+      value: 0.183
       objectReference: {fileID: 0}
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.04
+      value: 0.008
       objectReference: {fileID: 0}
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.47245282
+      value: -0.013925097
       objectReference: {fileID: 0}
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.4545883
+      value: -0.2543813
       objectReference: {fileID: 0}
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.58607864
+      value: 0.7309484
       objectReference: {fileID: 0}
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.47607735
+      value: -0.6330963
       objectReference: {fileID: 0}
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 80.961
+      value: 68.845
       objectReference: {fileID: 0}
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 129.661
+      value: 123.272
       objectReference: {fileID: 0}
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 31.89
+      value: -78.984
       objectReference: {fileID: 0}
     - target: {fileID: 2940068942874966754, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_Name
       value: Sawnoff_GameReady
+      objectReference: {fileID: 0}
+    - target: {fileID: 2940068942874966754, guid: 510a8a84264944611adce8dc0783ff63,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 510a8a84264944611adce8dc0783ff63, type: 3}

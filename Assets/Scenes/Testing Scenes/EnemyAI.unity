@@ -3299,11 +3299,12 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5722006649426265206, guid: afdc863829524324688a1af37dc6c8bd,
+    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
         type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
+      propertyPath: BonkSound
+      value: 
+      objectReference: {fileID: 11400000, guid: 2ad9fa2c36d6e07488e7aeeb04be8e31,
+        type: 2}
     - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
         type: 3}
       propertyPath: GunWaypoint
@@ -3314,11 +3315,6 @@ PrefabInstance:
       propertyPath: GunModelInScene
       value: 
       objectReference: {fileID: 1614774544}
-    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
-        type: 3}
-      propertyPath: Waypoints.Array.size
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
         type: 3}
       propertyPath: Waypoints.Array.data[0]
@@ -3332,21 +3328,6 @@ PrefabInstance:
     - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
         type: 3}
       propertyPath: Waypoints.Array.data[2]
-      value: 
-      objectReference: {fileID: 1289986265}
-    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
-        type: 3}
-      propertyPath: PatrollingRoute.Array.data[0]
-      value: 
-      objectReference: {fileID: 1464173880}
-    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
-        type: 3}
-      propertyPath: PatrollingRoute.Array.data[1]
-      value: 
-      objectReference: {fileID: 347688866}
-    - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
-        type: 3}
-      propertyPath: PatrollingRoute.Array.data[2]
       value: 
       objectReference: {fileID: 1289986265}
     - target: {fileID: 6234930927336056523, guid: afdc863829524324688a1af37dc6c8bd,

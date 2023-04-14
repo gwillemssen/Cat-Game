@@ -33,7 +33,18 @@ public class InteractablePickup : Interactable
 
     public void OnCollisionEnter(Collision collision)
     {
-        if(ImpactSounds.Count == 0 || !canImpact)
+        if(!canImpact)
+        { return; }
+
+        Debug.Log("impact: " + collision.gameObject.name);
+
+        Enemy enemy = collision.gameObject.GetComponent<Enemy>();
+        if (enemy != null)
+        {
+            enemy.Stun();
+        }
+
+        if (ImpactSounds.Count == 0)
         { return; }
 
         if(Rigidbody.velocity.sqrMagnitude > sqrImpactVelocity)
