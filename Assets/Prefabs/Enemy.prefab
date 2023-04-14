@@ -378,29 +378,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DebugMode: 1
   EyePosition: {fileID: 8272336163191410661}
-  RedLight: {fileID: 0}
   Waypoints: []
   GunWaypoint: {fileID: 0}
   GunObject: {fileID: 5722006649426265206}
   GunModelInScene: {fileID: 0}
   DebugObject: {fileID: 6234930925431052522}
   Anim: {fileID: -1981050854719233473}
+  AI: {fileID: 0}
   SightDistance: 8
-  AwarenessRate: 0.8
+  AwarenessIncreaseRate: 0.5
+  AwarenessDecreaseRate: 0.3
   AwarenessMultiplier_BackTurned: 0.6
-  AwarenessDecayRate: 0.15
+  AwarenessDecreaseDelay: 0.8
   Awareness_IdleState_Duration: 1
   Awareness_WarningState_Duration: 1.5
   SittingDownDurationMin: 13
   SittingDownDurationMax: 20
-  InvestigateTime: 3.5
+  StopAndLookTime: 2.5
   CloseDistance: 2
+  AggroTime: 18
   TimeUntilShoot: 1.8
   FovDotProduct: 0.15
   VisibilityThreshold: 0.691
   ReloadTime: 1.5
-  RedLightIntensityNormal: 0.05
-  RedLightIntensityHigh: 0.15
   everythingBesidesEnemy:
     serializedVersion: 2
     m_Bits: 12095
@@ -652,17 +652,17 @@ PrefabInstance:
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.0376399
+      value: 0.00042818775
       objectReference: {fileID: 0}
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.0376399
+      value: 0.00042818775
       objectReference: {fileID: 0}
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.0376399
+      value: 0.00042818775
       objectReference: {fileID: 0}
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}

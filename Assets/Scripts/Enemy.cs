@@ -16,6 +16,7 @@ public class EnemyState
     private float timeAtWaypoint;
     private float stopAndLookTimer;
     private Vector3 lookAtPosition;
+    private float stopAndLookTime;
 
     public EnemyState(Enemy enemy)
     { this.enemy = enemy; }
@@ -33,11 +34,12 @@ public class EnemyState
         target = waypoint.transform.position;
     }
 
-    protected void StopAndLook(Vector3 pos)
+    protected void StopAndLook(Vector3 pos, float stopAndLookTime)
     {
         stopAndLookTimer = 0f;
         enemy.AI.isStopped = true;
         lookAtPosition = pos;
+        this.stopAndLookTime = stopAndLookTime;
     }
 
     protected void RotateTowards(Vector3 pos)
@@ -79,7 +81,7 @@ public class EnemyState
         {
             RotateTowards(lookAtPosition);
             stopAndLookTimer += Time.deltaTime;
-            if(stopAndLookTimer > enemy.StopAndLookTime)
+            if(stopAndLookTimer > stopAndLookTime)
             { enemy.AI.isStopped = false; }
         }
 
@@ -130,10 +132,23 @@ public class PatrollingState : EnemyState
             { AwarenessValue -= Time.deltaTime; }
         }
 
-        AwarenessValue = Mathf.Clamp(AwarenessValue, 0f, enemy.Awareness_IdleState_Duration + enemy.Awareness_WarningState_Duration);
+        float awarenessMin = 0f;
+        if(enemy.GunObject.activeSelf)
+        { awarenessMin = enemy.Awareness_IdleState_Duration + 0.01f; }
+
+        AwarenessValue = Mathf.Clamp(AwarenessValue, awarenessMin, enemy.Awareness_IdleState_Duration + enemy.Awareness_WarningState_Duration);
 
         //Behaviour
-        if(!GoingToWaypoint)
+        if (enemy.GunObject.activeSelf)
+        {
+            base.SetWaypoint(enemy.GunWaypoint); //putting the gun back
+            if(enemy.AtDestination)
+            {
+                enemy.GunObject.SetActive(false);
+                enemy.GunModelInScene.SetActive(true);
+            }
+        }
+        else if (!GoingToWaypoint)
         {
             if(enemy.AtDestination)
             {
@@ -151,7 +166,7 @@ public class PatrollingState : EnemyState
         //stop and face player
         if(enemy.SeesPlayer)
         {
-            StopAndLook(enemy.PlayerTransform.position);
+            StopAndLook(enemy.PlayerTransform.position, enemy.StopAndLookTime);
         }
 
         //Transition
@@ -169,27 +184,37 @@ public class PatrollingState : EnemyState
 
 public class AggroState : EnemyState
 {
-    private bool goingToGun = true;
     private Vector3? lastSeenPosition = null;
+    private float aggroTimer;
 
     public AggroState(Enemy enemy) : base(enemy) { }
 
     public override void Init()
     {
         base.Init();
-        goingToGun = true;
-        base.SetWaypoint(enemy.GunWaypoint);
+        if (!enemy.GunObject.activeSelf) //grab the gun if she doesnt already have it
+        { base.SetWaypoint(enemy.GunWaypoint); }
         enemy.AI.isStopped = false;
+        aggroTimer = 0f;
     }
 
     public override void Update()
     {
         base.Update();
 
-        if(goingToGun)
+        aggroTimer += Time.deltaTime;
+        if (enemy.SeesPlayer || !enemy.GunObject.activeSelf)
+        { aggroTimer = 0f; }
+        if (aggroTimer >= enemy.AggroTime)
+        { enemy.SetState(enemy.PatrollingState); }
+
+        if(!enemy.GunObject.activeSelf)
         {
             if(enemy.AtDestination)
-            { goingToGun = false; }
+            {
+                enemy.GunObject.SetActive(true);
+                enemy.GunModelInScene.SetActive(false);
+            }
 
             return; 
         }
@@ -197,7 +222,7 @@ public class AggroState : EnemyState
 
         if (enemy.SeesPlayer)
         {
-            base.StopAndLook(enemy.PlayerTransform.position); //stop and look at player
+            base.StopAndLook(enemy.PlayerTransform.position, enemy.StopAndLookTime / 2f); //stop and look at player
             lastSeenPosition = enemy.PlayerTransform.position;
         }
         else
@@ -251,6 +276,7 @@ public class Enemy : MonoBehaviour
     public float SittingDownDurationMax = 20f;
     public float StopAndLookTime = 2.5f;
     public float CloseDistance = 1.5f;
+    public float AggroTime = 18f;
     public float TimeUntilShoot = 1.2f;
     public float FovDotProduct = 0.15f;
     //public float AwarenessMultiplierBackTurned = 0.5f;
