@@ -40,7 +40,7 @@ public class Desk : Interactable
 
     private void DisconnectChild()
     {
-        Debug.Log("EADFAFASF");
+
         objectInsideDrawer.transform.parent = null; 
     }
 

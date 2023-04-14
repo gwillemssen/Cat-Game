@@ -65,9 +65,8 @@ public class Cat : Interactable
     //general
     private enum CatState { Pettable, Unpettable, PettingMinigame, DonePetting };
     private CatState state;
-    private Animator anim;
     public ParticleSystem lightningParticles;
-
+    public Animator animator;
 
     //Minigame
     private Vector3 catOriginalPos;
@@ -99,7 +98,6 @@ public class Cat : Interactable
     private void Start()
     {
         state = (CatState)StartState;
-        anim = GetComponentInChildren<Animator>();
         lastPetMousePos = new Vector2(-420f, -420f);
         catOriginalPos = transform.position;
         catOriginalRot = transform.rotation;
@@ -110,10 +108,17 @@ public class Cat : Interactable
 
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            animator.SetBool("IsInRadius", true);
+        }
+    }
     private void Update()
     {
-        anim.SetBool("Excited", LookingAt && state == CatState.Pettable);
-        anim.SetBool("DonePetting", state == CatState.DonePetting && !base.CanInteract);
+
+        
 
         if (state == CatState.PettingMinigame || state == CatState.DonePetting)
         {
