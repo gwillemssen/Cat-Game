@@ -140,7 +140,14 @@ public class FirstPersonInteraction : MonoBehaviour
             interactable = hit.transform.GetComponent<Interactable>();
             if (interactable != null)
             {
-                if (!interactable.CanInteract || interactable.Disabled)
+                bool requiredItemMatches = true;
+                if(interactable.RequiredItem != "" && Pickup == null)
+                { requiredItemMatches = false; }
+                else if (interactable.RequiredItem != "" && Pickup != null && interactable.RequiredItem != Pickup.name)
+                { requiredItemMatches = false; }
+
+
+                if (!interactable.CanInteract || interactable.Disabled || !requiredItemMatches)
                 { interactable = null; }
                 else
                 { interactable.LookingAt = true; }

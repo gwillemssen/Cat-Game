@@ -11,6 +11,7 @@ public class Interactable : MonoBehaviour
     public float Cooldown;
     public bool VisiblyLocked = false;
     public bool Open;
+    public string RequiredItem = "";
 
     public AudioPlayer player;
 
