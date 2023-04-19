@@ -29,7 +29,6 @@ public class Bookshelf : Interactable
             LeanTween.moveLocalZ(BookshelfR, -7f, 2.5f).setEaseLinear();
             transform.GetChild(1).gameObject.SetActive(true);
             controller.Interaction.DestroyPickup();
-
         }
 
 
