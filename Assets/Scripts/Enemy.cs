@@ -197,9 +197,11 @@ public class PatrollingState : EnemyState
 public class AggroState : EnemyState
 {
     public float AggroPercent { get { return (enemy.AggroTime - aggroTimer) / enemy.AggroTime; } }
+    public float ShootPercent { get { return shootTimer / enemy.TimeUntilShoot; } }
 
     private Vector3? lastSeenPosition = null;
     private float aggroTimer;
+    private float shootTimer;
 
     public AggroState(Enemy enemy) : base(enemy) { }
 
@@ -226,6 +228,7 @@ public class AggroState : EnemyState
         {
             if(enemy.AtDestination)
             {
+                enemy.AudioPlayer.Play(enemy.ShotgunSound_Reload);
                 enemy.GunObject.SetActive(true);
                 enemy.GunModelInScene.SetActive(false);
             }
@@ -236,11 +239,20 @@ public class AggroState : EnemyState
 
         if (enemy.SeesPlayer)
         {
+            shootTimer += Time.deltaTime;
             base.StopAndLook(enemy.PlayerTransform.position, enemy.StopAndLookTime / 2f); //stop and look at player
             lastSeenPosition = enemy.PlayerTransform.position;
+
+            if(shootTimer >= enemy.TimeUntilShoot)
+            {
+                FirstPersonController.instance.Shoot();
+                shootTimer = 0f;
+                enemy.AudioPlayer.Play(enemy.ShotgunSound_Fire);
+            }
         }
         else
         {
+            shootTimer = 0f;
             if (lastSeenPosition.HasValue)
             {
                 target = lastSeenPosition; //go to last seen position
@@ -255,8 +267,6 @@ public class AggroState : EnemyState
             }
         }
     }
-
-    public event Action OnShoot;
 }
 
 [RequireComponent(typeof(NavMeshAgent))]

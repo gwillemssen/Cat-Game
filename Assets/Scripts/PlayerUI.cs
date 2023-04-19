@@ -121,7 +121,6 @@ public class PlayerUI : MonoBehaviour
         spottedGradient_Left.SetActive(false);
         spottedGradient_Right.SetActive(false);
         bloodOverlay.enabled = false;
-        Enemy.instance.AggroState.OnShoot += OnShootCallback;
     }
 
     private void Update()
@@ -190,12 +189,15 @@ public class PlayerUI : MonoBehaviour
             grannyScreenSpaceUI.sprite = grannyScreenSpaceUI_Stunned;
             grannyScreenSpaceUI_Fill.sprite = grannyScreenSpaceUI_Stunned;
         }
-        grannyScreenSpaceUI.transform.localScale = Vector3.Lerp(Vector3.one, Vector3.one * 1.65f, Mathf.InverseLerp(0f, exclaimationPointDuration, exclaimationPointTimer));
+        Vector3 maxSize = Vector3.one * 1.65f;
+        if(Enemy.instance.GunObject.activeSelf)
+        { maxSize = Vector3.one * Mathf.Lerp(1f, 2.2f, Enemy.instance.AggroState.ShootPercent); }
+        grannyScreenSpaceUI.transform.localScale = Vector3.Lerp(Vector3.one, maxSize, Mathf.InverseLerp(0f, exclaimationPointDuration, exclaimationPointTimer));
 
         if(Enemy.instance.GunObject.activeSelf && Enemy.instance.SeesPlayer)
         {
             blinkTimer += Time.deltaTime;
-            if(blinkTimer > 0.25f)
+            if (blinkTimer > Mathf.Lerp(.5f, .1f, Enemy.instance.AggroState.ShootPercent))
             {
                 blinkTimer = 0f;
                 exclaimationPointTimer = exclaimationPointDuration;
@@ -216,11 +218,7 @@ public class PlayerUI : MonoBehaviour
         spottedGradient_Left.SetActive(Enemy.instance.SeesPlayer && EnemyOnScreen || Enemy.instance.SeesPlayer && !onRightSide);
         spottedGradient_Right.SetActive(Enemy.instance.SeesPlayer && EnemyOnScreen || Enemy.instance.SeesPlayer && onRightSide);
 
-    }
-
-    private void OnShootCallback()
-    {
-        bloodOverlay.enabled = true;
+        bloodOverlay.enabled = FirstPersonController.instance.WasShot;
     }
 
     public void SetInfoText(string text) { SetInfoText(text, 64, true); }
