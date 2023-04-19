@@ -36,7 +36,7 @@ public class InteractablePickup : Interactable
         if(!canImpact)
         { return; }
 
-        Debug.Log("impact: " + collision.gameObject.name);
+        //Debug.Log("impact: " + collision.gameObject.name);
 
         Enemy enemy = collision.gameObject.GetComponent<Enemy>();
         if (enemy != null)

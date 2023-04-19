@@ -74,6 +74,14 @@ public class FirstPersonInteraction : MonoBehaviour
         Pickup = null;
     }
 
+    public void DestroyPickup()
+    {
+        if(Pickup == null)
+        { return;  }
+        Destroy(Pickup.gameObject);
+        Pickup = null;
+    }
+
     private void Interact()
     {
         if (Pickup != null)
@@ -87,11 +95,9 @@ public class FirstPersonInteraction : MonoBehaviour
 
     private void HandleInteraction()
     {
-
         if (controller.Input.interacting && interactable != null)
         {
-            interactablePickup = interactable as InteractablePickup;
-            
+            interactablePickup = interactable as InteractablePickup; 
 
             if (interactablePickup != null)
             {
