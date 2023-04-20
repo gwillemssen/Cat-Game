@@ -6,7 +6,7 @@ public class CatSpawn : MonoBehaviour
 {
     public List<Material> catMats;
     public List<Transform> catPos;
-    public GameObject catPrefab;
+    public List<GameObject> catPrefabs;
     public List<Material> catEyeMats;
     // Start is called before the first frame update
     void Start()
@@ -24,7 +24,7 @@ public class CatSpawn : MonoBehaviour
         {
             int matIndex = Random.Range(0, tempMats.Count);
             int posIndex = Random.Range(0, tempPos.Count);
-            GameObject cat = Instantiate(catPrefab, tempPos[posIndex].position, tempPos[posIndex].rotation);
+            GameObject cat = Instantiate(catPrefabs[Random.Range(0,catPrefabs.Count)], tempPos[posIndex].position, tempPos[posIndex].rotation);
             cat.transform.GetChild(3).GetComponent<Renderer>().material = tempMats[matIndex];
             cat.transform.GetChild(1).GetComponent<Renderer>().material = tempEyeMats[matIndex];
             tempMats.RemoveAt(matIndex);

@@ -94,9 +94,14 @@ public class Cat : Interactable
     private static float petStretchLerpSmoothing = 8f;
     public float colorDampener;
     public float colorAmplifier;
+    public string BodyPosition;
+
 
     private void Start()
     {
+        //animator.SetBool("IsInRadius", true);
+        if (this.name == "Cat_Sitting(Clone)") { BodyPosition = "Sitting"; }
+        if (this.name == "Cat_Laying(Clone)") { BodyPosition = "Laying"; }
         state = (CatState)StartState;
         lastPetMousePos = new Vector2(-420f, -420f);
         catOriginalPos = transform.position;
@@ -110,11 +115,17 @@ public class Cat : Interactable
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && BodyPosition == "Sitting")
         {
-            animator.SetBool("IsInRadius", true);
+            Debug.Log("YEASDASFAFS");
+            //animator.SetBool("IsInRadius", true);
         }
     }
+    //private void OnTriggerExit(Collider other)
+    //{
+    //    if (other.CompareTag("Player")){ animator.SetBool("IsInRadius", false); }
+        
+    //}
     private void Update()
     {
 
