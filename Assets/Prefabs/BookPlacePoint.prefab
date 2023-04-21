@@ -247,6 +247,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5371985617505432580}
     m_Modifications:
+    - target: {fileID: 1899795503, guid: 881f406f0ddd44140aa99e13833e1c4b, type: 3}
+      propertyPath: maxRange
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1899795503, guid: 881f406f0ddd44140aa99e13833e1c4b, type: 3}
+      propertyPath: minRange
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1966768567933811779, guid: 881f406f0ddd44140aa99e13833e1c4b,
         type: 3}
       propertyPath: m_RootOrder
@@ -307,7 +315,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: GlowPrefab
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8194912847970450134, guid: 881f406f0ddd44140aa99e13833e1c4b, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 881f406f0ddd44140aa99e13833e1c4b, type: 3}
 --- !u!4 &5366305778939153050 stripped
 Transform:
