@@ -41,7 +41,7 @@ public class SwitchController : Interactable
         foreach (Light light1 in lights)
         {
             light1.enabled = on;
-            meshRenderer.material.SetInt("_EmissionMap", 0);
+            
         }
         if (on)//when it's switched to on, the rotation target is moved to the on position and the on sound is played, then all lights in the array are toggled and the stored value is made equal so it doesn't loop the function
         {
@@ -59,7 +59,8 @@ public class SwitchController : Interactable
         on = !on;
         bool onBefore = lights[0].enabled;
         Apply();
-        if(on == onBefore)
+        meshRenderer.material.SetColor("_EmissionColor", on? Color.white : Color.black);
+        if (on == onBefore)
         {
             //I can't believe this works
             on = !on; 
