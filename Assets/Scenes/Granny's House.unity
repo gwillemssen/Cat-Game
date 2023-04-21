@@ -13940,6 +13940,26 @@ PrefabInstance:
       propertyPath: lights.Array.data[2]
       value: 
       objectReference: {fileID: 1136544987}
+    - target: {fileID: 8750900405374261521, guid: 0337daceb11dfa64b8467fc67989f084,
+        type: 3}
+      propertyPath: lights.Array.data[0].light
+      value: 
+      objectReference: {fileID: 1136544987}
+    - target: {fileID: 8750900405374261521, guid: 0337daceb11dfa64b8467fc67989f084,
+        type: 3}
+      propertyPath: lights.Array.data[1].light
+      value: 
+      objectReference: {fileID: 618624433}
+    - target: {fileID: 8750900405374261521, guid: 0337daceb11dfa64b8467fc67989f084,
+        type: 3}
+      propertyPath: lights.Array.data[0].meshRenderer
+      value: 
+      objectReference: {fileID: 953380775}
+    - target: {fileID: 8750900405374261521, guid: 0337daceb11dfa64b8467fc67989f084,
+        type: 3}
+      propertyPath: lights.Array.data[1].meshRenderer
+      value: 
+      objectReference: {fileID: 2069079413}
     - target: {fileID: 9150128004149103185, guid: 0337daceb11dfa64b8467fc67989f084,
         type: 3}
       propertyPath: m_RootOrder
@@ -13948,7 +13968,7 @@ PrefabInstance:
     - target: {fileID: 9150128004149103185, guid: 0337daceb11dfa64b8467fc67989f084,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.7622209
+      value: -3.792
       objectReference: {fileID: 0}
     - target: {fileID: 9150128004149103185, guid: 0337daceb11dfa64b8467fc67989f084,
         type: 3}
@@ -14791,6 +14811,12 @@ Transform:
   m_Father: {fileID: 2167568064618102353}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!23 &953380775 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 4864032278266172240, guid: ee0bd3d5acf585742b61e20b22be45e2,
+    type: 3}
+  m_PrefabInstance: {fileID: 170680800}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &954104038 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5018950055216721060, guid: c15f037642a1e1b439d19869e86e1ddf,
@@ -18078,7 +18104,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1136544984}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -10.52, y: -0.727, z: -16.405}
+  m_LocalPosition: {x: -10.52, y: -0.877, z: -16.405}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -36523,6 +36549,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0337daceb11dfa64b8467fc67989f084, type: 3}
+--- !u!23 &2069079413 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 697558440558448446, guid: 7db1635a200e74b3dbddb2a574cac3cf,
+    type: 3}
+  m_PrefabInstance: {fileID: 446970297519687057}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2076241153
 PrefabInstance:
   m_ObjectHideFlags: 0
