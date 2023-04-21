@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using System.Linq;
 
 public class SwitchController : Interactable
 {
@@ -13,7 +15,7 @@ public class SwitchController : Interactable
     private Vector3 offPos = new Vector3(40, 0, 0);
     private Vector3 onPos = new Vector3(-40, 0, 0);
     [Tooltip("List of lights that this switch effects, add as many as needed.")]
-    public List<Light> lights;
+    public List<LightInfo> lights;
     private AudioClip[] sounds = new AudioClip[2];
 
 
@@ -29,7 +31,7 @@ public class SwitchController : Interactable
     void Start()
     {
         SwitchLoad();
-        Apply();
+        ToggleLight();
 
         switchLerp.vecTarget = on ? onPos : offPos;
     }
@@ -39,40 +41,31 @@ public class SwitchController : Interactable
         Animate();
     }
 
-    void Apply()
+    void ToggleLight()
     {
-        foreach (Light light1 in lights)
+        foreach (var light in lights.Where(light=> light != null))
         {
-            light1.enabled = on;
-            
+            light.light.enabled = on;
+            light.meshRenderer.material.SetColor("_EmissionColor", on ? Color.yellow : Color.black);
         }
-        if (on)//when it's switched to on, the rotation target is moved to the on position and the on sound is played, then all lights in the array are toggled and the stored value is made equal so it doesn't loop the function
-        {
-            switchLerp.vecTarget = onPos;
-        }
-        else
-        {
-            switchLerp.vecTarget = offPos;
-        }
+        switchLerp.vecTarget = on ? onPos : offPos;
     }
 
 
     public override void Interact(FirstPersonController controller)
     {
         on = !on;
-        bool onBefore = lights[0].enabled;
-        Apply();
-        meshRenderer.material.SetColor("_EmissionColor", on? Color.yellow : Color.black);
-        if (on == onBefore)
-        {
-            //I can't believe this works
-            on = !on; 
-            Apply();
-            on = !on;
-            //This allows multiple switches to control the same light, like a real home
-        } 
-        
+        ToggleLight();
         PlaySound(on ? 0 : 1);
+
+        //if (on == onBefore)
+        //{
+        //    //I can't believe this works
+        //    on = !on; 
+        //    ToggleLight();
+        //    on = !on;
+        //    //This allows multiple switches to control the same light, like a real home
+        //} 
     }
 
     private void SwitchLoad()
@@ -105,5 +98,12 @@ public class SwitchController : Interactable
         {
             switchBone.transform.localRotation = Quaternion.Euler(switchLerp.vecVal);
         }
+    }
+
+    [Serializable]
+    public class LightInfo
+    {
+        public Light light;
+        public MeshRenderer meshRenderer;
     }
 }
