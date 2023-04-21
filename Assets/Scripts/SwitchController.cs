@@ -15,6 +15,9 @@ public class SwitchController : Interactable
     [Tooltip("List of lights that this switch effects, add as many as needed.")]
     public List<Light> lights;
     private AudioClip[] sounds = new AudioClip[2];
+
+
+
     // SOUND LIST:
     // 0: on
     // 1: off
@@ -59,7 +62,7 @@ public class SwitchController : Interactable
         on = !on;
         bool onBefore = lights[0].enabled;
         Apply();
-        meshRenderer.material.SetColor("_EmissionColor", on? Color.white : Color.black);
+        meshRenderer.material.SetColor("_EmissionColor", on? Color.yellow : Color.black);
         if (on == onBefore)
         {
             //I can't believe this works
