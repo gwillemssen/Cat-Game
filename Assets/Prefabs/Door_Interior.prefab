@@ -64,6 +64,10 @@ MonoBehaviour:
   Disabled: 0
   CanInteract: 1
   Cooldown: 1
+  VisiblyLocked: 0
+  Open: 0
+  RequiredItem: 
+  player: {fileID: 0}
   OnInteract:
     m_PersistentCalls:
       m_Calls: []
@@ -309,6 +313,7 @@ GameObject:
   - component: {fileID: 3387644480598800817}
   - component: {fileID: 1076615444834881322}
   - component: {fileID: 3208926853040583515}
+  - component: {fileID: 2067065413}
   m_Layer: 0
   m_Name: Door_Body
   m_TagString: Untagged
@@ -381,6 +386,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &2067065413
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4146832634028790132}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 320596691271621625, guid: 0927331dfb4926243aa7810a839ac0d4, type: 3}
 --- !u!1 &4801759910516159538
 GameObject:
   m_ObjectHideFlags: 0

@@ -17,8 +17,12 @@ public class AudioPlayer : MonoBehaviour
             Debug.LogError("SOUND IS NULL");
             return;
         }
-        au.pitch = sound.Pitch; //Doesnt work with multiple sounds playing at the same time.  Pitch affects all currently playing sounds
-        au.PlayOneShot(sound.Clip, sound.Volume);
+        else
+        {
+            au.pitch = sound.Pitch; //Doesnt work with multiple sounds playing at the same time.  Pitch affects all currently playing sounds
+            au.PlayOneShot(sound.Clip, sound.Volume);
+        }
+        
     }
 
     public void Stop()
