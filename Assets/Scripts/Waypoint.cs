@@ -7,8 +7,8 @@ public class Waypoint : MonoBehaviour
     [Tooltip("How long should the AI stop here before moving on to the next Waypoint")]
     public float StopTime = 0f;
 
-    [SerializeField] private Sound[] goingToVoicelines;
-    [SerializeField] private Sound[] arrivedVoicelines;
+    [SerializeField] private AudioClip[] goingToVoicelines;
+    [SerializeField] private AudioClip[] arrivedVoicelines;
 
     [HideInInspector] public NonRepeatingSound RandomGoingToVoicelines { get; private set; }
     [HideInInspector] public NonRepeatingSound RandomArrivedVoicelines { get; private set; }

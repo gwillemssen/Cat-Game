@@ -400,6 +400,7 @@ MonoBehaviour:
   StopAndLookTime: 2.5
   CloseDistance: 2
   AggroTime: 18
+  StunTime: 1.5
   TimeUntilShoot: 1.8
   FovDotProduct: 0.15
   VisibilityThreshold: 0.691
@@ -407,26 +408,77 @@ MonoBehaviour:
   everythingBesidesEnemy:
     serializedVersion: 2
     m_Bits: 12095
-  SpotPlayerSounds:
-  - {fileID: 11400000, guid: 33339637a616ba2409928c3cb0de52bf, type: 2}
-  - {fileID: 11400000, guid: fbce45537db9a1b47b7c9fea0c2b2cce, type: 2}
-  - {fileID: 11400000, guid: d33eb43a2df357c408dc2fa19377ca67, type: 2}
-  GrabbingGunSounds: []
-  ChasingSounds:
-  - {fileID: 11400000, guid: 6e37e8b85c6659848aa18e378d59a36b, type: 2}
-  - {fileID: 11400000, guid: a061a090232481c49bb06594dea42055, type: 2}
-  - {fileID: 11400000, guid: ea7f162dd3c1af5468f41bf1bc6aa14e, type: 2}
-  - {fileID: 11400000, guid: 2987aa12bbfa53b4d968b71eff510b1a, type: 2}
-  - {fileID: 11400000, guid: b495965c6c971ce4b9e7cacb5a1b9072, type: 2}
-  - {fileID: 11400000, guid: f5e6ad40d6e6c794aa068e57dc86c4c7, type: 2}
-  - {fileID: 11400000, guid: 007418af252786a42b4a940b90537dad, type: 2}
-  - {fileID: 11400000, guid: 6f5e7cec3e5e791458773d9863605811, type: 2}
-  - {fileID: 11400000, guid: b8667339de8c06c4a989fb46297eb63b, type: 2}
-  AlertedSounds:
-  - {fileID: 11400000, guid: 6d95e1a8eb64a2540a0b83f49656ff57, type: 2}
-  - {fileID: 11400000, guid: b93750c370b36504095a73fb20186850, type: 2}
-  - {fileID: 11400000, guid: c58b3e8d4f7412e458c28b12a37f72b0, type: 2}
-  WatchingTVSounds: []
+  WhiteToYellowSounds:
+  - {fileID: 8300000, guid: eb60bbe062affa54882a10377804103b, type: 3}
+  - {fileID: 8300000, guid: 4842e0231a9a90a47ae961116862694a, type: 3}
+  - {fileID: 8300000, guid: bc8b75c68c27cea40bd57acbfc8460dd, type: 3}
+  - {fileID: 8300000, guid: d75f8e67b9196be4fbf73f71a006dd23, type: 3}
+  - {fileID: 8300000, guid: 878da3a911c8ff9478182c5c57c6f56b, type: 3}
+  - {fileID: 8300000, guid: cfbf019c6d13df5418bd5b86d0c09796, type: 3}
+  - {fileID: 8300000, guid: 0b10e5f91075d6b4db0533b3c23e8418, type: 3}
+  - {fileID: 8300000, guid: cb86f7d32d8271c4f93812e840a26e09, type: 3}
+  - {fileID: 8300000, guid: ddd4c6da9cab3954087247ddd25c800f, type: 3}
+  - {fileID: 8300000, guid: d7cc8b230726fbe4487c1e476865fa8c, type: 3}
+  - {fileID: 8300000, guid: 2f945a00ab8b4134993b1e8a5a2b720f, type: 3}
+  - {fileID: 8300000, guid: 9db275212b01d414390b225b01b0e5c4, type: 3}
+  - {fileID: 8300000, guid: aa72856e2bbc5fa419786a850f825a71, type: 3}
+  - {fileID: 8300000, guid: e70e9c44d7be106429d82bc2bdc27586, type: 3}
+  - {fileID: 8300000, guid: 4ebfd9bdfd38288478881a773df62ceb, type: 3}
+  - {fileID: 8300000, guid: 2ae71d330cd37144f88526da4c59aaf4, type: 3}
+  YellowToRedSounds:
+  - {fileID: 8300000, guid: 8eb253b83445efd49a97366dde31b8fe, type: 3}
+  - {fileID: 8300000, guid: 4e3bb94fbf89a1644a48df86a6b64696, type: 3}
+  - {fileID: 8300000, guid: 155f51c269c11d04f8b732a3b39132ac, type: 3}
+  - {fileID: 8300000, guid: ee81598c855dc2b40aca4c89153a0746, type: 3}
+  - {fileID: 8300000, guid: 07d777d054fa1b348afeafca26e9ae2e, type: 3}
+  - {fileID: 8300000, guid: ae9903eb37d70d54b9d8916bcfd0f39a, type: 3}
+  - {fileID: 8300000, guid: ee0decef50d9b8745844d3267f8112e4, type: 3}
+  RedToYellowSounds:
+  - {fileID: 8300000, guid: 611b33117f50fa24295ea4aa1b2c0537, type: 3}
+  - {fileID: 8300000, guid: 6a9bcd1b4acdb9a46a738401a75bb6f7, type: 3}
+  - {fileID: 8300000, guid: a9238f69267cd4846a7aaa8edc78f5e0, type: 3}
+  - {fileID: 8300000, guid: cba2e71d6db9360488a5d8d8e6d0e139, type: 3}
+  - {fileID: 8300000, guid: d3c02862ecf7354429b257c7d8f8b1d7, type: 3}
+  - {fileID: 8300000, guid: dfca4fa04c51b5443bfb5caa3ab0dd74, type: 3}
+  - {fileID: 8300000, guid: 1f25546595981004588ac44d3b7ed598, type: 3}
+  YellowToWhiteSounds:
+  - {fileID: 8300000, guid: 7aea61ef72d34f647bf79e831c7e0ef4, type: 3}
+  - {fileID: 8300000, guid: b170a4736352ddb40a8c092eac099fad, type: 3}
+  - {fileID: 8300000, guid: 00906172b9671b54f8992fd838ff38a8, type: 3}
+  HurtSounds:
+  - {fileID: 8300000, guid: 32956ef5dc48d944b96801158271be3f, type: 3}
+  - {fileID: 8300000, guid: 16b0621682d8b894694cc38b0f8116d2, type: 3}
+  - {fileID: 8300000, guid: fc6c57357721ce042a61b3f05377d7eb, type: 3}
+  - {fileID: 8300000, guid: f24001d65b482c848b001c5dee798f2d, type: 3}
+  - {fileID: 8300000, guid: 9c2d7fa3b9fa09648b63444f17d3ffd0, type: 3}
+  - {fileID: 8300000, guid: b2745bcb9fd5fa2478ba78c876dc58e5, type: 3}
+  - {fileID: 8300000, guid: 0e8dad0265f80f94cade68daee9033cb, type: 3}
+  - {fileID: 8300000, guid: a3ad3f92c887619418faf2430d657f36, type: 3}
+  IdleSounds:
+  - {fileID: 8300000, guid: 6f0a1a8dd974d1c409a1e89c69e2d9bf, type: 3}
+  - {fileID: 8300000, guid: 336eecdd9c2bb2b408346b4c6174ed1b, type: 3}
+  - {fileID: 8300000, guid: 575dca1d07b97f048a1760d2affc63d7, type: 3}
+  - {fileID: 8300000, guid: d64cfa6988ed3fd4884ca9a163811798, type: 3}
+  - {fileID: 8300000, guid: fb06fb0fe1f0475458acf4613efb6ae1, type: 3}
+  - {fileID: 8300000, guid: ae9a45ff85033424cbeb422d6b64b6f7, type: 3}
+  - {fileID: 8300000, guid: 94e53b1bdc1f8eb46832c2b2623de968, type: 3}
+  - {fileID: 8300000, guid: c47e5eb94e434f543ae6f521e04e0550, type: 3}
+  HuntingSounds:
+  - {fileID: 8300000, guid: 78a414bf1430d49479e7a64dbfcd48a5, type: 3}
+  - {fileID: 8300000, guid: 81e889572895b5a4f9ce55e45d93c392, type: 3}
+  - {fileID: 8300000, guid: 8b48569a0615efe4abeef7b58c314a99, type: 3}
+  - {fileID: 8300000, guid: 3aba923bf24728245aad8c3e4e3f50e3, type: 3}
+  - {fileID: 8300000, guid: 686f6f34127edd9418d60c9a7f8fa926, type: 3}
+  - {fileID: 8300000, guid: 691598ef1ab773e498e8466ee61bf38b, type: 3}
+  - {fileID: 8300000, guid: 4bbd247a029b1c94292255c31a66d9c4, type: 3}
+  ShootSounds:
+  - {fileID: 8300000, guid: 05ea3f1d4518b87479f9f6027eeb62a2, type: 3}
+  - {fileID: 8300000, guid: 27e1bca692482db49a44af7a21feb363, type: 3}
+  - {fileID: 8300000, guid: 4f77729e3ab528e42a2174cb7f143c80, type: 3}
+  - {fileID: 8300000, guid: 468526588e2f3ae44b35f73d91cba3ee, type: 3}
+  - {fileID: 8300000, guid: a79d23c07bee2cf4488f401855edef47, type: 3}
+  - {fileID: 8300000, guid: 3858b6423052c8e42afeb4de70ea52ff, type: 3}
+  BonkSound: {fileID: 11400000, guid: 2ad9fa2c36d6e07488e7aeeb04be8e31, type: 2}
   ShotgunSound_Reload: {fileID: 11400000, guid: f0d0b671a1abd4e4b8e3c5db5faaa6d1,
     type: 2}
   ShotgunSound_Fire: {fileID: 11400000, guid: 311425cf03cf0104286a7042e38a4c8a, type: 2}

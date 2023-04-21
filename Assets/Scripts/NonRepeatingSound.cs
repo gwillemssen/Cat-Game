@@ -2,15 +2,15 @@
 using UnityEngine;
 public class NonRepeatingSound
 {
-    public Sound[] Sounds { get; set; }
+    public AudioClip[] Sounds { get; set; }
 
     private int lastSoundIndex;
 
-    public NonRepeatingSound(Sound[] sounds)
+    public NonRepeatingSound(AudioClip[] sounds)
     {
         Sounds = sounds;
     }
-    public Sound Random()
+    public AudioClip Random()
     {
         int random = UnityEngine.Random.Range(0, Sounds.Length);
 

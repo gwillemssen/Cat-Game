@@ -22,7 +22,19 @@ public class AudioPlayer : MonoBehaviour
             au.pitch = sound.Pitch; //Doesnt work with multiple sounds playing at the same time.  Pitch affects all currently playing sounds
             au.PlayOneShot(sound.Clip, sound.Volume);
         }
-        
+    }
+
+    public void Play(AudioClip sound)
+    {
+        if (sound == null)
+        {
+            Debug.LogError("SOUND IS NULL");
+            return;
+        }
+        else
+        {
+            au.PlayOneShot(sound, 1f);
+        }
     }
 
     public void Stop()

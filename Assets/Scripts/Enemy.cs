@@ -47,10 +47,34 @@ public class EnemyState
         enemy.AI.transform.rotation = Quaternion.Lerp(enemy.AI.transform.rotation, Quaternion.LookRotation(new Vector3(lookAtPosition.x, 0f, lookAtPosition.z) - new Vector3(enemy.transform.position.x, 0f, enemy.transform.position.z)), Time.deltaTime * 4.5f);
     }
 
+
+    private enum AwarenessColor { White, Yellow, Red }
+    private AwarenessColor awarenessColor;
+    private AwarenessColor lastAwarenessColor;
     public virtual void Update() 
     {
+        //voicelines
+        
+        if (Enemy.instance.PatrollingState.AwarenessValue > Enemy.instance.Awareness_IdleState_Duration)
+        { awarenessColor = AwarenessColor.Yellow; }
+        else
+        { awarenessColor = AwarenessColor.White; }
+        if (Enemy.instance.State == Enemy.instance.AggroState)
+        { awarenessColor = AwarenessColor.Red; }
+
+        if(awarenessColor == AwarenessColor.White && lastAwarenessColor == AwarenessColor.Yellow)
+        { enemy.PlayVoiceline(enemy.YellowToWhiteRandomSound.Random()); }
+        else if (awarenessColor == AwarenessColor.Yellow && lastAwarenessColor == AwarenessColor.White)
+        { enemy.PlayVoiceline(enemy.WhiteToYellowRandomSound.Random()); }
+        else if (awarenessColor == AwarenessColor.Yellow && lastAwarenessColor == AwarenessColor.Red)
+        { enemy.PlayVoiceline(enemy.RedToYellowRandomSound.Random()); }
+        else if (awarenessColor == AwarenessColor.Red && lastAwarenessColor == AwarenessColor.Yellow)
+        { enemy.PlayVoiceline(enemy.YellowToRedRandomSound.Random()); }
+
+        lastAwarenessColor = awarenessColor;
+
         //prioritize target over waypoint
-        if(target.HasValue)
+        if (target.HasValue)
         { enemy.AI.destination = target.Value; }
         else if(Waypoint != null)
         { enemy.AI.destination = Waypoint.transform.position; }
@@ -183,7 +207,10 @@ public class PatrollingState : EnemyState
 
         //Transition
         if(AwarenessValue >= enemy.Awareness_IdleState_Duration + enemy.Awareness_WarningState_Duration)
-        { enemy.SetState(enemy.AggroState); }
+        {
+            enemy.SetState(enemy.AggroState);
+            enemy.PlayVoiceline(enemy.YellowToRedRandomSound.Random());
+        }
     }
 
     public override void OnWaypointComplete()
@@ -202,6 +229,8 @@ public class AggroState : EnemyState
     private Vector3? lastSeenPosition = null;
     private float aggroTimer;
     private float shootTimer;
+    private float huntingVoicelineTimer;
+    private float huntingVoicelineDelay;
 
     public AggroState(Enemy enemy) : base(enemy) { }
 
@@ -212,6 +241,7 @@ public class AggroState : EnemyState
         { base.SetWaypoint(enemy.GunWaypoint); }
         enemy.AI.isStopped = false;
         aggroTimer = 0f;
+        huntingVoicelineTimer = 0f;
     }
 
     public override void Update()
@@ -219,10 +249,21 @@ public class AggroState : EnemyState
         base.Update();
 
         aggroTimer += Time.deltaTime;
+        huntingVoicelineTimer += Time.deltaTime;
         if (enemy.SeesPlayer || !enemy.GunObject.activeSelf)
         { aggroTimer = 0f; }
         if (aggroTimer >= enemy.AggroTime)
-        { enemy.SetState(enemy.PatrollingState); }
+        {
+            enemy.SetState(enemy.PatrollingState);
+            enemy.PlayVoiceline(enemy.RedToYellowRandomSound.Random());
+        }
+
+        if(huntingVoicelineTimer > huntingVoicelineDelay && enemy.GunObject.activeSelf)
+        {
+            enemy.PlayVoiceline(enemy.HuntingRandomSound.Random());
+            huntingVoicelineDelay = Random.Range(6f, 12f);
+            huntingVoicelineTimer = 0f;
+        }
 
         if(!enemy.GunObject.activeSelf)
         {
@@ -248,6 +289,7 @@ public class AggroState : EnemyState
                 FirstPersonController.instance.Shoot();
                 shootTimer = 0f;
                 enemy.AudioPlayer.Play(enemy.ShotgunSound_Fire);
+                enemy.PlayVoiceline(enemy.ShootRandomSound.Random());
             }
         }
         else
@@ -310,11 +352,14 @@ public class Enemy : MonoBehaviour
     public float VisibilityThreshold = 0.5f;
     public float ReloadTime = 1.5f;
     [SerializeField] private LayerMask everythingBesidesEnemy;
-    public Sound[] SpotPlayerSounds;
-    public Sound[] GrabbingGunSounds;
-    public Sound[] ChasingSounds;
-    public Sound[] AlertedSounds;
-    public Sound[] WatchingTVSounds;
+    public AudioClip[] WhiteToYellowSounds;
+    public AudioClip[] YellowToRedSounds;
+    public AudioClip[] RedToYellowSounds;
+    public AudioClip[] YellowToWhiteSounds;
+    public AudioClip[] HurtSounds;
+    public AudioClip[] IdleSounds;
+    public AudioClip[] HuntingSounds;
+    public AudioClip[] ShootSounds;
     public Sound BonkSound;
     public Sound ShotgunSound_Reload;
     public Sound ShotgunSound_Fire;
@@ -333,6 +378,14 @@ public class Enemy : MonoBehaviour
     private float sightDistance;
     private float sqrCloseDistance;
     private float stunTimer;
+    public NonRepeatingSound WhiteToYellowRandomSound;
+    public NonRepeatingSound YellowToRedRandomSound;
+    public NonRepeatingSound RedToYellowRandomSound;
+    public NonRepeatingSound YellowToWhiteRandomSound;
+    public NonRepeatingSound HurtRandomSound;
+    public NonRepeatingSound IdleRandomSound;
+    public NonRepeatingSound ShootRandomSound;
+    public NonRepeatingSound HuntingRandomSound;
 
     private void Awake()
     {
@@ -358,6 +411,7 @@ public class Enemy : MonoBehaviour
         Debug.Log("stunned");
         stunTimer = StunTime;
         AudioPlayer.Play(BonkSound);
+        AudioPlayer.Play(HurtRandomSound.Random());
     }
 
     private void OnEnteredHidingSpotCallback(HidingSpot hidingSpot)
@@ -370,11 +424,15 @@ public class Enemy : MonoBehaviour
         PlayerTransform = FirstPersonController.instance.transform;
         DebugObject.gameObject.SetActive(DebugMode);
         AudioPlayer = GetComponent<AudioPlayer>();
-        chasingRandomSound = new NonRepeatingSound(ChasingSounds);
-        spotPlayerRandomSound = new NonRepeatingSound(SpotPlayerSounds);
-        alertedRandomSound = new NonRepeatingSound(AlertedSounds);
-        grabbingGunRandomSound = new NonRepeatingSound(GrabbingGunSounds);
-        watchingTVRandomSound = new NonRepeatingSound(WatchingTVSounds);
+
+        WhiteToYellowRandomSound = new NonRepeatingSound(WhiteToYellowSounds);
+        YellowToRedRandomSound = new NonRepeatingSound(YellowToRedSounds);
+        RedToYellowRandomSound = new NonRepeatingSound(RedToYellowSounds);
+        YellowToWhiteRandomSound = new NonRepeatingSound(YellowToWhiteSounds);
+        HurtRandomSound = new NonRepeatingSound(HurtSounds);
+        IdleRandomSound = new NonRepeatingSound(IdleSounds);
+        HuntingRandomSound = new NonRepeatingSound(HuntingSounds);
+        ShootRandomSound = new NonRepeatingSound(ShootSounds);
 
         sightDistance = SightDistance;
         sightDistanceTarget = SightDistance;
@@ -512,19 +570,13 @@ public class Enemy : MonoBehaviour
         State.Init();
     }
 
-    public enum VoiceLine { SpotPlayer, GrabbingGun, Chasing, Alerted, WatchingTV }
     private float lastTimePlayedVoiceline = -420f;
     private float voiceLineDuration;
     private float lastTimePlayedChasingVoiceline = -420f;
     private float chasingVoicelineDuration;
-    private NonRepeatingSound chasingRandomSound;
-    private NonRepeatingSound spotPlayerRandomSound;
-    private NonRepeatingSound alertedRandomSound;
-    private NonRepeatingSound grabbingGunRandomSound;
-    private NonRepeatingSound watchingTVRandomSound;
-    private Queue<Sound> voicelineQueue = new Queue<Sound>();
+    private Queue<AudioClip> voicelineQueue = new Queue<AudioClip>();
 
-    public Sound PlayVoiceline(Sound sound)
+    public AudioClip PlayVoiceline(AudioClip sound)
     {
         if (Time.time - lastTimePlayedVoiceline < voiceLineDuration) //make sure we dont overlap voicelines
         {
@@ -535,37 +587,11 @@ public class Enemy : MonoBehaviour
 
         AudioPlayer.Play(sound);
         print("Playing voiceline " + sound.name);
-        voiceLineDuration = sound.Clip.length;
+        voiceLineDuration = sound.length;
 
 
         lastTimePlayedVoiceline = Time.time;
         return sound;
-    }
-    //returns a reference to the sound that was played
-    public Sound PlayVoiceline(VoiceLine voiceLine)
-    {
-        NonRepeatingSound randomSound = null;
-        switch (voiceLine)
-        {
-            case VoiceLine.SpotPlayer:
-                randomSound = spotPlayerRandomSound;
-                break;
-            case VoiceLine.Chasing:
-                randomSound = chasingRandomSound;
-                break;
-            case VoiceLine.Alerted:
-                randomSound = alertedRandomSound;
-                break;
-            case VoiceLine.WatchingTV:
-                randomSound = watchingTVRandomSound;
-                break;
-        }
-
-        if (randomSound == null || randomSound.Sounds.Length == 0)
-        { Debug.LogWarning("Random Sound null"); return null; }
-
-        Sound sound = randomSound.Random();
-        return PlayVoiceline(sound);
     }
 
     private void PlayQueuedVoicelines()
