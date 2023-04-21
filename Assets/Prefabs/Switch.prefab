@@ -290,23 +290,20 @@ MonoBehaviour:
   Disabled: 0
   CanInteract: 1
   Cooldown: 0
+  VisiblyLocked: 0
+  Open: 0
+  RequiredItem: 
+  player: {fileID: 0}
   OnInteract:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8480304882326769899}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  on: 0
+      m_Calls: []
+  SoundOn: {fileID: 8300000, guid: 98945ab2e2a21504a8e64830adf59019, type: 3}
+  SoundOff: {fileID: 8300000, guid: c3ddace165d825a45be1b63f67fa62b5, type: 3}
+  on: 1
   lights:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 0}
   clipID: 0
 --- !u!82 &2087134554

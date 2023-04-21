@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class SwitchController : Interactable
 {
+    public AudioClip SoundOn, SoundOff;
     private LerpScript switchLerp;
     private GameObject switchBone;
     public bool on;
@@ -71,8 +72,8 @@ public class SwitchController : Interactable
     private void SwitchLoad()
     {
         //sound loading
-        sounds[0] = Resources.Load("Sound/LightSwitch/So_SwitchOn") as AudioClip;
-        sounds[1] = Resources.Load("Sound/LightSwitch/So_SwitchOff") as AudioClip;
+        sounds[0] = SoundOn; 
+        sounds[1] = SoundOff;
         //Debug.Log($"{gameObject.name} sounds loaded");
 
         //initialization
