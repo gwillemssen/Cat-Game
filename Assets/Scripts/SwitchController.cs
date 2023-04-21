@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class SwitchController : Interactable
 {
+    public MeshRenderer meshRenderer;
     public AudioClip SoundOn, SoundOff;
     private LerpScript switchLerp;
     private GameObject switchBone;
@@ -40,6 +41,7 @@ public class SwitchController : Interactable
         foreach (Light light1 in lights)
         {
             light1.enabled = on;
+            meshRenderer.material.SetInt("_EmissionMap", 0);
         }
         if (on)//when it's switched to on, the rotation target is moved to the on position and the on sound is played, then all lights in the array are toggled and the stored value is made equal so it doesn't loop the function
         {
