@@ -84,6 +84,12 @@ public class EnemyState
             //we arrived at a waypoint. (target gets priority, must be null)
             if(Waypoint != null && !target.HasValue)
             {
+                if(timeAtWaypoint == 0f)
+                {
+                    //Play voiceline
+                    if (Waypoint != null && Waypoint.RandomArrivedVoicelines != null)
+                    { enemy.PlayVoiceline(Waypoint.RandomArrivedVoicelines.Random()); }
+                }
                 timeAtWaypoint += Time.deltaTime;
                 if(timeAtWaypoint >= Waypoint.StopTime)
                 {
@@ -179,12 +185,6 @@ public class PatrollingState : EnemyState
         {
             if(enemy.AtDestination)
             {
-                if(sittingTimer == 0f)
-                {
-                    //Play voiceline
-                    if(Waypoint != null && Waypoint.RandomArrivedVoicelines != null)
-                    { enemy.PlayVoiceline(Waypoint.RandomArrivedVoicelines.Random());  }
-                }
                 sittingTimer += Time.deltaTime; //sit and wait
                 if (sittingTimer >= sittingDuration)
                 {

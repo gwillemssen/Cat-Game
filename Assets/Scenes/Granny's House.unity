@@ -1536,8 +1536,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StopTime: 8
-  goingToVoicelines: []
-  arrivedVoicelines: []
+  goingToVoicelines:
+  - {fileID: 8300000, guid: e64262ef1fe45b040826c121b5dbdd06, type: 3}
+  - {fileID: 8300000, guid: dba6ee5c9aff99748858046faa08dd57, type: 3}
+  - {fileID: 8300000, guid: 1d1803ec97665704d8e1b5e68a304f2d, type: 3}
+  arrivedVoicelines:
+  - {fileID: 8300000, guid: 4efddbc6a71ee2c4a958a7a618cb132c, type: 3}
+  - {fileID: 8300000, guid: 9d3654634b13f78479e3527c80adb523, type: 3}
 --- !u!4 &76731413
 Transform:
   m_ObjectHideFlags: 0
@@ -1833,8 +1838,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StopTime: 8
-  goingToVoicelines: []
-  arrivedVoicelines: []
+  goingToVoicelines:
+  - {fileID: 8300000, guid: 22bfeb5f546bc774eb25a89f6dd613a0, type: 3}
+  - {fileID: 8300000, guid: 7db3c9c2e6710f344ac5ac42ef722b04, type: 3}
+  - {fileID: 8300000, guid: 1e33d3e4fae813a4484cf29eb727133f, type: 3}
+  - {fileID: 8300000, guid: a8bc2e8d93304cf4e9a8f764f107f881, type: 3}
+  arrivedVoicelines:
+  - {fileID: 8300000, guid: 79eb3e8b9d4f5db498d3752b67f1fd10, type: 3}
+  - {fileID: 8300000, guid: 7f46d8f03fa2e544687a7ac76df4d266, type: 3}
+  - {fileID: 8300000, guid: cf206f056a801e84d9fe9eac45440ebc, type: 3}
+  - {fileID: 8300000, guid: 5a33494cfbf02a14b921e5ed8fd953ab, type: 3}
+  - {fileID: 8300000, guid: a49c7562415ea2d429cf0cdc373b7432, type: 3}
+  - {fileID: 8300000, guid: f608212f4b2c45c44af349c98c620a66, type: 3}
+  - {fileID: 8300000, guid: 430f6c95cf9df8044839c83d919f9e8b, type: 3}
+  - {fileID: 8300000, guid: ca37e176a0a48a44d9bb575c5133abc6, type: 3}
+  - {fileID: 8300000, guid: af86402bb632cc6409f67874f704fef0, type: 3}
 --- !u!4 &105736827
 Transform:
   m_ObjectHideFlags: 0
@@ -1848,7 +1866,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 166325160}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &108415965 stripped
 Transform:
@@ -2716,7 +2734,6 @@ Transform:
   m_Children:
   - {fileID: 1770113081}
   - {fileID: 76731413}
-  - {fileID: 1711909524}
   - {fileID: 105736827}
   - {fileID: 1987260629}
   - {fileID: 1040075169}
@@ -16334,7 +16351,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 166325160}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1040075170
 MonoBehaviour:
@@ -30386,53 +30403,6 @@ Transform:
   m_Father: {fileID: 1680131118}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1711909522
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1711909524}
-  - component: {fileID: 1711909523}
-  m_Layer: 0
-  m_Name: Waypoint_Bedroom
-  m_TagString: Untagged
-  m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1711909523
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1711909522}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 819f35fbfe579bf47bc87ce917d8817b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StopTime: 8
-  goingToVoicelines: []
-  arrivedVoicelines: []
---- !u!4 &1711909524
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1711909522}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -15.946, y: 0.73657256, z: -7.671}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 166325160}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1713150264
 GameObject:
   m_ObjectHideFlags: 0
@@ -31689,8 +31659,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StopTime: 8
-  goingToVoicelines: []
-  arrivedVoicelines: []
+  goingToVoicelines:
+  - {fileID: 8300000, guid: 02ca9d5cb0489a94d9b0d0ff76502c94, type: 3}
+  - {fileID: 8300000, guid: 016915468ceb1f249bbfe888158cb18e, type: 3}
+  - {fileID: 8300000, guid: 46ae88b865f46c848957fd36a6c016a7, type: 3}
+  - {fileID: 8300000, guid: 152338b9df4ea724bb21eb74635ea506, type: 3}
+  - {fileID: 8300000, guid: c44374b0ea789f442914a336f831fdb4, type: 3}
+  - {fileID: 8300000, guid: 5f6421ccda225064d961d16fff6dd508, type: 3}
+  arrivedVoicelines:
+  - {fileID: 8300000, guid: bafb71cabd89a7144b555b3897c97df8, type: 3}
+  - {fileID: 8300000, guid: 845e6b5a52c13d947951c7c5190ab04e, type: 3}
+  - {fileID: 8300000, guid: 98e1352dfbc0f9940affa54821b1ef08, type: 3}
 --- !u!4 &1770113081
 Transform:
   m_ObjectHideFlags: 0
@@ -32451,7 +32430,7 @@ PrefabInstance:
     - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
         type: 3}
       propertyPath: Waypoints.Array.size
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
         type: 3}
@@ -32467,7 +32446,7 @@ PrefabInstance:
         type: 3}
       propertyPath: Waypoints.Array.data[2]
       value: 
-      objectReference: {fileID: 1711909523}
+      objectReference: {fileID: 105736826}
     - target: {fileID: 6234930927336056517, guid: afdc863829524324688a1af37dc6c8bd,
         type: 3}
       propertyPath: Waypoints.Array.data[3]
@@ -35387,7 +35366,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 166325160}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1987260630
 MonoBehaviour:
