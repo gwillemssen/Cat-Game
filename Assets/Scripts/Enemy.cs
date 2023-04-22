@@ -213,6 +213,14 @@ public class PatrollingState : EnemyState
         }
     }
 
+    public override void OnEnteredHidingSpotCallback(Enemy enemy, HidingSpot hidingSpot)
+    {
+        if(enemy.SeesPlayer)
+        {
+            enemy.PlayVoiceline(enemy.WhiteToYellowRandomSound.Random());
+        }
+    }
+
     public override void OnWaypointComplete()
     {
         //go back to start position
