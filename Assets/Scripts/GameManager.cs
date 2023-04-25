@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public List<Cat> CatsToPet = new List<Cat>();
 
     public GameState State { get; private set; } = GameState.Loading;
+    [SerializeField] private Texture2D loadingTexture;
     private LoseState loseState;
 
 
@@ -118,13 +119,24 @@ public class GameManager : MonoBehaviour
         PlayerUI.instance.WinScreen.SetActive(true);
         FirstPersonController.instance.DisableMovement = true;
         yield return new WaitForSeconds(1.5f);
-        SceneManager.LoadScene("Main Menu");
+        LoadScene("Main Menu");
     }
 
     public void RestartLevel()
     {
+        LoadScene(SceneManager.GetActiveScene().name);
+        //FirstPersonController.instance.DisableMovement = false;
+    }
+
+    public void LoadScene(string sceneName)
+    {
         State = GameState.Loading;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        FirstPersonController.instance.DisableMovement = false;
+        SceneManager.LoadScene(sceneName);
+    }
+
+    private void OnGUI()
+    {
+        if (State == GameState.Loading)
+        { GUI.DrawTexture(new Rect(0f, 0f, Screen.width, Screen.height), loadingTexture); }
     }
 }

@@ -14,18 +14,8 @@ public class MainMenu_Start : MonoBehaviour
         if ((cameraPos - transform.position).magnitude < 1)
         {
             this.GetComponent<Collider>().enabled = false;
-            Camera.main.transform.position = LoadPosition;
-            StartCoroutine(Load());
+            GameManager.instance.LoadScene("Granny's House");
         }
-
-    }
-
-    private IEnumerator Load()
-    {
-
-        yield return new WaitForSeconds(1);
-        SceneManager.LoadScene("Granny's House");
-
     }
 
     private void Start()
