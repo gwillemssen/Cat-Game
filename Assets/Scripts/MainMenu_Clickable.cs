@@ -118,7 +118,6 @@ public class MainMenu_Clickable : MonoBehaviour
 
     private void SetArrowsEnabled(bool enabled)
     {
-        print(enabled);
         leftArrows.SetActive(enabled);
         rightArrows.SetActive(enabled);
         centerArrowLeft.SetActive(enabled);

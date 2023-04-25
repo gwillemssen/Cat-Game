@@ -210,7 +210,8 @@ public class PlayerUI : MonoBehaviour
 
         lastTimeSeenPlayer = Enemy.instance.SeesPlayer;
 
-
+        if(Enemy.instance == null)
+        { return; }
         EnemyOnScreen = Vector3.Dot(transform.TransformDirection(Vector3.forward), (Enemy.instance.transform.position - transform.position)) >= .65;
         //enable both if enemy is on the screen
         bool onRightSide = Vector3.Cross(transform.TransformDirection(Vector3.forward), (Enemy.instance.transform.position - transform.position)).y > 0;
