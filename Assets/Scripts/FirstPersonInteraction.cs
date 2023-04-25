@@ -67,7 +67,7 @@ public class FirstPersonInteraction : MonoBehaviour
             Pickup.transform.position = controller.MainCamera.transform.position;
         }*/
         //throw from same position if its not through a wall
-        Pickup.Rigidbody.AddForce(controller.MainCamera.transform.forward * Mathf.Lerp(ThrowForceMin, ThrowForceMax, throwForce), ForceMode.VelocityChange);
+        Pickup.Rigidbody.AddForce(controller.MainCamera.transform.forward * ThrowForceMax, ForceMode.VelocityChange);
         if(throwForce > 0.5f)
         { Pickup.AlwaysMakeImpact = true; }
         throwForce = 0f;
@@ -119,14 +119,10 @@ public class FirstPersonInteraction : MonoBehaviour
             {
                 throwForce += Time.deltaTime * ThrowWindupSpeed;
                 throwForce = Mathf.Clamp01(throwForce);
-
-                PlayerUI.instance.SetThrowStrengthMeter(throwForce);
             }
             else if (controller.Input.throwRelease)
             { ThrowInteractable(); }
         }
-        else
-        { PlayerUI.instance.SetThrowStrengthMeter(0f); }
 
         if (lastInteractable != interactable && lastInteractable != null)
         { lastInteractable.LookingAt = false; }

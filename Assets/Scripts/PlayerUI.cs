@@ -16,7 +16,6 @@ public class PlayerUI : MonoBehaviour
     public Canvas Canvas;
 
     [HideInInspector] public Slider PettingMeter;
-    private Slider throwStrengthMeter;
     private Image timeUI;
     private GameObject catTimerUI;
     private Text debugText;
@@ -79,9 +78,6 @@ public class PlayerUI : MonoBehaviour
                     infoText = t.GetComponent<Text>();
                     infoTextFade = t.GetComponent<Animation>();
                     break;
-                case "ThrowStrengthMeter":
-                    throwStrengthMeter = t.GetComponent<Slider>();
-                    break;
                 case "CatTimer":
                     catTimerUI = t.gameObject;
                     timeUI = t.GetChild(3).GetComponent<Image>();
@@ -114,7 +110,6 @@ public class PlayerUI : MonoBehaviour
         WinScreen.SetActive(false);
         LoseCopsScreen.SetActive(false);
         catTimerUI.gameObject.SetActive(false);
-        throwStrengthMeter.gameObject.SetActive(false);
         hamd.enabled = false;
         //debugText.enabled = false;
         debugText.text = "";
@@ -237,9 +232,4 @@ public class PlayerUI : MonoBehaviour
     //the way these 3 methods below are is bad
     //ideally, the UI should observe other properties and act independently
     //ill change this later if i have time
-    public void SetThrowStrengthMeter(float p)
-    {
-        throwStrengthMeter.gameObject.SetActive(p > 0.15f);
-        throwStrengthMeter.value = p;
-    }
 }
