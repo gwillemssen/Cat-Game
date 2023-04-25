@@ -7,48 +7,36 @@ using System.Linq;
 
 public class SwitchController : Interactable
 {
-    public MeshRenderer meshRenderer;
-    public AudioClip SoundOn, SoundOff;
-    private LerpScript switchLerp;
-    private GameObject switchBone;
+    public GameObject switchBone;
     public bool on;
     private Vector3 offPos = new Vector3(40, 0, 0);
     private Vector3 onPos = new Vector3(-40, 0, 0);
     [Tooltip("List of lights that this switch effects, add as many as needed.")]
     public List<LightInfo> lights;
-    private AudioClip[] sounds = new AudioClip[2];
-
-
-
+    public AudioClip[] sounds = new AudioClip[2];
     // SOUND LIST:
     // 0: on
     // 1: off
-
-    // Start is called before the first frame update
-    private AudioSource lightSwitchPlayer;
-    [HideInInspector]
-    public int clipID;
+    public AudioSource lightSwitchPlayer;
     void Start()
     {
         SwitchLoad();
-        ToggleLight();
-
-        switchLerp.vecTarget = on ? onPos : offPos;
-    }
-
-    void Update()
-    {
-        Animate();
     }
 
     void ToggleLight()
     {
+        if(LeanTween.isTweening(switchBone.gameObject)) LeanTween.cancel(switchBone.gameObject);
         foreach (var light in lights.Where(light=> light != null))
-        {
             light.light.enabled = on;
-            light.meshRenderer.material.SetColor("_EmissionColor", on ? Color.yellow : Color.black);
-        }
-        switchLerp.vecTarget = on ? onPos : offPos;
+
+        foreach (var lightMesh in lights.Where(lightMesh => lightMesh != null))
+            lightMesh.meshRenderer.material.SetColor("_EmissionColor", on ? Color.yellow : Color.black);
+
+        LeanTween.value(switchBone.gameObject, 0, 1, 0.5f).setOnUpdate((float val) =>
+        {
+            switchBone.transform.localRotation = Quaternion.Lerp(switchBone.transform.localRotation, Quaternion.Euler(on?onPos:offPos), val);
+        });
+        lightSwitchPlayer.PlayOneShot(on ? sounds[0] : sounds[1]);
     }
 
 
@@ -56,48 +44,14 @@ public class SwitchController : Interactable
     {
         on = !on;
         ToggleLight();
-        PlaySound(on ? 0 : 1);
-
-        //if (on == onBefore)
-        //{
-        //    //I can't believe this works
-        //    on = !on; 
-        //    ToggleLight();
-        //    on = !on;
-        //    //This allows multiple switches to control the same light, like a real home
-        //} 
     }
 
     private void SwitchLoad()
     {
-        //sound loading
-        sounds[0] = SoundOn; 
-        sounds[1] = SoundOff;
-        //Debug.Log($"{gameObject.name} sounds loaded");
-
         //initialization
         lightSwitchPlayer = GetComponent<AudioSource>();
-        switchBone = transform.GetChild(2).GetChild(0).gameObject;
-        switchLerp = this.AddComponent<LerpScript>();
-        switchLerp.typeOfLerp = LerpScript.LerpType.Vector3;
-        switchLerp.lerpSpeed = 8;
+        // switchBone = transform.GetChild(2).GetChild(0).gameObject;
         //Debug.Log($"{gameObject.name} Initialized");
-    }
-
-    private void PlaySound(int clip)
-    {
-        clipID = clip;
-        lightSwitchPlayer.clip = sounds[clipID];
-        lightSwitchPlayer.Play();
-    }
-
-    private void Animate()
-    {
-
-        if (switchBone.transform.localRotation != Quaternion.Euler(switchLerp.vecVal))//updates rotation of the switch to match the desired value while it's not the same
-        {
-            switchBone.transform.localRotation = Quaternion.Euler(switchLerp.vecVal);
-        }
     }
 
     [Serializable]

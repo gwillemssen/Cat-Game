@@ -229,14 +229,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4200675470091000182}
-  m_LocalRotation: {x: 0.346469, y: 0, z: 0, w: 0.9380614}
+  m_LocalRotation: {x: -0.3420201, y: 0, z: 0, w: 0.9396927}
   m_LocalPosition: {x: 0, y: 1.1641532e-10, z: -0.0007673033}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1028959783775031588}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 40.543, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -40, y: 0, z: 0}
 --- !u!1 &8480304882326769899
 GameObject:
   m_ObjectHideFlags: 0
@@ -297,15 +297,21 @@ MonoBehaviour:
   OnInteract:
     m_PersistentCalls:
       m_Calls: []
-  SoundOn: {fileID: 8300000, guid: 98945ab2e2a21504a8e64830adf59019, type: 3}
-  SoundOff: {fileID: 8300000, guid: c3ddace165d825a45be1b63f67fa62b5, type: 3}
+  switchBone: {fileID: 4200675470091000182}
   on: 1
   lights:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  clipID: 0
+  - light: {fileID: 0}
+    meshRenderer: {fileID: 0}
+  - light: {fileID: 0}
+    meshRenderer: {fileID: 0}
+  - light: {fileID: 0}
+    meshRenderer: {fileID: 0}
+  - light: {fileID: 0}
+    meshRenderer: {fileID: 0}
+  sounds:
+  - {fileID: 8300000, guid: 98945ab2e2a21504a8e64830adf59019, type: 3}
+  - {fileID: 8300000, guid: c3ddace165d825a45be1b63f67fa62b5, type: 3}
+  lightSwitchPlayer: {fileID: 2087134554}
 --- !u!82 &2087134554
 AudioSource:
   m_ObjectHideFlags: 0
