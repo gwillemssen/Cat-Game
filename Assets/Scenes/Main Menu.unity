@@ -386,7 +386,7 @@ GameObject:
   - component: {fileID: 542674410}
   - component: {fileID: 542674409}
   m_Layer: 0
-  m_Name: Left_Button (1)
+  m_Name: CenterButtonLeft_Controls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -468,8 +468,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 10.000002, y: 0.0000027862538, z: 10.000002}
-  m_Center: {x: -0.000007450581, y: -0.0000010009629, z: -0.000003973643}
+  m_Size: {x: 37.235287, y: 0.9999996, z: 42.415413}
+  m_Center: {x: 12.104563, y: -0.000015539403, z: -2.6043897}
 --- !u!114 &542674410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -634,7 +634,7 @@ GameObject:
   - component: {fileID: 960027729}
   - component: {fileID: 960027728}
   m_Layer: 0
-  m_Name: Left_Button
+  m_Name: LeftButton_Controls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -716,8 +716,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 10.000001, y: 0.000000037252903, z: 10}
-  m_Center: {x: 0, y: -0.0000019073486, z: 0}
+  m_Size: {x: 37.235287, y: 0.9999996, z: 42.415413}
+  m_Center: {x: 12.104563, y: -0.000015539403, z: -2.6043897}
 --- !u!114 &960027729
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -842,6 +842,8 @@ GameObject:
   - component: {fileID: 1043813914}
   - component: {fileID: 1043813913}
   - component: {fileID: 1043813917}
+  - component: {fileID: 1043813918}
+  - component: {fileID: 1043813919}
   m_Layer: 0
   m_Name: Start
   m_TagString: Untagged
@@ -860,8 +862,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.4132745, y: 1.8482124, z: 5.17483}
-  m_Center: {x: 0.043612275, y: 0.028450832, z: 2.0874164}
+  m_Size: {x: 0.7492608, y: 4.5522137, z: 76.815125}
+  m_Center: {x: 0.010056786, y: 1.3804653, z: -33.732826}
 --- !u!23 &1043813914
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -939,6 +941,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bab1f892a600854e9cc6106003b82bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!65 &1043813918
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1043813911}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.7802734, y: 11.662345, z: 12.871751}
+  m_Center: {x: 0.015218569, y: 1.2638443, z: 61.70382}
+--- !u!114 &1043813919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1043813911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eecc6d85f7c36fa48b32d405b3f5e27f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MainCam: {fileID: 393649156}
+  valueToChangeTo: 3
 --- !u!4 &1331521881 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3283424978085695556, guid: 62c2f4e6231077242a9ddc7b08bba928,
@@ -1138,7 +1167,7 @@ GameObject:
   - component: {fileID: 1807740037}
   - component: {fileID: 1807740036}
   m_Layer: 0
-  m_Name: Right_Button
+  m_Name: RightButton_Controls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1220,8 +1249,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 10.000004, y: 0.00000060599393, z: 10.000003}
-  m_Center: {x: -0.0000076293945, y: 0, z: -0.0000038146973}
+  m_Size: {x: 45.87026, y: 0.9999996, z: 42.415413}
+  m_Center: {x: -13.64129, y: -0.000019869045, z: -2.6043897}
 --- !u!114 &1807740037
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1248,9 +1277,9 @@ GameObject:
   - component: {fileID: 1963251826}
   - component: {fileID: 1963251825}
   - component: {fileID: 1963251828}
-  - component: {fileID: 1963251827}
+  - component: {fileID: 1963251829}
   m_Layer: 0
-  m_Name: Right_Button (1)
+  m_Name: CenterButtonRight_Controls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1321,19 +1350,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1963251822}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!65 &1963251827
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1963251822}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 10.000002, y: 0.000000037252903, z: 10}
-  m_Center: {x: -0.0000076293945, y: -0.0000019073486, z: 0}
 --- !u!114 &1963251828
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1348,20 +1364,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainCam: {fileID: 393649156}
   valueToChangeTo: 2
---- !u!114 &1988305657
-MonoBehaviour:
+--- !u!65 &1963251829
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5455302812974142412}
+  m_GameObject: {fileID: 1963251822}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eecc6d85f7c36fa48b32d405b3f5e27f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MainCam: {fileID: 393649156}
-  valueToChangeTo: 3
+  serializedVersion: 2
+  m_Size: {x: 34.873726, y: 0.9999996, z: 42.415413}
+  m_Center: {x: -11.850171, y: -0.00001700158, z: -2.6043897}
 --- !u!1 &98131809189894826
 GameObject:
   m_ObjectHideFlags: 0
@@ -7431,7 +7446,6 @@ GameObject:
   - component: {fileID: 4683446391588194678}
   - component: {fileID: 461238426235985877}
   - component: {fileID: 9142339231657512189}
-  - component: {fileID: 1988305657}
   m_Layer: 0
   m_Name: Cat
   m_TagString: Untagged
