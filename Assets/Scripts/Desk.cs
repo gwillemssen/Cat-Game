@@ -41,7 +41,8 @@ public class Desk : Interactable
     private void DisconnectChild()
     {
 
-        objectInsideDrawer.transform.parent = null; 
+        objectInsideDrawer.transform.parent = null;
+        objectInsideDrawer.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
     }
 
 

@@ -117,7 +117,7 @@ public class Cat : Interactable
     {
         if (other.CompareTag("Player") && BodyPosition == "Sitting")
         {
-            Debug.Log("YEASDASFAFS");
+
             //animator.SetBool("IsInRadius", true);
         }
     }

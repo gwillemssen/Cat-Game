@@ -376,7 +376,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2138809663741715095}
   m_LocalRotation: {x: -0, y: 0.86602443, z: -0, w: 0.5000017}
-  m_LocalPosition: {x: 0, y: 4.93, z: 0}
+  m_LocalPosition: {x: -2.56, y: 1.02, z: -1.95}
   m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -391,7 +391,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2138809663741715095}
   serializedVersion: 8
-  lengthInSec: 5
+  lengthInSec: 1
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
@@ -466,7 +466,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.2
+      scalar: 0.3
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -519,7 +519,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 10
+      scalar: 4
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -5138,8 +5138,8 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
-  - {fileID: 2100000, guid: 082461fe1b552154e9807c4360b6d8d5, type: 2}
+  - {fileID: 2100000, guid: e00bd1224e296544bb8ac56b7e32ad42, type: 2}
+  - {fileID: 2100000, guid: e00bd1224e296544bb8ac56b7e32ad42, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5875,9 +5875,9 @@ MonoBehaviour:
   Disabled: 0
   CanInteract: 1
   Cooldown: 0
-  VisiblyLocked: 0
+  VisiblyLockedOnView: 0
   Open: 0
-  RequiredItem: 
+  RequiredItemToViewInteraction: 
   player: {fileID: 5456157240789961753}
   OnInteract:
     m_PersistentCalls:
@@ -5886,7 +5886,7 @@ MonoBehaviour:
   PetsRequired: 45
   PettingDecayRate: 0.75
   PettingDecayDelay: 0.5
-  LightningAmount: 20
+  LightningAmount: 40
   MusicAudioSource: {fileID: 461238427157166943}
   music1: {fileID: 8300000, guid: 25d0ad45af468154e974c15be5a85030, type: 3}
   music2: {fileID: 8300000, guid: dd73f869c3af4794bbd999e97611320e, type: 3}
