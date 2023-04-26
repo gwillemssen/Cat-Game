@@ -42,7 +42,6 @@ public class Desk : Interactable
     {
 
         objectInsideDrawer.transform.parent = null;
-        objectInsideDrawer.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
     }
 
 
