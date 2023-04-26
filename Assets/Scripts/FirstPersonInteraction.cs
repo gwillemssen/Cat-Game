@@ -143,9 +143,9 @@ public class FirstPersonInteraction : MonoBehaviour
             if (interactable != null)
             {
                 bool requiredItemMatches = true;
-                if(interactable.RequiredItem != "" && Pickup == null)
+                if(interactable.RequiredItemToViewInteraction != "" && Pickup == null)
                 { requiredItemMatches = false; }
-                else if (interactable.RequiredItem != "" && Pickup != null && interactable.RequiredItem != Pickup.name)
+                else if (interactable.RequiredItemToViewInteraction != "" && Pickup != null && interactable.RequiredItemToViewInteraction != Pickup.name)
                 { requiredItemMatches = false; }
 
 
@@ -163,8 +163,8 @@ public class FirstPersonInteraction : MonoBehaviour
     {
         
         if (interactable == null) SetCrosshair("Normal");
-        else if (interactable != null && !interactable.VisiblyLocked ) SetCrosshair("Interactable");
-        else if(interactable != null && interactable.VisiblyLocked) SetCrosshair("Locked");
+        else if (interactable != null && !interactable.VisiblyLockedOnView ) SetCrosshair("Interactable");
+        else if(interactable != null && interactable.VisiblyLockedOnView) SetCrosshair("Locked");
     }
     public void SetCrosshair(string crosshairInput)
     {

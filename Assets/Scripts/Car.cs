@@ -7,7 +7,7 @@ public class Car : Interactable
     [SerializeField] private string keyName = "Car Keys";
     bool locked = true;
 
-    
+    [SerializeField] private Vector3 OpenPos, ClosedPos;
 
     public List<Sound> UnlockSounds;
 
@@ -29,7 +29,7 @@ public class Car : Interactable
             {
                 locked = false;
                 base.PlayRandomInteractionSound(UnlockSounds);
-                VisiblyLocked = false;
+                VisiblyLockedOnView = false;
             }
         }
 
@@ -39,10 +39,10 @@ public class Car : Interactable
     {
         if(locked)
         {
-            base.VisiblyLocked = true;
+            base.VisiblyLockedOnView = true;
         }
         if (!locked)
-        { base.OpenHinge(Hinge, new Vector3(0, 110, 0), new Vector3(0, 169.12f, 0), 1.5f, .8f); }
+        { base.OpenHinge(Hinge, OpenPos, ClosedPos, 1.5f, .8f); }
     }
 
 

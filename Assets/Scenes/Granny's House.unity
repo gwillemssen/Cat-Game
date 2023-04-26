@@ -35822,9 +35822,9 @@ MonoBehaviour:
   Disabled: 0
   CanInteract: 1
   Cooldown: 2
-  VisiblyLocked: 0
+  VisiblyLockedOnView: 0
   Open: 0
-  RequiredItem: 
+  RequiredItemToViewInteraction: 
   player: {fileID: 0}
   OnInteract:
     m_PersistentCalls:
@@ -48723,11 +48723,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Granny's Car
       objectReference: {fileID: 0}
+    - target: {fileID: 2376133934589398665, guid: 5f6867e224c78384dab3060e2ea37d52,
+        type: 3}
+      propertyPath: OpenPos.y
+      value: -130
+      objectReference: {fileID: 0}
+    - target: {fileID: 2376133934589398665, guid: 5f6867e224c78384dab3060e2ea37d52,
+        type: 3}
+      propertyPath: ClosedPos.y
+      value: 169.12
+      objectReference: {fileID: 0}
     - target: {fileID: 9026105173387824025, guid: 5f6867e224c78384dab3060e2ea37d52,
         type: 3}
       propertyPath: player
       value: 
-      objectReference: {fileID: 9026105173387824038}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5f6867e224c78384dab3060e2ea37d52, type: 3}
 --- !u!1 &3622095743212146469
@@ -56292,9 +56302,9 @@ MonoBehaviour:
   Disabled: 0
   CanInteract: 1
   Cooldown: 0
-  VisiblyLocked: 0
+  VisiblyLockedOnView: 0
   Open: 0
-  RequiredItem: 
+  RequiredItemToViewInteraction: 
   player: {fileID: 5849256425588376295}
   OnInteract:
     m_PersistentCalls:
@@ -67634,18 +67644,6 @@ Transform:
   m_Father: {fileID: 143136123687989632}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &9026105173387824038 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6827426518700794384, guid: 5f6867e224c78384dab3060e2ea37d52,
-    type: 3}
-  m_PrefabInstance: {fileID: 3616631644008329911}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03d6b8fc5abf6674b9fb3d7bef260517, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &9043453839661620968
 Transform:
   m_ObjectHideFlags: 0

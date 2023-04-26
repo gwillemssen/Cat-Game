@@ -9,9 +9,9 @@ public class Interactable : MonoBehaviour
     [HideInInspector] public bool Disabled = false;
     public bool CanInteract = true;
     public float Cooldown;
-    public bool VisiblyLocked = false;
+    public bool VisiblyLockedOnView = false;
     public bool Open;
-    public string RequiredItem = "";
+    public string RequiredItemToViewInteraction = "";
 
     public AudioPlayer player;
 

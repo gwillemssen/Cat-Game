@@ -23,7 +23,7 @@ public class Bookshelf : Interactable
     {
 
 
-        if (withInteractable.name == RequiredItem) 
+        if (withInteractable.name == RequiredItemToViewInteraction) 
         {
             LeanTween.moveLocalZ(BookshelfL, 2.6f, 2.5f).setEaseLinear();
             LeanTween.moveLocalZ(BookshelfR, -7f, 2.5f).setEaseLinear();
