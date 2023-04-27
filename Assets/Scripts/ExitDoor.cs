@@ -8,7 +8,7 @@ public class ExitDoor : Interactable
     
 
     //events
-    public static event Action ExitedDoor;
+    //public static event Action ExitedDoor;
 
     private Animation anim;
     private bool locked = true;

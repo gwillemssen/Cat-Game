@@ -12,7 +12,7 @@ public class HidingSpot : Interactable, IGrannyInteractable
     public float ExitSpeed = 0.75f;
 
 
-    private FirstPersonController player;
+    private FirstPersonController FPController;
     private Vector3 startPos;
     private Quaternion startRot;
 
@@ -25,15 +25,15 @@ public class HidingSpot : Interactable, IGrannyInteractable
 
     public override void Interact(FirstPersonController controller)
     {
-        if (player != null)
+        if (FPController != null)
             return;
 
-        player = controller;
-        startPos = player.transform.position;
-        startRot = player.transform.rotation;
-        player.DisableMovement = true;
-        player.UI.SetInfoText("Hiding...\nRight click to exit");
-        player.Hiding = true;
+        FPController = controller;
+        startPos = FPController.transform.position;
+        startRot = FPController.transform.rotation;
+        FPController.DisableMovement = true;
+        FPController.UI.SetInfoText("Hiding...\nRight click to exit");
+        FPController.Hiding = true;
         entering = true;
         lerp = 0f;
 
@@ -43,17 +43,17 @@ public class HidingSpot : Interactable, IGrannyInteractable
 
     private void Update()
     {
-        if(player != null)
+        if(FPController != null)
         {
             if (entering && lerp != 1f)
             {
-                player.transform.position = Vector3.Lerp(startPos, HidingPosition.position, lerp);
-                player.transform.rotation = Quaternion.Lerp(startRot, HidingPosition.rotation, lerp);
+                FPController.transform.position = Vector3.Lerp(startPos, HidingPosition.position, lerp);
+                FPController.transform.rotation = Quaternion.Lerp(startRot, HidingPosition.rotation, lerp);
             }
             else if(lerp != 1f)
             {
-                player.transform.position = Vector3.Lerp(HidingPosition.position, startPos, lerp);
-                //player.transform.rotation = Quaternion.Lerp(HidingPosition.rotation, startRot, lerp);
+                FPController.transform.position = Vector3.Lerp(HidingPosition.position, startPos, lerp);
+                //FPController.transform.rotation = Quaternion.Lerp(HidingPosition.rotation, startRot, lerp);
             }
 
             if (entering)
@@ -66,19 +66,19 @@ public class HidingSpot : Interactable, IGrannyInteractable
             {
                 if(entering)
                 {
-                    //Debug.Log(player.Hiding);
+                    //Debug.Log(FPController.Hiding);
                 }
                 else
                 {
                     
-                    player.DisableMovement = false;
-                    player.Hiding = false;
-                    player = null;
+                    FPController.DisableMovement = false;
+                    FPController.Hiding = false;
+                    FPController = null;
                     
                 }
             }
 
-            if(player != null && player.Input.throwing && entering)
+            if(FPController != null && FPController.Input.throwing && entering)
             {
                 Exit();
             }

@@ -110,7 +110,7 @@ public class FirstPersonController : MonoBehaviour
     //Private References
     private CharacterController controller;
     //Constants
-    private static float CameraFOVLerpSpeed = 2f;
+    //private static float CameraFOVLerpSpeed = 2f;
     private const float _threshold = 0.01f;
     private const bool isCurrentDeviceMouse = true;
     private const bool useAnalogMovement = false; //enable this if we want to use a controller

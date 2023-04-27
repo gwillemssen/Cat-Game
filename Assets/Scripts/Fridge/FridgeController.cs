@@ -6,7 +6,6 @@ namespace Fridge
 {
     public class FridgeController : Interactable
     {
-        private bool initialized;
 
         public bool topDoorOpen;
         private bool topDoorOpenTemp;
@@ -41,8 +40,6 @@ namespace Fridge
             lightLerp2 = this.AddComponent<LerpScript>();
             lightLerp2.typeOfLerp = LerpScript.LerpType.Float;
             lightLerp2.lerpSpeed = 2;
-            initialized = true;
-            //Debug.Log($"{gameObject.name} initialized.");
 
         }
 

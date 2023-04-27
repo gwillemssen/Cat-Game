@@ -6,8 +6,8 @@ public class Door : Interactable
 {
     [SerializeField] private Transform forward;
     [SerializeField] private Transform pivot;
-    [SerializeField] private float time = 1f;
-    [SerializeField] private Collider collider;
+    //[SerializeField] private float time = 1f;
+    [SerializeField] private Collider doorcollider;
 
     private Transform targetRot;
     private bool open;
@@ -53,7 +53,7 @@ public class Door : Interactable
     private void Update()
     {
         pivot.localRotation = Quaternion.Lerp(pivot.localRotation, targetRot.localRotation, Time.deltaTime * 4f);
-        collider.isTrigger = open || (!open && Mathf.Abs(pivot.localRotation.y) > .1f);
+        doorcollider.isTrigger = open || (!open && Mathf.Abs(pivot.localRotation.y) > .1f);
         //pivot.rotation = Quaternion.Euler(pivot.rotation.x, Mathf.Lerp(pivot.rotation.y, targetRot, Time.deltaTime * 4f), pivot.rotation.z);
     }
 

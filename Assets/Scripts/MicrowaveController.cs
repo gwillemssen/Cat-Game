@@ -9,17 +9,17 @@ using Random = UnityEngine.Random;
 public class MicrowaveController : Interactable
 {
     [SerializeField] private Transform investigatePos;
-    public float currentNoiseEmitted;
-    private Light light;
+    private float currentNoiseEmitted;
+    private Light MicrowaveLight;
     private Material mat;
     private GameObject plate;
     private GameObject door;
 
-    public bool lightOn;
-    public bool plateSpinning;
-    public bool doorOpen;
+    private bool lightOn;
+    private bool plateSpinning;
+    private bool doorOpen;
 
-    private AudioClip[] sounds = new AudioClip[6];
+    [SerializeField] private AudioClip[] sounds = new AudioClip[6];
     // SOUND LIST:
     // 0: beep
     // 1: start
@@ -29,11 +29,11 @@ public class MicrowaveController : Interactable
     // 5: close
 
     private AudioSource microwavePlayer;
-    public int clipID;
+    private int clipID;
 
 
-    public float timeLeft;
-    public bool timerOn = false;
+    private float timeLeft;
+    private bool timerOn = false;
 
 
     private TextMeshProUGUI timerText;
@@ -41,7 +41,7 @@ public class MicrowaveController : Interactable
     private LerpScript LightLerp;
     private LerpScript plateLerp;
     private LerpScript doorLerp;
-    public bool allowDeactivate = false;
+    private bool allowDeactivate = false;
     
     private bool active;
 
@@ -78,7 +78,7 @@ public class MicrowaveController : Interactable
         if (LightLerp.floatTarget != LightLerp.floatVal)
         {
             mat.SetFloat("_LightIntensity",LightLerp.floatVal);
-            light.intensity = 0.09f * LightLerp.floatVal;
+            MicrowaveLight.intensity = 0.09f * LightLerp.floatVal;
         }
     }
 
@@ -210,7 +210,7 @@ public class MicrowaveController : Interactable
         
         mat = Instantiate(transform.GetChild(0).GetComponent<Renderer>().material);
         transform.GetChild(0).GetComponent<Renderer>().material = mat;
-        light = transform.GetChild(2).GetComponent<Light>();
+        MicrowaveLight = transform.GetChild(2).GetComponent<Light>();
         timerText = transform.GetChild(3).GetChild(0).GetComponent<TextMeshProUGUI>();
     }
 

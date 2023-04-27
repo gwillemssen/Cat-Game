@@ -580,7 +580,7 @@ public class Enemy : MonoBehaviour
 
     private float lastTimePlayedVoiceline = -420f;
     private float voiceLineDuration;
-    private float lastTimePlayedChasingVoiceline = -420f;
+    //private float lastTimePlayedChasingVoiceline = -420f;
     private float chasingVoicelineDuration;
     private Queue<AudioClip> voicelineQueue = new Queue<AudioClip>();
 

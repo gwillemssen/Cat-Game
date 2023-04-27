@@ -47,10 +47,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void OnLevelWasLoaded(int level)
-    {
-        StartGame();
-    }
+    //private void OnLevelWasLoaded(int level)
+    //{
+    //    StartGame();
+    //}
 
     private void StartGame()
     {

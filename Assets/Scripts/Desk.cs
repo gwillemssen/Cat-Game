@@ -8,7 +8,6 @@ public class Desk : Interactable
     public GameObject Hinge;
     public GameObject objectInsideDrawer;
     private Vector3 inDrawerPosition;
-    private bool Touched = false;
     // Start is called before the first frame update
     void Start()
     {
