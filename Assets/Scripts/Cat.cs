@@ -134,6 +134,7 @@ public class Cat : Interactable
         if (state == CatState.PettingMinigame || state == CatState.DonePetting)
         {
             MoveCat();
+            
 
             if (state == CatState.PettingMinigame) //PET THE CAT
             {
@@ -176,6 +177,7 @@ public class Cat : Interactable
     Quaternion startRot, targetRot;
     private void MoveCat()
     {
+        
         float t = Time.time - timeStartedMovingCat;
         t = Mathf.Clamp01(t);
         t = t * t * t * (t * (6f * t - 15f) + 10f); //smootherstep
@@ -236,6 +238,9 @@ public class Cat : Interactable
 
     private void StartMinigame()
     {
+        transform.GetChild(1).gameObject.layer = 16;
+        transform.GetChild(2).gameObject.layer = 16;
+        transform.GetChild(3).gameObject.layer = 16;
         base.CanInteract = false;
         timeStartedMovingCat = Time.time;
         state = CatState.PettingMinigame;
@@ -328,6 +333,7 @@ public class Cat : Interactable
 
     public void EndMinigame()
     {
+        
         transform.localScale = catOriginalScale;
         state = CatState.DonePetting;
         timeStartedMovingCat = Time.time;
@@ -338,5 +344,8 @@ public class Cat : Interactable
         PlayerUI.instance.PettingMeter.gameObject.SetActive(false);
         playerController.Interaction.HideCrosshair = false;
         playerController.UI.Hamd.enabled = false;
+        transform.GetChild(1).gameObject.layer = 0;
+        transform.GetChild(2).gameObject.layer = 0;
+        transform.GetChild(3).gameObject.layer = 0;
     }
 }

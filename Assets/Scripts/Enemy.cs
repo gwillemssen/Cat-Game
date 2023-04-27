@@ -614,7 +614,7 @@ public class Enemy : MonoBehaviour
     //Editor Gizmo stuff
     private void OnDrawGizmosSelected()
     {
-        return;
+        //return;
         if (Waypoints == null || Waypoints.Count == 0)
         { return; }
         for (int i = 0; i < Waypoints.Count; i++)

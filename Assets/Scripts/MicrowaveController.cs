@@ -226,7 +226,6 @@ public class MicrowaveController : Interactable
 
     IEnumerator waiter(float seconds)
     {
-        bool done = false;
         yield return new WaitForSeconds(seconds);
     }
 
