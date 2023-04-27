@@ -7,7 +7,8 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance { get; private set; }
-    public static event Action AllCatsPetted;
+    public static event Action OnAllCatsPetted;
+    public static event Action OnCatPetted;
     public enum GameState { Normal, Loading, GameOver }
     public enum LoseState { Shot }
 
@@ -63,17 +64,18 @@ public class GameManager : MonoBehaviour
     public void CatPetted(Cat cat)
     {
         CatsToPet.Remove(cat);
-        
+        OnCatPetted?.Invoke();
+
         if (CatsToPet.Count == 0)
-        { AllCatsPetted?.Invoke(); }
+        { OnAllCatsPetted?.Invoke(); }
     }
     public void WinGame()
     {
         if (State == GameState.Loading)
             return;
-        State = GameState.Loading;
+        State = GameState.GameOver;
+        StartCoroutine(TemporaryWinSequence(CatsToPet.Count == 0));
         ResetGameManager();
-        StartCoroutine(TemporaryWinSequence());
     }
 
     public void GameOver(LoseState lose)
@@ -112,13 +114,16 @@ public class GameManager : MonoBehaviour
         RestartLevel();
     }
 
-    IEnumerator TemporaryWinSequence()
+    IEnumerator TemporaryWinSequence(bool pettedAllCats)
     {
         FirstPersonController.instance.Interaction.HideCrosshair = true;
         FirstPersonController.instance.enabled = false;
-        PlayerUI.instance.WinScreen.SetActive(true);
+        if (pettedAllCats)
+        { PlayerUI.instance.WinScreen.SetActive(true); }
+        else
+        { PlayerUI.instance.NotAllOfTheCatsScreen.SetActive(true); }
         FirstPersonController.instance.DisableMovement = true;
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(2.5f);
         LoadScene("Main Menu");
     }
 

@@ -16,11 +16,8 @@ public class PlayerUI : MonoBehaviour
     public Canvas Canvas;
 
     [HideInInspector] public Slider PettingMeter;
-    private Image timeUI;
-    private GameObject catTimerUI;
     private Text debugText;
     private Text infoText;
-    private Animation catTimerAnim;
     private Animation infoTextFade;
     private Image hamd;
     private GameObject spottedGradient_Left;
@@ -33,7 +30,7 @@ public class PlayerUI : MonoBehaviour
     private Image bloodOverlay;
     public GameObject WinScreen { get; private set; }
     public GameObject LoseScreen { get; private set; }
-    public GameObject LoseCopsScreen { get; private set; }
+    public GameObject NotAllOfTheCatsScreen { get; private set; }
     public Image Hamd { get { return hamd; } private set { hamd = value; } }
     public bool EnemyOnScreen { get; private set; }
 
@@ -78,13 +75,8 @@ public class PlayerUI : MonoBehaviour
                     infoText = t.GetComponent<Text>();
                     infoTextFade = t.GetComponent<Animation>();
                     break;
-                case "CatTimer":
-                    catTimerUI = t.gameObject;
-                    timeUI = t.GetChild(3).GetComponent<Image>();
-                    catTimerAnim = catTimerUI.GetComponent<Animation>();
-                    break;
-                case "LOSECops":
-                    LoseCopsScreen = t.gameObject;
+                case "NOTALLCATS":
+                    NotAllOfTheCatsScreen = t.gameObject;
                     break;
                 case "Hamd":
                     hamd = t.GetComponent<Image>();
@@ -108,8 +100,7 @@ public class PlayerUI : MonoBehaviour
         PettingMeter.gameObject.SetActive(false);
         LoseScreen.SetActive(false);
         WinScreen.SetActive(false);
-        LoseCopsScreen.SetActive(false);
-        catTimerUI.gameObject.SetActive(false);
+        NotAllOfTheCatsScreen.SetActive(false);
         hamd.enabled = false;
         //debugText.enabled = false;
         debugText.text = "";
