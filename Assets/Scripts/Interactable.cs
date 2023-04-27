@@ -34,7 +34,7 @@ public class Interactable : MonoBehaviour
     /// <param name="controller">Reference to the player controller</param>
     public virtual void Interact(FirstPersonController controller)
     {
-        OnInteract?.Invoke();
+
     }
 
     public void InteractBase()
@@ -60,7 +60,6 @@ public class Interactable : MonoBehaviour
     /// <param name="withInteractable">Interactable that the player is holding when they clicked on this one.  Useful for keys / tools</param>
     public virtual void InteractWith(FirstPersonController controller, Interactable withInteractable)
     {
-
     }
 
     public virtual void OpenHinge(GameObject Hinge, Vector3 startingLocation, Vector3 endingLocation, float openTime, float closeTime)

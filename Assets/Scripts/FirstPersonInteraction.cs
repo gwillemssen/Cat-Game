@@ -88,7 +88,10 @@ public class FirstPersonInteraction : MonoBehaviour
         { interactable.InteractWith(controller, Pickup); }
         interactable.InteractHold(controller);
         if (controller.Input.interactedOnce)
-        { interactable.Interact(controller); }
+        {
+            interactable.Interact(controller);
+            interactable.OnInteract?.Invoke();
+        }
         interactable.InteractBase();
         
     }
