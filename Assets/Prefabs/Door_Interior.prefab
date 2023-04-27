@@ -64,17 +64,16 @@ MonoBehaviour:
   Disabled: 0
   CanInteract: 1
   Cooldown: 1
-  VisiblyLocked: 0
+  VisiblyLockedOnView: 0
   Open: 0
-  RequiredItem: 
+  RequiredItemToViewInteraction: 
   player: {fileID: 0}
   OnInteract:
     m_PersistentCalls:
       m_Calls: []
   forward: {fileID: 1357577202083127585}
   pivot: {fileID: 630623917495218338}
-  time: 1
-  collider: {fileID: 739212196}
+  doorcollider: {fileID: 739212196}
   doorOpen: {fileID: 5950643270630881780}
   doorClose: {fileID: 6956787468123848382}
 --- !u!82 &5950643270630881780
