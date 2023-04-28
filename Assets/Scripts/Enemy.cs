@@ -142,6 +142,7 @@ public class PatrollingState : EnemyState
     private float sittingTimer;
     private float sittingDuration;
     private Vector3? lastSeenPosition;
+    private float investigateTimer;
 
     public PatrollingState(Enemy enemy) : base(enemy) { }
 
@@ -151,6 +152,7 @@ public class PatrollingState : EnemyState
         lastTimeSeenTimer = 0f;
         AwarenessValue = 0f;
         sittingTimer = 0f;
+        investigateTimer = 0f;
         sittingDuration = Random.Range(enemy.SittingDownDurationMin, enemy.SittingDownDurationMax);
     }
 
@@ -210,7 +212,10 @@ public class PatrollingState : EnemyState
         {
             StopAndLook(enemy.PlayerTransform.position, enemy.StopAndLookTime);
             if (AwarenessValue > enemy.Awareness_IdleState_Duration)
-            { lastSeenPosition = enemy.PlayerTransform.position; }
+            { //investigate if she is in the yellow state
+                lastSeenPosition = enemy.PlayerTransform.position;
+                investigateTimer = 0f;
+            }
         }
         else
         {
@@ -219,7 +224,12 @@ public class PatrollingState : EnemyState
                 SetTarget(lastSeenPosition.Value); //go to last seen position
                 if (enemy.AtDestination)
                 {
-                    lastSeenPosition = null;
+                    investigateTimer += Time.deltaTime;
+                    if (investigateTimer > enemy.StopAndLookTime)
+                    {
+                        lastSeenPosition = null;
+                        investigateTimer = 0f;
+                    }
                 }
             }
         }
