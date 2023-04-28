@@ -10,8 +10,7 @@ public class MainMenu_Start : MonoBehaviour
 
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        
     }
     public void OnMouseDown()
     {

@@ -54,9 +54,22 @@ public class GameManager : MonoBehaviour
 
     private void StartGame()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+        if(SceneManager.GetActiveScene().name == "Main Menu")
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
+        }
+
         if (State == GameState.Normal)
             return;
+
+        //anything that needs to be reset / set up can go here
 
         State = GameState.Normal;
     }
