@@ -118,10 +118,12 @@ public class GameManager : MonoBehaviour
     {
         FirstPersonController.instance.Interaction.HideCrosshair = true;
         FirstPersonController.instance.enabled = false;
+
         if (pettedAllCats)
         { PlayerUI.instance.WinScreen.SetActive(true); }
         else
         { PlayerUI.instance.NotAllOfTheCatsScreen.SetActive(true); }
+
         FirstPersonController.instance.DisableMovement = true;
         yield return new WaitForSeconds(2.5f);
         LoadScene("Main Menu");

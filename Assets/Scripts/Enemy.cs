@@ -10,13 +10,13 @@ using Random = UnityEngine.Random;
 public class EnemyState
 {
     protected Enemy enemy;
-    protected Vector3? target = null;
 
     public Waypoint Waypoint {get; private set; }
     private float timeAtWaypoint;
     private float stopAndLookTimer;
     private Vector3 lookAtPosition;
     private float stopAndLookTime;
+    private Vector3? target = null;
 
     public EnemyState(Enemy enemy)
     { this.enemy = enemy; }
@@ -51,6 +51,11 @@ public class EnemyState
     private enum AwarenessColor { White, Yellow, Red }
     private AwarenessColor awarenessColor;
     private AwarenessColor lastAwarenessColor;
+    protected void SetTarget(Vector3 newTarget)
+    {
+        target = newTarget;
+        enemy.AI.destination = target.Value;
+    }
     public virtual void Update() 
     {
         //voicelines
@@ -136,6 +141,7 @@ public class PatrollingState : EnemyState
     public bool GoingToWaypoint { get; private set; } = false;
     private float sittingTimer;
     private float sittingDuration;
+    private Vector3? lastSeenPosition;
 
     public PatrollingState(Enemy enemy) : base(enemy) { }
 
@@ -166,8 +172,10 @@ public class PatrollingState : EnemyState
         }
 
         float awarenessMin = 0f;
-        if(enemy.GunObject.activeSelf)
+        if(enemy.GunObject.activeSelf || lastSeenPosition.HasValue)
         { awarenessMin = enemy.Awareness_IdleState_Duration + 0.01f; }
+
+        UnityEngine.Debug.Log("LastSeenPosition: " + lastSeenPosition.HasValue);
 
         AwarenessValue = Mathf.Clamp(AwarenessValue, awarenessMin, enemy.Awareness_IdleState_Duration + enemy.Awareness_WarningState_Duration);
 
@@ -186,7 +194,7 @@ public class PatrollingState : EnemyState
             if(enemy.AtDestination)
             {
                 sittingTimer += Time.deltaTime; //sit and wait
-                if (sittingTimer >= sittingDuration)
+                if (sittingTimer >= sittingDuration && !lastSeenPosition.HasValue)
                 {
                     sittingTimer = 0f;
                     sittingDuration = Random.Range(enemy.SittingDownDurationMin, enemy.SittingDownDurationMax);
@@ -203,10 +211,23 @@ public class PatrollingState : EnemyState
         if(enemy.SeesPlayer)
         {
             StopAndLook(enemy.PlayerTransform.position, enemy.StopAndLookTime);
+            if (AwarenessValue > enemy.Awareness_IdleState_Duration)
+            { lastSeenPosition = enemy.PlayerTransform.position; }
+        }
+        else
+        {
+            if (lastSeenPosition.HasValue)
+            {
+                SetTarget(lastSeenPosition.Value); //go to last seen position
+                if (enemy.AtDestination)
+                {
+                    lastSeenPosition = null;
+                }
+            }
         }
 
         //Transition
-        if(AwarenessValue >= enemy.Awareness_IdleState_Duration + enemy.Awareness_WarningState_Duration)
+        if (AwarenessValue >= enemy.Awareness_IdleState_Duration + enemy.Awareness_WarningState_Duration)
         {
             enemy.SetState(enemy.AggroState);
             enemy.PlayVoiceline(enemy.YellowToRedRandomSound.Random());
@@ -225,7 +246,7 @@ public class PatrollingState : EnemyState
     {
         //go back to start position
         GoingToWaypoint = false;
-        target = enemy.StartPosition;
+        SetTarget(enemy.StartPosition);
     }
 }
 
@@ -305,7 +326,7 @@ public class AggroState : EnemyState
             shootTimer = 0f;
             if (lastSeenPosition.HasValue)
             {
-                target = lastSeenPosition; //go to last seen position
+                SetTarget(lastSeenPosition.Value); //go to last seen position
                 if(enemy.AtDestination)
                 {
                     lastSeenPosition = null;
