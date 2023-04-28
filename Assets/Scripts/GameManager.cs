@@ -7,8 +7,8 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance { get; private set; }
-    public static event Action OnAllCatsPetted;
-    public static event Action OnCatPetted;
+    public event Action OnAllCatsPetted;
+    public event Action OnCatPetted;
     public enum GameState { Normal, Loading, GameOver }
     public enum LoseState { Shot }
 

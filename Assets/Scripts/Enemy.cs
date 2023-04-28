@@ -407,8 +407,6 @@ public class Enemy : MonoBehaviour
         AggroState = new AggroState(this);
         State = PatrollingState;
 
-        HidingSpot.OnEnteredHidingSpot += OnEnteredHidingSpotCallback;
-
         sqrCloseDistance = CloseDistance * CloseDistance;
     }
 
@@ -422,7 +420,7 @@ public class Enemy : MonoBehaviour
         AudioPlayer.Play(HurtRandomSound.Random());
     }
 
-    private void OnEnteredHidingSpotCallback(HidingSpot hidingSpot)
+    public void OnEnteredHidingSpotCallback(HidingSpot hidingSpot)
     {
         State.OnEnteredHidingSpotCallback(this, hidingSpot);
     }

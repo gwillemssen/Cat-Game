@@ -15,12 +15,12 @@ public class ExitDoor : Interactable
 
     private void Start()
     {
-        GameManager.OnCatPetted += Unlock;
+        GameManager.instance.OnCatPetted += Unlock;
         anim = GetComponent<Animation>();
     }
     private void OnDestroy()
     {
-        GameManager.OnCatPetted -= Unlock;
+        GameManager.instance.OnCatPetted -= Unlock;
     }
     public override void Interact(FirstPersonController controller)
     {

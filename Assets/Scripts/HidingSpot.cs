@@ -19,8 +19,6 @@ public class HidingSpot : Interactable, IGrannyInteractable
     private float lerp;
     private bool entering;
 
-    public static event Action<HidingSpot> OnEnteredHidingSpot;
-
     public virtual void OnEnterHidingSpot() { }
 
     public override void Interact(FirstPersonController controller)
@@ -37,7 +35,7 @@ public class HidingSpot : Interactable, IGrannyInteractable
         entering = true;
         lerp = 0f;
 
-        OnEnteredHidingSpot?.Invoke(this);
+        Enemy.instance.OnEnteredHidingSpotCallback(this);
         OnEnterHidingSpot();
     }
 
