@@ -31,6 +31,7 @@ public class PlayerUI : MonoBehaviour
     public GameObject WinScreen { get; private set; }
     public GameObject LoseScreen { get; private set; }
     public GameObject NotAllOfTheCatsScreen { get; private set; }
+    public Animation FlamesAnimation { get; private set; }
     public Image Hamd { get { return hamd; } private set { hamd = value; } }
     public bool EnemyOnScreen { get; private set; }
 
@@ -94,6 +95,9 @@ public class PlayerUI : MonoBehaviour
                     break;
                 case "BloodOverlay":
                     bloodOverlay = t.GetComponent<Image>();
+                    break;
+                case "Flames":
+                    FlamesAnimation = t.GetComponent<Animation>();
                     break;
             }
         }
