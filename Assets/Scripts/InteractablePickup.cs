@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(AudioPlayer))]
@@ -16,6 +17,7 @@ public class InteractablePickup : Interactable
     public List<Sound> PickupSounds;
     public List<Sound> ImpactSounds;
 
+    [SerializeField] private UnityEvent onImpact;
     private AudioPlayer audioPlayer;
     private float sqrImpactVelocity;
     private bool canImpact = false;
@@ -44,14 +46,13 @@ public class InteractablePickup : Interactable
             enemy.Stun();
         }
 
-        if (ImpactSounds.Count == 0)
-        { return; }
-
         if(Rigidbody.velocity.sqrMagnitude > sqrImpactVelocity)
         {
             if(ImpactSounds.Count > 0)
             { audioPlayer.Play(ImpactSounds[Random.Range(0, ImpactSounds.Count)]); }
             Enemy.instance.Distract(transform.position);
+            onImpact?.Invoke();
+            Debug.Log("ASCAGSCAYDYIASYTDC");
             Impacted();
         }
     }
