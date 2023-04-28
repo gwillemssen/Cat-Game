@@ -5573,6 +5573,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8750900405374261521, guid: 0337daceb11dfa64b8467fc67989f084,
         type: 3}
+      propertyPath: on
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8750900405374261521, guid: 0337daceb11dfa64b8467fc67989f084,
+        type: 3}
       propertyPath: lights.Array.size
       value: 5
       objectReference: {fileID: 0}
@@ -30812,56 +30817,43 @@ MonoBehaviour:
   CatWaypoints:
   - catPosition: {fileID: 767150656}
     UseSittingCat: 1
-    UseLayingCat: 0
+    UseLayingCat: 1
   - catPosition: {fileID: 53153527}
     UseSittingCat: 1
-    UseLayingCat: 0
+    UseLayingCat: 1
   - catPosition: {fileID: 902994774}
     UseSittingCat: 1
-    UseLayingCat: 0
+    UseLayingCat: 1
   - catPosition: {fileID: 1531170070}
     UseSittingCat: 1
-    UseLayingCat: 0
+    UseLayingCat: 1
   - catPosition: {fileID: 2021316821}
     UseSittingCat: 1
-    UseLayingCat: 0
+    UseLayingCat: 1
   - catPosition: {fileID: 1567454278}
     UseSittingCat: 1
-    UseLayingCat: 0
+    UseLayingCat: 1
   - catPosition: {fileID: 829158027}
     UseSittingCat: 1
-    UseLayingCat: 0
+    UseLayingCat: 1
   - catPosition: {fileID: 68361187}
     UseSittingCat: 1
-    UseLayingCat: 0
+    UseLayingCat: 1
   - catPosition: {fileID: 22966485}
     UseSittingCat: 1
-    UseLayingCat: 0
+    UseLayingCat: 1
   - catPosition: {fileID: 729452851}
     UseSittingCat: 1
-    UseLayingCat: 0
+    UseLayingCat: 1
   - catPosition: {fileID: 650144788}
     UseSittingCat: 1
-    UseLayingCat: 0
+    UseLayingCat: 1
   - catPosition: {fileID: 650924177}
     UseSittingCat: 1
-    UseLayingCat: 0
+    UseLayingCat: 1
   catPrefabs:
   - {fileID: 5455302812654860102, guid: aca54db8f0a2e2649aa881d43cb5b80b, type: 3}
   - {fileID: 5455302812654860102, guid: 1acfb9122cee5a341a575b644d9f63aa, type: 3}
-  catPos:
-  - {fileID: 767150656}
-  - {fileID: 53153527}
-  - {fileID: 902994774}
-  - {fileID: 1531170070}
-  - {fileID: 2021316821}
-  - {fileID: 1567454278}
-  - {fileID: 829158027}
-  - {fileID: 68361187}
-  - {fileID: 22966485}
-  - {fileID: 729452851}
-  - {fileID: 650144788}
-  - {fileID: 650924177}
 --- !u!4 &1620598880
 Transform:
   m_ObjectHideFlags: 0
@@ -38659,6 +38651,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Switch Kitchen 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8750900405374261521, guid: 0337daceb11dfa64b8467fc67989f084,
+        type: 3}
+      propertyPath: on
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8750900405374261521, guid: 0337daceb11dfa64b8467fc67989f084,
         type: 3}
