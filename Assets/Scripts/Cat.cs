@@ -250,6 +250,7 @@ public class Cat : Interactable
         Cursor.lockState = CursorLockMode.None;
         PlayerUI.instance.PettingMeter.gameObject.SetActive(true);
         PlayerUI.instance.PettingMeter.value = 0f;
+        PlayerUI.instance.FlamesAnimation.gameObject.SetActive(true);
         playerController.Interaction.HideCrosshair = true;
         PlayerUI.instance.SetInfoText("Click and Drag to pet the Cat!\nRight click to Cancel");
         pettingAmount = 0f;
@@ -321,6 +322,9 @@ public class Cat : Interactable
         }
 
         PlayerUI.instance.PettingMeter.value = pettingAmount;
+        PlayerUI.instance.FlamesAnimation.Play();
+        PlayerUI.instance.FlamesAnimation["FlamesUIAnimation"].time = pettingAmount;
+
         pettingAmount = Mathf.Clamp01(pettingAmount);
 
         if (pettingAmount == 1f) //win
@@ -342,6 +346,7 @@ public class Cat : Interactable
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         PlayerUI.instance.PettingMeter.gameObject.SetActive(false);
+        PlayerUI.instance.FlamesAnimation.gameObject.SetActive(false);
         playerController.Interaction.HideCrosshair = false;
         playerController.UI.Hamd.enabled = false;
         transform.GetChild(1).gameObject.layer = 0;
