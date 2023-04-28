@@ -175,8 +175,6 @@ public class PatrollingState : EnemyState
         if(enemy.GunObject.activeSelf || lastSeenPosition.HasValue)
         { awarenessMin = enemy.Awareness_IdleState_Duration + 0.01f; }
 
-        UnityEngine.Debug.Log("LastSeenPosition: " + lastSeenPosition.HasValue);
-
         AwarenessValue = Mathf.Clamp(AwarenessValue, awarenessMin, enemy.Awareness_IdleState_Duration + enemy.Awareness_WarningState_Duration);
 
         //Behaviour
