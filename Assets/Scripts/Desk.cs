@@ -8,6 +8,9 @@ public class Desk : Interactable
     public GameObject Hinge;
     public GameObject objectInsideDrawer;
     private Vector3 inDrawerPosition;
+
+    [SerializeField] private AudioClip OpenDrawer, CloseDrawer;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,9 +28,9 @@ public class Desk : Interactable
     {
        
         if(!base.Open)
-        { LeanTween.moveLocalZ(Hinge, 3, 1f).setEaseInOutExpo(); base.Open = true; }
+        { LeanTween.moveLocalZ(Hinge, 3, .5f).setEaseInOutSine(); base.Open = true; player.Play(OpenDrawer); }
         else
-        { LeanTween.moveLocalZ(Hinge, .3f, 1f).setEaseInOutExpo(); base.Open = false; }
+        { LeanTween.moveLocalZ(Hinge, .3f, .5f).setEaseInOutSine(); base.Open = false; player.Play(CloseDrawer); }
 
 
         if (objectInsideDrawer.GetComponent<Rigidbody>().constraints != RigidbodyConstraints.FreezeAll)

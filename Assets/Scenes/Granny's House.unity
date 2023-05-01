@@ -48005,7 +48005,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5849256425588376293}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 2.027, y: 0.05, z: -1.18}
+  m_LocalPosition: {x: 2.027, y: 0.164, z: -1.18}
   m_LocalScale: {x: 0.6450977, y: 0.6450973, z: 0.6450973}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -53613,6 +53613,8 @@ MonoBehaviour:
       m_Calls: []
   Hinge: {fileID: 850855162}
   objectInsideDrawer: {fileID: 46093830}
+  OpenDrawer: {fileID: 8300000, guid: 22bb4b738a0d3a244ac3c58bdbd80d30, type: 3}
+  CloseDrawer: {fileID: 8300000, guid: 586a946310749cd45a71211d5c83156e, type: 3}
 --- !u!65 &5849256425588376298
 BoxCollider:
   m_ObjectHideFlags: 0
