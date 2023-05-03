@@ -312,7 +312,7 @@ public class FirstPersonController : MonoBehaviour
     {
         if(WasShot)
         {
-            GameManager.instance.GameOver(GameManager.LoseState.Shot);
+            GameManager.instance.PlayerShot();
         }
         WasShot = true;
     }

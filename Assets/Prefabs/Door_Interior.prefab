@@ -720,6 +720,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8391139291252761257}
+  - component: {fileID: 2167749222595260749}
+  - component: {fileID: 1552282118605429935}
   m_Layer: 14
   m_Name: Door_Interior
   m_TagString: Untagged
@@ -744,3 +746,29 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2167749222595260749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9167217876464171027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c774c692af0db994d83c7a51ff7e5025, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  door: {fileID: 8849147334854008162}
+--- !u!65 &1552282118605429935
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9167217876464171027}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1.1704185, z: 1.006678}
+  m_Center: {x: 4.2178237e-18, y: 1.1579748, z: -0.0033392329}

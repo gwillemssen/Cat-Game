@@ -26,7 +26,7 @@ public class ExitDoor : Interactable
     {
         if(!locked)
         {
-            GameManager.instance.WinGame();
+            GameManager.instance.ExitDoor();
         }
         else if(!flashingText)
         {

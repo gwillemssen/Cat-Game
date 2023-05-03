@@ -9,15 +9,16 @@ public class GameManager : MonoBehaviour
     public static GameManager instance { get; private set; }
     public event Action OnAllCatsPetted;
     public event Action OnCatPetted;
-    public enum GameState { Normal, Loading, GameOver }
-    public enum LoseState { Shot }
-
     [HideInInspector] public List<Cat> CatsToPet = new List<Cat>();
-
+    public int TotalCats { get; private set; }
+    public enum GameState { TitleScreen, InGame, Loading, GameOver }
     public GameState State { get; private set; } = GameState.Loading;
     [SerializeField] private Texture2D loadingTexture;
-    private LoseState loseState;
 
+    public bool PlayerWasShot { get; private set; } = false;
+    public bool PlayerWasInjured { get; private set; } = false;
+    [HideInInspector] public bool FoundSecretRoom = false;
+    [HideInInspector] public double ElapsedTime;
 
     void Awake()
     {
@@ -45,6 +46,12 @@ public class GameManager : MonoBehaviour
         {
             RestartLevel();
         }
+
+        if(State == GameState.InGame)
+        {
+            ElapsedTime += Time.deltaTime;
+            print("test");
+        }
     }
 
     private void OnLevelWasLoaded(int level)
@@ -58,20 +65,14 @@ public class GameManager : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+            State = GameState.TitleScreen;
         }
         else
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-
+            State = GameState.InGame;
         }
-
-        if (State == GameState.Normal)
-            return;
-
-        //anything that needs to be reset / set up can go here
-
-        State = GameState.Normal;
     }
 
     public void CatPetted(Cat cat)
@@ -82,35 +83,24 @@ public class GameManager : MonoBehaviour
         if (CatsToPet.Count == 0)
         { OnAllCatsPetted?.Invoke(); }
     }
-    public void WinGame()
-    {
-        if (State == GameState.Loading)
-            return;
-        State = GameState.GameOver;
-        StartCoroutine(TemporaryWinSequence(CatsToPet.Count == 0));
-        ResetGameManager();
-    }
-
-    public void GameOver(LoseState lose)
-    {
-        if(State != GameState.Normal)
-        { return; }
-
-        State = GameState.GameOver;
-        loseState = lose;
-        ResetGameManager();
-        StartCoroutine(TemporaryGameOverSequence());
-    }
+    
 
     private void ResetGameManager()
     {
         CatsToPet.Clear();
+        FoundSecretRoom = false;
+        ElapsedTime = 0f;
+        PlayerWasInjured = false;
+        PlayerWasShot = false;
     }
 
     public void RegisterCat(Cat cat)
-    { CatsToPet.Add(cat); }
+    {
+        CatsToPet.Add(cat);
+        TotalCats = CatsToPet.Count;
+    }
 
-    IEnumerator TemporaryGameOverSequence()
+    /*IEnumerator TemporaryGameOverSequence()
     {
         FirstPersonController.instance.Interaction.HideCrosshair = true;
         FirstPersonController.instance.enabled = false;
@@ -139,8 +129,30 @@ public class GameManager : MonoBehaviour
 
         FirstPersonController.instance.DisableMovement = true;
         yield return new WaitForSeconds(2.5f);
-        LoadScene("Main Menu");
+        LoadMainMenu();
+    }*/
+
+    public void GameOver()
+    {
+        Enemy.instance.enabled = false;
+        PlayerWasShot = FirstPersonController.instance.WasShot;
+        PlayerUI.instance.StatsScreen.gameObject.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
+    public void ExitDoor()
+    {
+        GameOver();
+    }
+
+    public void PlayerShot()
+    {
+        PlayerWasShot = true;
+        GameOver();
+    }
+
+    public void LoadMainMenu()
+    { LoadScene("Main Menu"); }
 
     public void RestartLevel()
     {

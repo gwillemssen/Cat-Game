@@ -21,6 +21,7 @@ public class Bookshelf : Interactable
             transform.GetChild(1).gameObject.SetActive(true);
             CandlesParent.SetActive(true);
             controller.Interaction.DestroyPickup();
+            GameManager.instance.FoundSecretRoom = true;
         }
     }
 

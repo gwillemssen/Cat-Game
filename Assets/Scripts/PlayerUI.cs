@@ -24,6 +24,8 @@ public class PlayerUI : MonoBehaviour
     private GameObject spottedGradient_Right;
     private Image grannyScreenSpaceUI;
     private Sprite grannyScreenSpaceUI_NormalTexture;
+    public StatsScreen StatsScreen { get; private set; }
+
     [SerializeField] private Sprite grannyScreenSpaceUI_ExclaimationPoint;
     [SerializeField] private Sprite grannyScreenSpaceUI_Stunned;
     private Image grannyScreenSpaceUI_Fill;
@@ -99,6 +101,9 @@ public class PlayerUI : MonoBehaviour
                 case "Flames":
                     FlamesAnimation = t.GetComponent<Animation>();
                     break;
+                case "StatsScreen":
+                    StatsScreen = t.GetComponent<StatsScreen>();
+                    break;
             }
         }
         PettingMeter.gameObject.SetActive(false);
@@ -110,6 +115,7 @@ public class PlayerUI : MonoBehaviour
         debugText.text = "";
         spottedGradient_Left.SetActive(false);
         spottedGradient_Right.SetActive(false);
+        StatsScreen.gameObject.SetActive(false);
         bloodOverlay.enabled = false;
     }
 
