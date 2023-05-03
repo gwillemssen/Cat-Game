@@ -401,6 +401,7 @@ public class Enemy : MonoBehaviour
     public Sound ShotgunSound_Reload;
     public Sound ShotgunSound_Fire;
     [HideInInspector] public AudioPlayer AudioPlayer;
+    [HideInInspector] public AudioSource AudioSource;
     [HideInInspector] public EnemyState State { get; private set; }
     public bool Moving { get; private set; }
     public float PercentVisible { get; private set; }
@@ -459,7 +460,7 @@ public class Enemy : MonoBehaviour
         PlayerTransform = FirstPersonController.instance.transform;
         DebugObject.gameObject.SetActive(DebugMode);
         AudioPlayer = GetComponent<AudioPlayer>();
-
+        AudioSource = GetComponent<AudioSource>();
         WhiteToYellowRandomSound = new NonRepeatingSound(WhiteToYellowSounds);
         YellowToRedRandomSound = new NonRepeatingSound(YellowToRedSounds);
         RedToYellowRandomSound = new NonRepeatingSound(RedToYellowSounds);
@@ -619,9 +620,9 @@ public class Enemy : MonoBehaviour
             voicelineQueue.Enqueue(sound);
             return null;
         }
-
-        AudioPlayer.Play(sound);
-        print("Playing voiceline " + sound.name);
+         AudioSource.clip = sound;
+         AudioSource.Play();
+        //print("Playing voiceline " + sound.name);
         voiceLineDuration = sound.length;
 
 

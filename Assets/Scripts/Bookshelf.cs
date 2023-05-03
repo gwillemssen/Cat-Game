@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Bookshelf : Interactable
 {
-    public GameObject BookshelfL, BookshelfR, CandlesParent;
+    [SerializeField] private GameObject BookshelfL, BookshelfR, CandlesParent;
+    [SerializeField] private AudioSource SoftWhispers, LoudWhispers;
 
     void Start()
     {
@@ -15,6 +16,7 @@ public class Bookshelf : Interactable
     {
         if (withInteractable.name == RequiredItemToViewInteraction) 
         {
+            DoAudioChanges();
             LeanTween.moveLocalZ(BookshelfL, 2.5f, 2.5f).setEaseLinear();
             LeanTween.moveLocalZ(BookshelfR, -7f, 2.5f).setEaseLinear();
             transform.GetChild(0).gameObject.SetActive(false);
@@ -23,6 +25,13 @@ public class Bookshelf : Interactable
             controller.Interaction.DestroyPickup();
             GameManager.instance.FoundSecretRoom = true;
         }
+    }
+
+    private void DoAudioChanges()
+    {
+        SoftWhispers.mute = true;
+        SoftWhispers.loop = false;
+        LoudWhispers.mute = false;
     }
 
 }

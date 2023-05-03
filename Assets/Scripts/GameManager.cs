@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public bool FoundSecretRoom = false;
     [HideInInspector] public double ElapsedTime;
 
+    [HideInInspector] public int SecretCandlesLit;
+
     void Awake()
     {
         if(instance != null)
