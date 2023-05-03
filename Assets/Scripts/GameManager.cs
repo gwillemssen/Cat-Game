@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
         if(State == GameState.InGame)
         {
             ElapsedTime += Time.deltaTime;
-            print("test");
+            //print("test");
         }
     }
 

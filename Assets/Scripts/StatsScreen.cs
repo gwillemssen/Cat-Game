@@ -10,6 +10,8 @@ public class StatsScreen : MonoBehaviour
     [SerializeField] private Text extrasText;
     private AudioSource audio;
     private float lastTimePrintedText = -420f;
+    private bool PetSecretCat;
+    private string Grade;
 
     private void Awake()
     {
@@ -18,6 +20,7 @@ public class StatsScreen : MonoBehaviour
 
     private void Start()
     {
+        SetGrade();
         SetOutcome();
         SetObjectives();
         SetExtras();
@@ -35,23 +38,64 @@ public class StatsScreen : MonoBehaviour
         else
         { audio.Stop(); }
     }
+
+    void SetGrade()
+    {
+        float z;
+        float total;
+        z = GameManager.instance.TotalCats - GameManager.instance.CatsToPet.Count;
+        total = z / GameManager.instance.TotalCats;
+        //Format- Grade, New Line, Funny Message
+        switch (total)
+        {
+            //no cats pet
+            case 0:
+                Grade = "F " + "\n" + "\n" + ">:( You didn't even try!";
+                break;
+            //One cat pet
+            case 0.25f:
+                Grade = "D " + "\n" + "\n" + "Just one? You can pet better than that!";
+                break;
+            case .5f:
+                Grade = "C" + "\n" + "\n" + "There are still cats un-pet D:";
+                break;
+            case .75f:
+                Grade = "B" + "\n" + "\n" + "Only one more! You were so close!";
+                break;
+            case 1:
+                Grade = "A" + "\n" + "\n" + ">You're purrfect cat burglar!";
+                break;
+            case 1.25f:
+                Grade = "S" + "\n" + "\n" + "No cat can escape from your sight!" + "\n" + "Outstanding performance!";
+                break;
+            default:
+                Grade = "Null" + "\n" +"\n" + "Something went wrong";
+                break;
+
+        }
+
+    }
     void SetExtras()
     {
-        int minutes = (int)GameManager.instance.ElapsedTime / 60;
-        int seconds = (int)GameManager.instance.ElapsedTime % 60;
-        extrasText.text = $"Time: {minutes}:{seconds}";
+
+
+        //add the other extras that are in! I think they are really cute!
 
     }
 
     void SetObjectives()
     {
+        Debug.Log(Grade);
         objectivesText.text = "";
         objectivesText.text += $"Cats: {GameManager.instance.TotalCats - GameManager.instance.CatsToPet.Count} / {GameManager.instance.TotalCats}";
         objectivesText.text += "\n";
-        objectivesText.text += GameManager.instance.FoundSecretRoom ? "Found the Secret Room" : "Didn't find the Secret Room";
+        objectivesText.text += "\n";
+        int minutes = (int)GameManager.instance.ElapsedTime / 60;
+        int seconds = (int)GameManager.instance.ElapsedTime % 60;
+        objectivesText.text += $"Time: {minutes}:{seconds}";
         objectivesText.text += "\n";
         objectivesText.text += "\n";
-        //objectivesText.text += "FINAL SCORE: " + ;
+        objectivesText.text += "FINAL SCORE: " + Grade ;
     }
     void SetOutcome()
     {
