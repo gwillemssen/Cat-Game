@@ -5,9 +5,8 @@ using UnityEngine.UI;
 
 public class StatsScreen : MonoBehaviour
 {
-    [SerializeField] private Text outcomeText;
-    [SerializeField] private Text objectivesText;
-    [SerializeField] private Text extrasText;
+    [SerializeField] private Text outcomeText, objectivesText, extrasText, secretText;
+    
     private AudioSource audio;
     private float lastTimePrintedText = -420f;
     private bool PetSecretCat;
@@ -37,6 +36,8 @@ public class StatsScreen : MonoBehaviour
         }
         else
         { audio.Stop(); }
+
+        Cursor.lockState = CursorLockMode.None;
     }
 
     void SetGrade()
@@ -50,26 +51,26 @@ public class StatsScreen : MonoBehaviour
         {
             //no cats pet
             case 0:
-                Grade = "F " + "\n" + "\n" + ">:( You didn't even try!";
+                Grade = "F " + "\n" + ">:( You didn't even try!";
                 break;
             //One cat pet
             case 0.25f:
-                Grade = "D " + "\n" + "\n" + "Just one? You can pet better than that!";
+                Grade = "D " + "\n" + "Just one? You can pet better than that!";
                 break;
             case .5f:
-                Grade = "C" + "\n" + "\n" + "There are still cats un-pet D:";
+                Grade = "C" + "\n" + "There are still cats un-pet :/";
                 break;
             case .75f:
-                Grade = "B" + "\n" + "\n" + "Only one more! You were so close!";
+                Grade = "B" + "\n" + "Only one more! You were so close! D:";
                 break;
             case 1:
-                Grade = "A" + "\n" + "\n" + ">You're purrfect cat burglar!";
+                Grade = "A" + "\n" + "You're purr-fect cat burglar! =^_^= ";
                 break;
             case 1.25f:
-                Grade = "S" + "\n" + "\n" + "No cat can escape from your sight!" + "\n" + "Outstanding performance!";
+                Grade = "S" + "\n" + "No cat can escape from your sight!" + "\n" + "Outstanding performance!";
                 break;
             default:
-                Grade = "Null" + "\n" +"\n" + "Something went wrong";
+                Grade = "Null" + "\n" + "Something went wrong";
                 break;
 
         }
@@ -81,8 +82,23 @@ public class StatsScreen : MonoBehaviour
 
         //add the other extras that are in! I think they are really cute!
 
+        //Ghost Cat Work:
+        string GhostCatPetText;
+        //if(GhostCat == Pet) {PetSecretCat = true; GhostCatPetText = "You get the feeling there's still" + "\n" + "some unfinished buisness before you leave..." }
+        //else { PetSecretCat = false; "GhostCatPetText = "You finally let him rest after Granny has been" + "\n" + "trying to bring him back. His spirit thanks you!"}
+        GhostCatPetText = "You get the feeling there's still" + "\n" + "some unfinished buisness before you leave...";
+        secretText.text = GhostCatPetText;
+
+        Invoke("StartFadeIn", 6f);
+        
+
+
     }
 
+    private void StartFadeIn()
+    {
+        StartCoroutine(FadeInRoutine(Color.white, 20f));
+    }
     void SetObjectives()
     {
         Debug.Log(Grade);
@@ -137,4 +153,20 @@ public class StatsScreen : MonoBehaviour
             lastTimePrintedText = Time.time;
         }
     }
+
+    private IEnumerator FadeInRoutine(Color targetColor, float duration)
+    {
+        // Calculate the amount to change the alpha each frame to achieve the desired duration
+        float alphaChangePerFrame = Time.deltaTime / duration;
+
+        // Gradually increase the alpha of the color until it reaches the target color
+        while (secretText.color.a < targetColor.a)
+        {
+            Color newColor = secretText.color;
+            newColor.a += alphaChangePerFrame;
+            secretText.color = newColor;
+            yield return null;
+        }
+    }
+
 }
