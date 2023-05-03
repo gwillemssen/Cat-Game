@@ -30,7 +30,7 @@ public class HidingSpot : Interactable, IGrannyInteractable
         startPos = FPController.transform.position;
         startRot = FPController.transform.rotation;
         FPController.DisableMovement = true;
-        FPController.UI.SetInfoText("Hiding...\nRight click to exit");
+        //FPController.UI.SetInfoText("Hiding...");
         FPController.Hiding = true;
         entering = true;
         lerp = 0f;
@@ -76,7 +76,7 @@ public class HidingSpot : Interactable, IGrannyInteractable
                 }
             }
 
-            if(FPController != null && FPController.Input.throwing && entering)
+            if(FPController != null && FPController.Input.interactedOnce && entering)
             {
                 Exit();
             }
