@@ -125,6 +125,9 @@ public class FirstPersonInteraction : MonoBehaviour
             }
             else if (controller.Input.throwRelease)
             { ThrowInteractable(); }
+
+            if(controller.Input.interactedOnce)
+            { Pickup.Click(); }
         }
 
         if (lastInteractable != interactable && lastInteractable != null)

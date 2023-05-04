@@ -61,10 +61,15 @@ public class InteractablePickup : Interactable
     {
 
     }
+    //called when we left click while holding it.
+    public virtual void Click()
+    {
+
+    }
 
     public override void Interact(FirstPersonController controller)
     {
-        PlayerUI.instance.SetInfoText("Press Right Click to Drop\nHold Right Click to Throw");
+        PlayerUI.instance.SetInfoText("Press Right Click to Throw");
         Rigidbody.constraints = originalConstraints;
         if (PickupSounds.Count > 0)
         { audioPlayer.Play(PickupSounds[Random.Range(0, PickupSounds.Count)]); }
