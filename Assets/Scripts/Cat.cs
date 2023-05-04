@@ -65,7 +65,7 @@ public class Cat : Interactable
     //general
     private enum CatState { Pettable, Unpettable, PettingMinigame, DonePetting };
     private CatState state;
-    public ParticleSystem lightningParticles;
+    public ParticleSystem lightningParticles, explodingParticles, flameParticles;
     public Animator animator;
 
     //Minigame
@@ -285,6 +285,9 @@ public class Cat : Interactable
                         lastTimePet = Time.time;
                         int particleAmt = (int)(LightningAmount * pettingAmount);
                         lightningParticles.Emit(particleAmt);
+                        flameParticles.Emit(particleAmt);
+                        //explodingParticles.Emit(particleAmt * 2);
+
                     }
                     firstPet = false;
                     lastDirectionPet = lastPetMousePos - playerController.Input.mousePosition;
@@ -322,8 +325,8 @@ public class Cat : Interactable
         }
 
         PlayerUI.instance.PettingMeter.value = pettingAmount;
-        PlayerUI.instance.FlamesAnimation.Play();
-        PlayerUI.instance.FlamesAnimation["FlamesUIAnimation"].time = pettingAmount;
+        //PlayerUI.instance.FlamesAnimation.Play();
+        //PlayerUI.instance.FlamesAnimation["FlamesUIAnimation"].time = pettingAmount;
 
         pettingAmount = Mathf.Clamp01(pettingAmount);
 
@@ -337,6 +340,8 @@ public class Cat : Interactable
 
     public void EndMinigame()
     {
+        flameParticles.Pause();
+        flameParticles.Clear();
         
         transform.localScale = catOriginalScale;
         state = CatState.DonePetting;
