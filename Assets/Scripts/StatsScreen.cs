@@ -51,26 +51,26 @@ public class StatsScreen : MonoBehaviour
         {
             //no cats pet
             case 0:
-                Grade = "F " + "\n\n" + "Not a single one?" + "\n" + "You've got work to do.";
+                Grade = "F " + "\n\n" + "Not a single one?" + "\n\n" + "You've got work to do.";
                 break;
             //One cat pet
             case 0.25f:
-                Grade = "D " + "\n\n" + "Just one? You can pet better than that!";
+                Grade = "D " + "\n\n\n" + "Just one? You can" + "\n\n" + " pet better than that!";
                 break;
             case .5f:
-                Grade = "C" + "\n\n" + "There are still cats un-pet :/";
+                Grade = "C" + "\n\n\n" + "There are still cats un-pet :/";
                 break;
             case .75f:
-                Grade = "B" + "\n\n" + "Only one more! You were so close! D:";
+                Grade = "B" + "\n\n\n" + "Only one more!" + "\n\n" + "You were so close! D:";
                 break;
-            case 1:
-                Grade = "A" + "\n\n" + "You're purr-fect cat burglar! =^_^= ";
+            case 1f:
+                Grade = "A" + "\n\n\n" + "You're purr-fect cat burglar!" + "\n\n" + " =^_^= ";
                 break;
             case 1.25f:
-                Grade = "S" + "\n\n" + "No cat can escape from your sight!" + "\n" + "Outstanding performance!";
+                Grade = "S" + "\n\n\n" + "No cat can escape your sight!" + "\n\n" + "Outstanding performance!";
                 break;
             default:
-                Grade = "Null" + "\n\n" + "Something went wrong";
+                Grade = "Null" + "\n\n\n" + "Something went wrong";
                 break;
 
         }
@@ -118,16 +118,13 @@ public class StatsScreen : MonoBehaviour
     }
     void SetObjectives()
     {
-        Debug.Log(Grade);
         objectivesText.text = "";
         objectivesText.text += $"Cats: {GameManager.instance.TotalCats - GameManager.instance.CatsToPet.Count} / {GameManager.instance.TotalCats}";
-        objectivesText.text += "\n";
-        objectivesText.text += "\n";
+        objectivesText.text += "\n\n\n";
         int minutes = (int)GameManager.instance.ElapsedTime / 60;
         int seconds = (int)GameManager.instance.ElapsedTime % 60;
-        objectivesText.text += $"Time: {minutes}:{seconds}";
-        objectivesText.text += "\n";
-        objectivesText.text += "\n";
+        objectivesText.text += $"Time: {minutes:00}:{seconds:00}";
+        objectivesText.text += "\n\n\n";
         objectivesText.text += "FINAL SCORE: " + Grade ;
     }
     void SetOutcome()
