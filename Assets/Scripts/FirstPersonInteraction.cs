@@ -93,7 +93,7 @@ public class FirstPersonInteraction : MonoBehaviour
             interactable.OnInteract?.Invoke();
         }
         interactable.InteractBase();
-        
+        GameManager.instance.InteractablesClicked++;
     }
 
     private void HandleInteraction()

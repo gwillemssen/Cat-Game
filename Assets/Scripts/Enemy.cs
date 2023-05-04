@@ -281,6 +281,7 @@ public class AggroState : EnemyState
         enemy.AI.isStopped = false;
         aggroTimer = 0f;
         huntingVoicelineTimer = 0f;
+        GameManager.instance.PlayerWasSpotted = true;
     }
 
     public override void Update()
@@ -326,6 +327,7 @@ public class AggroState : EnemyState
             if(shootTimer >= enemy.TimeUntilShoot)
             {
                 FirstPersonController.instance.Shoot();
+                GameManager.instance.PlayerWasInjured = true;
                 shootTimer = 0f;
                 enemy.AudioPlayer.Play(enemy.ShotgunSound_Fire);
                 enemy.PlayVoiceline(enemy.ShootRandomSound.Random());
@@ -450,6 +452,7 @@ public class Enemy : MonoBehaviour
         stunTimer = StunTime;
         AudioPlayer.Play(BonkSound);
         AudioPlayer.Play(HurtRandomSound.Random());
+        GameManager.instance.TimesBonkedGranny++;
     }
 
     public void OnEnteredHidingSpotCallback(HidingSpot hidingSpot)

@@ -78,7 +78,27 @@ public class StatsScreen : MonoBehaviour
     }
     void SetExtras()
     {
+        extrasText.text = "";
 
+        if(GameManager.instance.PlayerWasInjured)
+        {
+            extrasText.text += "WOUNDED" + "\n" + "(granny gave you a faceful of lead)" + "\n\n";
+        }
+
+        if (!GameManager.instance.PlayerWasSpotted)
+        {
+            extrasText.text += "SNEAKY" + "\n" + "(you were never spotted)" + "\n\n";
+        }
+
+        if (GameManager.instance.InteractablesClicked > 30)
+        {
+            extrasText.text += "CURIOUS" + "\n" + "(you spent a little extra time clicking things)" + "\n\n";
+        }
+
+        if (GameManager.instance.TimesBonkedGranny > 5)
+        {
+            extrasText.text += "AGGRESSIVE" + "\n" + "(you bonked granny a lot)" + "\n\n";
+        }
 
         //add the other extras that are in! I think they are really cute!
 
@@ -90,9 +110,6 @@ public class StatsScreen : MonoBehaviour
         secretText.text = GhostCatPetText;
 
         Invoke("StartFadeIn", 6f);
-        
-
-
     }
 
     private void StartFadeIn()

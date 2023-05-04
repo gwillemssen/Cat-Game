@@ -16,7 +16,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Texture2D loadingTexture;
 
     public bool PlayerWasShot { get; private set; } = false;
-    public bool PlayerWasInjured { get; private set; } = false;
+    public bool PlayerWasInjured { get; set; } = false;
+    public bool PlayerWasSpotted { get; set; } = false;
+    public int InteractablesClicked { get; set; }
+    public int TimesBonkedGranny { get; set; }
     [HideInInspector] public bool FoundSecretRoom = false;
     [HideInInspector] public double ElapsedTime;
 
@@ -94,6 +97,9 @@ public class GameManager : MonoBehaviour
         ElapsedTime = 0f;
         PlayerWasInjured = false;
         PlayerWasShot = false;
+        PlayerWasSpotted = false;
+        InteractablesClicked = 0;
+        TimesBonkedGranny = 0;
     }
 
     public void RegisterCat(Cat cat)
