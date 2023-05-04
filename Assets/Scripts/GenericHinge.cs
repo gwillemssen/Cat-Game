@@ -5,8 +5,9 @@ using UnityEngine;
 public class GenericHinge : Interactable
 
 {
-    [SerializeField] private GameObject Hinge;
-
+    public GameObject Hinge;
+    public Vector3 DefaultPos, TransformPos;
+    public float OpeningDuration, ClosingDuration;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,6 +22,6 @@ public class GenericHinge : Interactable
 
     public override void Interact(FirstPersonController controller)
     {
-        OpenHinge(Hinge, new Vector3(0,0,0), new Vector3 (0,0,90), 1f, .5f);
+        OpenHinge(Hinge, DefaultPos, TransformPos, OpeningDuration, ClosingDuration);
     }
 }
