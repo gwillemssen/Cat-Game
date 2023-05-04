@@ -16,32 +16,31 @@ public class Lighter : InteractablePickup
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
-    private void OnMouseDown()
+    public override void Click()
     {
-
-        if (Input.GetMouseButtonDown(0))
+        print("Click!");
+        if (Lit == false)
         {
-            Debug.Log("Click Registered!");
-            if (Lit == false)
-            {
-                Lit = true;
-                transform.GetChild(0).gameObject.SetActive(true);
-                //PlayInteractionSound(Put a lighter lighting sound here);
-                Debug.Log("lit");
-            }
+            Lit = true;
+            transform.GetChild(0).gameObject.SetActive(true);
+            //PlayInteractionSound(Put a lighter lighting sound here);
+            Debug.Log("lit");
+        }
+
+
+        if (Lit == true)
+        {
+
+            Lit = false;
+            transform.GetChild(0).gameObject.SetActive(false);
+            //PlayInteractionSound(Lighter De-Lighting Sound);
+            Debug.Log("Unlit");
+
 
         }
-        //if (Lit == true)
-        //{
-        //    Lit = false;
-        //    transform.GetChild(0).gameObject.SetActive(false);
-        //    //PlayInteractionSound(Lighter De-Lighting Sound);
-        //    Debug.Log("Unlit");
-        //}
     }
-
 }
 
