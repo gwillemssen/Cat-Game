@@ -1,5 +1,52 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1040075168
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1040075169}
+  - component: {fileID: 1040075170}
+  m_Layer: 0
+  m_Name: GunWaypoint
+  m_TagString: Untagged
+  m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1040075169
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1040075168}
+  m_LocalRotation: {x: 0.31896552, y: -0.43739322, z: -0.38808325, w: 0.7458818}
+  m_LocalPosition: {x: 147.5069, y: 1426.8217, z: -328.42703}
+  m_LocalScale: {x: 1944.8348, y: 1793.7239, z: 1942.4324}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2559990228958322776}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1040075170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1040075168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 819f35fbfe579bf47bc87ce917d8817b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StopTime: 3
+  goingToVoicelines: []
+  arrivedVoicelines: []
 --- !u!1 &2940068942874966754
 GameObject:
   m_ObjectHideFlags: 0
@@ -11,6 +58,7 @@ GameObject:
   - component: {fileID: 2559990228958322776}
   - component: {fileID: 2521420824849592561}
   - component: {fileID: 1010086232820323255}
+  - component: {fileID: 1120478973}
   m_Layer: 0
   m_Name: Sawnoff_GameReady
   m_TagString: Untagged
@@ -29,7 +77,8 @@ Transform:
   m_LocalPosition: {x: 0.00000011064141, y: -0.39557564, z: 0.05785379}
   m_LocalScale: {x: 0.0005, y: 0.0005, z: 0.00058650004}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1040075169}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -83,3 +132,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &1120478973
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2940068942874966754}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 193.3601, y: 225.41167, z: 1714.4446}
+  m_Center: {x: 0.00000745058, y: 145.74583, z: -7.9417973}

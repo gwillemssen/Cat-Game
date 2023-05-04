@@ -51,26 +51,26 @@ public class StatsScreen : MonoBehaviour
         {
             //no cats pet
             case 0:
-                Grade = "F " + "\n" + ">:( You didn't even try!";
+                Grade = "F " + "\n\n" + "Not a single one?" + "\n" + "You've got work to do.";
                 break;
             //One cat pet
             case 0.25f:
-                Grade = "D " + "\n" + "Just one? You can pet better than that!";
+                Grade = "D " + "\n\n" + "Just one? You can pet better than that!";
                 break;
             case .5f:
-                Grade = "C" + "\n" + "There are still cats un-pet :/";
+                Grade = "C" + "\n\n" + "There are still cats un-pet :/";
                 break;
             case .75f:
-                Grade = "B" + "\n" + "Only one more! You were so close! D:";
+                Grade = "B" + "\n\n" + "Only one more! You were so close! D:";
                 break;
             case 1:
-                Grade = "A" + "\n" + "You're purr-fect cat burglar! =^_^= ";
+                Grade = "A" + "\n\n" + "You're purr-fect cat burglar! =^_^= ";
                 break;
             case 1.25f:
-                Grade = "S" + "\n" + "No cat can escape from your sight!" + "\n" + "Outstanding performance!";
+                Grade = "S" + "\n\n" + "No cat can escape from your sight!" + "\n" + "Outstanding performance!";
                 break;
             default:
-                Grade = "Null" + "\n" + "Something went wrong";
+                Grade = "Null" + "\n\n" + "Something went wrong";
                 break;
 
         }
@@ -82,22 +82,22 @@ public class StatsScreen : MonoBehaviour
 
         if(GameManager.instance.PlayerWasInjured)
         {
-            extrasText.text += "WOUNDED" + "\n" + "(granny gave you a faceful of lead)" + "\n\n";
+            extrasText.text += "WOUNDED" + "\n" + "(Granny gave you a faceful of lead...)" + "\n\n";
         }
 
         if (!GameManager.instance.PlayerWasSpotted)
         {
-            extrasText.text += "SNEAKY" + "\n" + "(you were never spotted)" + "\n\n";
+            extrasText.text += "SNEAKY" + "\n" + "(You were never spotted!)" + "\n\n";
         }
 
         if (GameManager.instance.InteractablesClicked > 30)
         {
-            extrasText.text += "CURIOUS" + "\n" + "(you spent a little extra time clicking things)" + "\n\n";
+            extrasText.text += "CURIOUS" + "\n" + "(You spent a little extra time clicking things!)" + "\n\n";
         }
 
         if (GameManager.instance.TimesBonkedGranny > 5)
         {
-            extrasText.text += "AGGRESSIVE" + "\n" + "(you bonked granny a lot)" + "\n\n";
+            extrasText.text += "AGGRESSIVE" + "\n" + "(You bonked granny a lot. Oof!)" + "\n\n";
         }
 
         //add the other extras that are in! I think they are really cute!
@@ -106,7 +106,7 @@ public class StatsScreen : MonoBehaviour
         string GhostCatPetText;
         //if(GhostCat == Pet) {PetSecretCat = true; GhostCatPetText = "You get the feeling there's still" + "\n" + "some unfinished buisness before you leave..." }
         //else { PetSecretCat = false; "GhostCatPetText = "You finally let him rest after Granny has been" + "\n" + "trying to bring him back. His spirit thanks you!"}
-        GhostCatPetText = "You get the feeling there's still" + "\n" + "some unfinished buisness before you leave...";
+        GhostCatPetText = "You get the feeling there's still some       " + "\n" + "unfinished buisness as you leave the house...";
         secretText.text = GhostCatPetText;
 
         Invoke("StartFadeIn", 6f);

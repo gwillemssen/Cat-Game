@@ -6,6 +6,7 @@ using UnityEditor;
 using System;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class EnemyState
 {
@@ -17,6 +18,8 @@ public class EnemyState
     private Vector3 lookAtPosition;
     private float stopAndLookTime;
     private Vector3? target = null;
+
+
 
     public EnemyState(Enemy enemy)
     { this.enemy = enemy; }
@@ -187,6 +190,8 @@ public class PatrollingState : EnemyState
             {
                 enemy.GunObject.SetActive(false);
                 enemy.GunModelInScene.SetActive(true);
+                enemy.GunRackLocked.SetActive(true);
+                enemy.GunRackUnlocked.SetActive(false);
             }
         }
         else if (!GoingToWaypoint)
@@ -277,7 +282,7 @@ public class AggroState : EnemyState
     {
         base.Init();
         if (!enemy.GunObject.activeSelf) //grab the gun if she doesnt already have it
-        { base.SetWaypoint(enemy.GunWaypoint); }
+        { base.SetWaypoint(enemy.GunWaypoint);  }
         enemy.AI.isStopped = false;
         aggroTimer = 0f;
         huntingVoicelineTimer = 0f;
@@ -312,6 +317,8 @@ public class AggroState : EnemyState
                 enemy.AudioPlayer.Play(enemy.ShotgunSound_Reload);
                 enemy.GunObject.SetActive(true);
                 enemy.GunModelInScene.SetActive(false);
+                enemy.GunRackLocked.SetActive(false); 
+                enemy.GunRackUnlocked.SetActive(true);
             }
 
             return; 
@@ -406,6 +413,7 @@ public class Enemy : MonoBehaviour
     public Sound ShotgunSound_Fire;
     [HideInInspector] public AudioPlayer AudioPlayer;
     [HideInInspector] public AudioSource AudioSource;
+    public GameObject GunRackLocked, GunRackUnlocked;
     [HideInInspector] public EnemyState State { get; private set; }
     public bool Moving { get; private set; }
     public float PercentVisible { get; private set; }
@@ -440,8 +448,9 @@ public class Enemy : MonoBehaviour
         PatrollingState = new PatrollingState(this);
         AggroState = new AggroState(this);
         State = PatrollingState;
-
         sqrCloseDistance = CloseDistance * CloseDistance;
+        GunRackLocked.SetActive(true); 
+        GunRackUnlocked.SetActive(false);
     }
 
     public void Stun()
