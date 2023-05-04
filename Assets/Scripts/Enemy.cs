@@ -238,6 +238,7 @@ public class PatrollingState : EnemyState
         if (AwarenessValue >= enemy.Awareness_IdleState_Duration + enemy.Awareness_WarningState_Duration)
         {
             enemy.SetState(enemy.AggroState);
+            enemy.AggroState.LastSeenPosition = enemy.PlayerTransform.position; //set the last seen position so she doesnt aimlessly wander
             enemy.PlayVoiceline(enemy.YellowToRedRandomSound.Random());
         }
     }
@@ -263,7 +264,8 @@ public class AggroState : EnemyState
     public float AggroPercent { get { return (enemy.AggroTime - aggroTimer) / enemy.AggroTime; } }
     public float ShootPercent { get { return shootTimer / enemy.TimeUntilShoot; } }
 
-    private Vector3? lastSeenPosition = null;
+    public Vector3? LastSeenPosition = null;
+
     private float aggroTimer;
     private float shootTimer;
     private float huntingVoicelineTimer;
@@ -319,7 +321,7 @@ public class AggroState : EnemyState
         {
             shootTimer += Time.deltaTime;
             base.StopAndLook(enemy.PlayerTransform.position, enemy.StopAndLookTime / 2f); //stop and look at player
-            lastSeenPosition = enemy.PlayerTransform.position;
+            LastSeenPosition = enemy.PlayerTransform.position;
 
             if(shootTimer >= enemy.TimeUntilShoot)
             {
@@ -332,12 +334,12 @@ public class AggroState : EnemyState
         else
         {
             shootTimer = 0f;
-            if (lastSeenPosition.HasValue)
+            if (LastSeenPosition.HasValue)
             {
-                SetTarget(lastSeenPosition.Value); //go to last seen position
+                SetTarget(LastSeenPosition.Value); //go to last seen position
                 if(enemy.AtDestination)
                 {
-                    lastSeenPosition = null;
+                    LastSeenPosition = null;
                 }
             } 
             else if (enemy.AtDestination)
