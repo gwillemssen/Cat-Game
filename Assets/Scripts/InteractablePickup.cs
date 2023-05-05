@@ -14,8 +14,8 @@ public class InteractablePickup : Interactable
     public Rigidbody Rigidbody { get; private set; }
     public float ImpactVelocity = 1f;
 
-    public List<Sound> PickupSounds;
-    public List<Sound> ImpactSounds;
+    public List<AudioClip> PickupSounds;
+    public List<AudioClip> ImpactSounds;
 
     [SerializeField] private UnityEvent onImpact;
     private AudioPlayer audioPlayer;
@@ -52,7 +52,6 @@ public class InteractablePickup : Interactable
             { audioPlayer.Play(ImpactSounds[Random.Range(0, ImpactSounds.Count)]); }
             Enemy.instance.Distract(transform.position);
             onImpact?.Invoke();
-            Debug.Log("ASCAGSCAYDYIASYTDC");
             Impacted();
         }
     }
