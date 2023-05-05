@@ -86,4 +86,9 @@ public class Interactable : MonoBehaviour
         player.Play(sounds[Random.Range(0, sounds.Count)]);
     }
 
+    public void PlayAnimation(Animation anim )
+    {
+        anim.Stop();
+        anim.Play();
+    }
 }
