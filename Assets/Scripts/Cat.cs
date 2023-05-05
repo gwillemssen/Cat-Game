@@ -28,7 +28,7 @@ public class CatMeow : MonoBehaviour
             if (catTimer <= 0f)
             {
                 Cat randomCat = GameManager.instance.CatsToPet[Random.Range(0, GameManager.instance.CatsToPet.Count)]; //meow a random cat
-                randomCat.MeowAudioSource.Play();
+                randomCat.player.Play(randomCat.MeowAudioSources[Random.Range(0, randomCat.MeowAudioSources.Count - 1)]);
                 catTimer += Random.Range(minTimeForMeow, maxTimeForMeow);
             }
             if (catTimer > 0f)
@@ -58,7 +58,7 @@ public class Cat : Interactable
     public AudioSource MusicAudioSource;
     [SerializeField] private AudioClip music1;
     [SerializeField] private AudioClip music2;
-    public AudioSource MeowAudioSource;
+    public List<AudioClip> MeowAudioSources = new List<AudioClip>();
     [SerializeField] private float[] musicStartPositions;
     [SerializeField] private float[] music2StartPositions;
 

@@ -15316,14 +15316,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   StartState: 0
-  PetsRequired: 50
+  PetsRequired: 100
   PettingDecayRate: 0.75
   PettingDecayDelay: 0.5
   LightningAmount: 50
   MusicAudioSource: {fileID: 461238427157166943}
   music1: {fileID: 8300000, guid: 25d0ad45af468154e974c15be5a85030, type: 3}
   music2: {fileID: 8300000, guid: dd73f869c3af4794bbd999e97611320e, type: 3}
-  MeowAudioSource: {fileID: 6857564928647273250}
+  MeowAudioSources:
+  - {fileID: 8300000, guid: 084123e9fc89ebd438fea8b248241c61, type: 3}
+  - {fileID: 8300000, guid: b6af4c7328573134b9bc9cc73061ea5c, type: 3}
+  - {fileID: 8300000, guid: 89ef131ca3d5b1445af307daf18e2d6b, type: 3}
+  - {fileID: 8300000, guid: 8efb6390c3eee314f8f944aa65433cd2, type: 3}
+  - {fileID: 8300000, guid: 87bd9e2488f4c854b995fdfc7c0bc104, type: 3}
   musicStartPositions:
   - 1.8
   - 17.5
