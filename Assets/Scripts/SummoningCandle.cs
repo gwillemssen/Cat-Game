@@ -5,6 +5,7 @@ using UnityEngine;
 public class SummoningCandle : Interactable
 {
     [SerializeField] private Sound FireSFX, SummonSFX;
+    [SerializeField] private GameObject GhostCat;
 
     // Start is called before the first frame update
     void Start()
@@ -34,6 +35,8 @@ public class SummoningCandle : Interactable
             //Spawn Ghost Cat
             Debug.Log("Ooga Booga!! Scary cat!!!!");
             player.Play(SummonSFX);
+            GhostCat.SetActive(true);
+            GhostCat.transform.LeanMoveLocalY(transform.position.y + 1, 8f);
         }
     }
 }
