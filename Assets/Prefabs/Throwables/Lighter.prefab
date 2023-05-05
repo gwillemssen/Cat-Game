@@ -10,13 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 8702670472591868188}
   - component: {fileID: 8702670472591868160}
-  - component: {fileID: 8702670472591868161}
+  - component: {fileID: 4742647385507719895}
   - component: {fileID: 8702670472591868186}
   - component: {fileID: 8702670472591868187}
   - component: {fileID: 3938244902394128995}
   - component: {fileID: 5817214115739440854}
   - component: {fileID: 7778506277211713342}
-  - component: {fileID: 4742647385507719895}
   m_Layer: 11
   m_Name: Lighter
   m_TagString: Untagged
@@ -56,7 +55,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
---- !u!114 &8702670472591868161
+--- !u!114 &4742647385507719895
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -65,7 +64,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8702670472591868162}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a08b02ae8fc9857419ed630b4ca455ec, type: 3}
+  m_Script: {fileID: 11500000, guid: 967de9cd9d5536d44967ce44407f7faa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   LookingAt: 0
@@ -75,12 +74,12 @@ MonoBehaviour:
   VisiblyLockedOnView: 0
   Open: 0
   RequiredItemToViewInteraction: 
-  player: {fileID: 0}
+  player: {fileID: 8702670472591868187}
   OnInteract:
     m_PersistentCalls:
       m_Calls: []
   AlwaysMakeImpact: 0
-  ImpactVelocity: 0.5
+  ImpactVelocity: 1
   PickupSounds: []
   ImpactSounds: []
   onImpact:
@@ -258,29 +257,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.9999999, y: 2, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4742647385507719895
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8702670472591868162}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 967de9cd9d5536d44967ce44407f7faa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  LookingAt: 0
-  Disabled: 0
-  CanInteract: 1
-  Cooldown: 0
-  VisiblyLockedOnView: 0
-  Open: 0
-  RequiredItemToViewInteraction: 
-  player: {fileID: 0}
-  OnInteract:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1001 &3946867705443451020
 PrefabInstance:
   m_ObjectHideFlags: 0
