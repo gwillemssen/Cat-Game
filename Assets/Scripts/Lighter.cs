@@ -29,17 +29,12 @@ public class Lighter : InteractablePickup
             //PlayInteractionSound(Put a lighter lighting sound here);
             Debug.Log("lit");
         }
-
-
-        if (Lit == true)
+        else 
         {
-
             Lit = false;
             transform.GetChild(0).gameObject.SetActive(false);
             //PlayInteractionSound(Lighter De-Lighting Sound);
             Debug.Log("Unlit");
-
-
         }
     }
 }
