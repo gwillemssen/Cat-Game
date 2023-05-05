@@ -5653,7 +5653,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5455302812654860102}
-  m_LocalRotation: {x: -0, y: 0.8963626, z: -0, w: 0.44332173}
+  m_LocalRotation: {x: -0, y: 0.12022756, z: -0, w: 0.99274635}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.075, y: 0.075, z: 0.075}
   m_ConstrainProportionsScale: 0
@@ -5667,7 +5667,7 @@ Transform:
   - {fileID: 8361268147875281276}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 127.368, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 13.81, z: 0}
 --- !u!82 &6857564928647273250
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5891,7 +5891,12 @@ MonoBehaviour:
   MusicAudioSource: {fileID: 461238427157166943}
   music1: {fileID: 8300000, guid: 25d0ad45af468154e974c15be5a85030, type: 3}
   music2: {fileID: 8300000, guid: dd73f869c3af4794bbd999e97611320e, type: 3}
-  MeowAudioSources: []
+  MeowAudioSources:
+  - {fileID: 8300000, guid: 084123e9fc89ebd438fea8b248241c61, type: 3}
+  - {fileID: 8300000, guid: b6af4c7328573134b9bc9cc73061ea5c, type: 3}
+  - {fileID: 8300000, guid: 89ef131ca3d5b1445af307daf18e2d6b, type: 3}
+  - {fileID: 8300000, guid: 8efb6390c3eee314f8f944aa65433cd2, type: 3}
+  - {fileID: 8300000, guid: 87bd9e2488f4c854b995fdfc7c0bc104, type: 3}
   musicStartPositions:
   - 1.8
   - 17.5

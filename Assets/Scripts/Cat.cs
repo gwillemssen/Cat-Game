@@ -27,7 +27,7 @@ public class CatMeow : MonoBehaviour
         {
             if (catTimer <= 0f)
             {
-                Cat randomCat = GameManager.instance.CatsToPet[Random.Range(0, GameManager.instance.CatsToPet.Count)]; //meow a random cat
+                Cat randomCat = GameManager.instance.CatsToPet[Random.Range(0, GameManager.instance.CatsToPet.Count-1)]; //meow a random cat
                 randomCat.player.Play(randomCat.MeowAudioSources[Random.Range(0, randomCat.MeowAudioSources.Count - 1)]);
                 catTimer += Random.Range(minTimeForMeow, maxTimeForMeow);
             }
