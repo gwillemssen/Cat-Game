@@ -64,7 +64,7 @@ public class InteractablePickup : Interactable
     //called when we left click while holding it.
     public virtual void Click()
     {
-
+        //print("CLICKY");
     }
 
     public override void Interact(FirstPersonController controller)

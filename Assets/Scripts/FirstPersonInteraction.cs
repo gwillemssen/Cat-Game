@@ -25,6 +25,7 @@ public class FirstPersonInteraction : MonoBehaviour
     public InteractablePickup Pickup { get; private set; } = null;
     private InteractablePickup interactablePickup;
     private Interactable lastInteractable = null;
+    private bool justPickedUp;
 
     //crosshair
     private Texture2D crosshairImage;
@@ -98,6 +99,7 @@ public class FirstPersonInteraction : MonoBehaviour
 
     private void HandleInteraction()
     {
+        justPickedUp = false;
         if (controller.Input.interacting && interactable != null)
         {
             interactablePickup = interactable as InteractablePickup; 
@@ -105,7 +107,10 @@ public class FirstPersonInteraction : MonoBehaviour
             if (interactablePickup != null)
             {
                 if (Pickup == null)
-                { PickupInteractable(); }
+                {
+                    PickupInteractable();
+                    justPickedUp = true;
+                }
             }
             else
             {
@@ -126,7 +131,7 @@ public class FirstPersonInteraction : MonoBehaviour
             else if (controller.Input.throwRelease)
             { ThrowInteractable(); }
 
-            if(controller.Input.interactedOnce)
+            if(controller.Input.interactedOnce && !justPickedUp)
             { Pickup.Click(); }
         }
 
