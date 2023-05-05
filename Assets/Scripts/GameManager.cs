@@ -147,6 +147,7 @@ public class GameManager : MonoBehaviour
         PlayerUI.instance.StatsScreen.gameObject.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        FirstPersonController.instance.Interaction.HideCrosshair = true;
     }
     public void ExitDoor()
     {
