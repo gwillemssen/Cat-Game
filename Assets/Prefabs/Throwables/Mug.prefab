@@ -70,12 +70,22 @@ MonoBehaviour:
   Disabled: 0
   CanInteract: 1
   Cooldown: 0
+  VisiblyLockedOnView: 0
+  Open: 0
+  RequiredItemToViewInteraction: 
+  player: {fileID: 0}
   OnInteract:
     m_PersistentCalls:
       m_Calls: []
   AlwaysMakeImpact: 0
   ImpactVelocity: 0.5
-  ImpactSound: {fileID: 11400000, guid: 7febcf39c7efa1e4c88f6a2c2ddfc82c, type: 2}
+  PickupSounds: []
+  ImpactSounds:
+  - {fileID: 8300000, guid: 755a927779a612b44a5822d8af5433f7, type: 3}
+  onImpact:
+    m_PersistentCalls:
+      m_Calls: []
+  FrozenOnAwake: 0
 --- !u!82 &8314761668917770443
 AudioSource:
   m_ObjectHideFlags: 0
