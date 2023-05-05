@@ -66,7 +66,9 @@ public class GameManager : MonoBehaviour
 
     private void StartGame()
     {
-        if(SceneManager.GetActiveScene().name == "Main Menu")
+        ResetGameManager();
+
+        if (SceneManager.GetActiveScene().name == "Main Menu")
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;

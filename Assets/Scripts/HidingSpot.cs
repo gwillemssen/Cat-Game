@@ -18,6 +18,7 @@ public class HidingSpot : Interactable, IGrannyInteractable
 
     private float lerp;
     private bool entering;
+    private bool justEntered;
 
     public virtual void OnEnterHidingSpot() { }
 
@@ -34,6 +35,7 @@ public class HidingSpot : Interactable, IGrannyInteractable
         FPController.Hiding = true;
         entering = true;
         lerp = 0f;
+        justEntered = true;
 
         Enemy.instance.OnEnteredHidingSpotCallback(this);
         OnEnterHidingSpot();
@@ -76,11 +78,13 @@ public class HidingSpot : Interactable, IGrannyInteractable
                 }
             }
 
-            if(FPController != null && FPController.Input.interactedOnce && entering)
+            if(FPController != null && FPController.Input.interactedOnce && entering && !justEntered)
             {
                 Exit();
             }
         }
+
+        justEntered = false;
     }
 
     public virtual void OnExitHidingSpot() {}
