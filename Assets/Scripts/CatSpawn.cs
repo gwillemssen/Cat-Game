@@ -42,9 +42,9 @@ public class CatSpawn : MonoBehaviour
                 if (cats.UseLayingCat) { tempPrefabs.Add(catPrefabs[1]); }
 
             }
-            int matIndex = UnityEngine.Random.Range(0, tempMats.Count);
-            int posIndex = UnityEngine.Random.Range(0, tempPos.Count);
-            int prefabIndex = UnityEngine.Random.Range(0, tempPrefabs.Count);
+            int matIndex = UnityEngine.Random.Range(0, tempMats.Count -1);
+            int posIndex = UnityEngine.Random.Range(0, tempPos.Count -1);
+            int prefabIndex = UnityEngine.Random.Range(0, tempPrefabs.Count -1);
             if (prefabIndex < 0) { prefabIndex = 0; }
             GameObject cat = Instantiate(tempPrefabs[prefabIndex], tempPos[posIndex].position, tempPos[posIndex].rotation);
             cat.transform.GetChild(3).GetComponent<Renderer>().material = tempMats[matIndex];

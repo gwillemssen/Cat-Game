@@ -36,7 +36,7 @@ public class SummoningCandle : Interactable
             Debug.Log("Ooga Booga!! Scary cat!!!!");
             player.Play(SummonSFX);
             GhostCat.SetActive(true);
-            GhostCat.transform.LeanMoveLocalY(transform.position.y + 1, 8f);
+            GhostCat.transform.LeanMoveLocalY(transform.position.y + .1f, 8f);
         }
     }
 }
