@@ -67,11 +67,11 @@ public class Interactable : MonoBehaviour
         if (!Open) //OPEN
         {
             Open = true;
-            LeanTween.rotate(Hinge, startingLocation, openTime).setEaseInOutExpo();
+            LeanTween.rotateLocal(Hinge, startingLocation, openTime).setEaseInOutExpo();
         }
         else if (Open) //CLOSED
         {
-            LeanTween.rotate(Hinge, endingLocation, closeTime).setEaseInOutExpo();
+            LeanTween.rotateLocal(Hinge, endingLocation, closeTime).setEaseInOutExpo();
             Open = false;
         }
     }
