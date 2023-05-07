@@ -106,10 +106,10 @@ public class StatsScreen : MonoBehaviour
         string GhostCatPetText;
         //if(GhostCat == Pet) {PetSecretCat = true; GhostCatPetText = "You get the feeling there's still" + "\n" + "some unfinished buisness before you leave..." }
         //else { PetSecretCat = false; "GhostCatPetText = "You finally let him rest after Granny has been" + "\n" + "trying to bring him back. His spirit thanks you!"}
-        GhostCatPetText = "You get the feeling there's still some       " + "\n" + "unfinished buisness as you leave the house...";
+        GhostCatPetText = "You get the feeling there's still some unfinished buisness as you leave the house...";
         secretText.text = GhostCatPetText;
 
-        Invoke("StartFadeIn", 6f);
+        Invoke("StartFadeIn", 3f);
     }
 
     private void StartFadeIn()

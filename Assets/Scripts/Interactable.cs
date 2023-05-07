@@ -64,16 +64,9 @@ public class Interactable : MonoBehaviour
 
     public virtual void OpenHinge(GameObject Hinge, Vector3 startingLocation, Vector3 endingLocation, float openTime, float closeTime)
     {
-        if (!Open) //OPEN
-        {
-            Open = true;
-            LeanTween.rotateLocal(Hinge, startingLocation, openTime).setEaseInOutExpo();
-        }
-        else if (Open) //CLOSED
-        {
-            LeanTween.rotateLocal(Hinge, endingLocation, closeTime).setEaseInOutExpo();
-            Open = false;
-        }
+        Open = !Open;
+        ToggleChildColliders(Hinge, false);
+        LeanTween.rotateLocal(Hinge,Open?startingLocation:endingLocation,Open?openTime:closeTime).setEaseInOutExpo().setOnComplete(()=>ToggleChildColliders(Hinge,true));
     }
 
     public virtual void PlayInteractionSound(Sound sound)
@@ -89,5 +82,38 @@ public class Interactable : MonoBehaviour
     public void PlayAnimation()
     {   
         GetComponent<Animation>().Play();
+    }
+
+    void ToggleChildColliders(GameObject parent)
+    {
+        // Get all child game objects of the parent
+        foreach (Transform child in parent.transform)
+        {
+            // If the child has a collider, turn it off
+            Collider collider = child.GetComponent<Collider>();
+            if (collider != null)
+            {
+                if (collider.enabled) { collider.enabled = false; }
+                else { collider.enabled = true; }
+                
+            }
+
+            // Recursively call this function on the child's children
+            ToggleChildColliders(child.gameObject);
+        }
+    }
+
+    void ToggleChildColliders(GameObject parent, bool on)
+    {
+        // Get all child game objects of the parent
+        foreach (Transform child in parent.transform)
+        {
+            // If the child has a collider, turn it off
+            Collider collider = child.GetComponent<Collider>();
+            if (collider != null) collider.enabled = on;
+
+            // Recursively call this function on the child's children
+            ToggleChildColliders(child.gameObject);
+        }
     }
 }
