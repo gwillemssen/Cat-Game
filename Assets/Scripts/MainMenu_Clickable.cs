@@ -8,7 +8,8 @@ using UnityEngine.SceneManagement;
 public class MainMenu_Clickable : MonoBehaviour
 {
     public GameObject MainCam;
-    public int valueToChangeTo;
+    public int CameraIndex;
+    private int valueToChangeTo;
 
     private Vector3 position;
     private Vector3 rotation;
@@ -68,10 +69,56 @@ public class MainMenu_Clickable : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+
+        if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
         {
+            switch (valueToChangeTo)
+            {
+                case 1:
+                    break;
+                case 2:
+                    valueToChangeTo = 3;
+                    break;
+                case 3:
+                    valueToChangeTo = 1;
+                    break;
+                    default: break;
+            }
+
+            MoveCamera();
+        }
+        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.Escape))
+        {
+
             LeanTween.move(MainCam, defaultPosition, 1.5f).setEaseInOutExpo();
             LeanTween.rotate(MainCam, defaultRotation, 1.5f).setEaseInOutExpo();
+        }
+        if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            switch (valueToChangeTo)
+            {
+                case 1:
+                    valueToChangeTo = 3;
+                    break;
+                case 2:
+                    
+                    break;
+                case 3:
+                    valueToChangeTo = 2;
+                    break;
+                default: break;
+            }
+
+            MoveCamera();
+        }
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            if((MainCam.transform.position - defaultPosition).magnitude < 1.5)
+            {
+                valueToChangeTo = 3;
+                MoveCamera();
+            }
+            
         }
 
         if (hovering)
@@ -101,6 +148,13 @@ public class MainMenu_Clickable : MonoBehaviour
 
     public void OnMouseDown()
     {
+        valueToChangeTo = CameraIndex;
+        MoveCamera();
+    }
+
+    void MoveCamera()
+    {
+        print(valueToChangeTo);
         position = cameraPositions[valueToChangeTo];
         rotation = cameraRotations[valueToChangeTo];
         float duration = 1.5f;
