@@ -16,7 +16,7 @@ public class PlayerUI : MonoBehaviour
     public Canvas Canvas;
 
     [HideInInspector] public Slider PettingMeter;
-    private Text debugText;
+    private Text catText;
     private Text infoText;
     private Animation infoTextFade;
     private Image hamd;
@@ -37,7 +37,7 @@ public class PlayerUI : MonoBehaviour
     public Image Hamd { get { return hamd; } private set { hamd = value; } }
     public bool EnemyOnScreen { get; private set; }
 
-    string debugOutput = "";
+    string catOutput = "";
     private float exclaimationPointTimer = 0f;
     private float blinkTimer = 0f;
     private bool lastTimeSeenPlayer;
@@ -65,8 +65,8 @@ public class PlayerUI : MonoBehaviour
                 case "PettingMeter":
                     PettingMeter = t.GetComponent<Slider>();
                     break;
-                case "DebugText":
-                    debugText = t.GetComponent<Text>();
+                case "CatText":
+                    catText = t.GetComponent<Text>();
                     break;
                 case "WIN":
                     WinScreen = t.gameObject;
@@ -112,7 +112,7 @@ public class PlayerUI : MonoBehaviour
         NotAllOfTheCatsScreen.SetActive(false);
         hamd.enabled = false;
         //debugText.enabled = false;
-        debugText.text = "";
+        catText.text = "";
         spottedGradient_Left.SetActive(false);
         spottedGradient_Right.SetActive(false);
         StatsScreen.gameObject.SetActive(false);
@@ -121,9 +121,9 @@ public class PlayerUI : MonoBehaviour
 
     private void Update()
     {
-        debugOutput = "";
-        debugOutput += $"Cats Remaining: {GameManager.instance.CatsToPet.Count}\n";
-        debugText.text = debugOutput;
+        catOutput = "";
+        catOutput += "Cats Pet:" + "\n" +  $"{GameManager.instance.TotalCats - GameManager.instance.CatsToPet.Count} / {GameManager.instance.TotalCats}";
+        catText.text = catOutput;
 
         Color targetColor = Color.white;
         targetColor.a = 0f;
