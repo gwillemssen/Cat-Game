@@ -54,7 +54,7 @@ public class MicrowaveController : Interactable
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         LightManager();
         TimerManager();
@@ -189,13 +189,7 @@ public class MicrowaveController : Interactable
 
     private void MicrowaveLoad()
     {
-        //sound loading
-        sounds[0] = Resources.Load("Sound/So_MicrowaveBeep") as AudioClip;
-        sounds[1] = Resources.Load("Sound/So_MicrowaveStart") as AudioClip;
-        sounds[2] = Resources.Load("Sound/So_MicrowaveLoop") as AudioClip;
-        sounds[3] = Resources.Load("Sound/So_MicrowaveFinish") as AudioClip;
-        sounds[4] = Resources.Load("Sound/So_MicrowaveOpen") as AudioClip;
-        sounds[5] = Resources.Load("Sound/So_MicrowaveClose") as AudioClip;
+
 
         microwaveAnimator = GetComponent<Animator>();
         microwavePlayer = GetComponent<AudioSource>();

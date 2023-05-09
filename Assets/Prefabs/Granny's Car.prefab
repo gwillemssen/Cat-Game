@@ -175,7 +175,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   keyName: Car Keys
-  OpenPos: {x: 0, y: -60, z: 0}
+  OpenPos: {x: 0, y: -50, z: 0}
   ClosedPos: {x: 0, y: 0, z: 0}
   UnlockSounds:
   - {fileID: 11400000, guid: e5b43775296455641bc2e4f2ac5d18e9, type: 2}
@@ -495,6 +495,7 @@ GameObject:
   - component: {fileID: 613975358256732443}
   - component: {fileID: 4807958091731219941}
   - component: {fileID: 4670112413312017789}
+  - component: {fileID: 8280755393667213513}
   m_Layer: 0
   m_Name: DoorWindowL
   m_TagString: Untagged
@@ -567,6 +568,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &8280755393667213513
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4738232699688391161}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 1373015477523663720, guid: 11a7d16a9a46a614fa31d17ba19c79bc, type: 3}
 --- !u!1 &4786538256186810189
 GameObject:
   m_ObjectHideFlags: 0
@@ -743,6 +758,7 @@ GameObject:
   - component: {fileID: 8733640656328034709}
   - component: {fileID: 1027694506187159866}
   - component: {fileID: 3215391758628904018}
+  - component: {fileID: 5266325125639245298}
   m_Layer: 0
   m_Name: DoorWindowR
   m_TagString: Untagged
@@ -815,6 +831,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &5266325125639245298
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5622084408631149878}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -8731528778215436482, guid: 11a7d16a9a46a614fa31d17ba19c79bc, type: 3}
 --- !u!1 &5862063127350073936
 GameObject:
   m_ObjectHideFlags: 0
@@ -986,8 +1016,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   keyName: Car Keys
-  OpenPos: {x: 0, y: 110, z: 0}
-  ClosedPos: {x: 0, y: 169.12, z: 0}
+  OpenPos: {x: 0, y: 60, z: 0}
+  ClosedPos: {x: 0, y: 0, z: 0}
   UnlockSounds:
   - {fileID: 11400000, guid: e5b43775296455641bc2e4f2ac5d18e9, type: 2}
   - {fileID: 11400000, guid: c646fa56724fdf442b326b82c8939eb4, type: 2}
