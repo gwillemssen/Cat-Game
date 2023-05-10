@@ -14,8 +14,9 @@ public class TVChannels : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        
 
+        videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
+       
             StartCoroutine(RunChangeChannel());
         
         

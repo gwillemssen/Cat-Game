@@ -314,7 +314,7 @@ public class AggroState : EnemyState
         {
             if(enemy.AtDestination)
             {
-                enemy.AudioPlayer.Play(enemy.ShotgunSound_Reload);
+                enemy.PlaySound(enemy.ShotgunSound_Reload);
                 enemy.GunObject.SetActive(true);
                 enemy.GunModelInScene.SetActive(false);
                 enemy.GunRackLocked.SetActive(false); 
@@ -336,7 +336,7 @@ public class AggroState : EnemyState
                 FirstPersonController.instance.Shoot();
                 GameManager.instance.PlayerWasInjured = true;
                 shootTimer = 0f;
-                enemy.AudioPlayer.Play(enemy.ShotgunSound_Fire);
+                enemy.PlaySound(enemy.ShotgunSound_Fire);
                 enemy.PlayVoiceline(enemy.ShootRandomSound.Random());
             }
         }
@@ -459,8 +459,8 @@ public class Enemy : MonoBehaviour
         { return; }
         Debug.Log("stunned");
         stunTimer = StunTime;
-        AudioPlayer.Play(BonkSound);
-        AudioPlayer.Play(HurtRandomSound.Random());
+        PlaySound(BonkSound);
+        PlaySound(HurtRandomSound.Random());
         GameManager.instance.TimesBonkedGranny++;
     }
 
@@ -642,6 +642,18 @@ public class Enemy : MonoBehaviour
 
         lastTimePlayedVoiceline = Time.time;
         return sound;
+    }
+
+    public void PlaySound(AudioClip sound)
+    {
+        AudioSource.clip = sound;
+        AudioSource.Play();
+        AudioSource.clip = null;
+    }
+    public void PlaySound(Sound sound)
+    {
+        AudioPlayer.Play(sound);
+  
     }
 
     private void PlayQueuedVoicelines()
