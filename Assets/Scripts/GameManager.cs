@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public event Action OnCatPetted;
     [HideInInspector] public List<Cat> CatsToPet = new List<Cat>();
     public int TotalCats { get; private set; }
+    public int CatsPet { get { return (GameManager.instance.TotalCats - GameManager.instance.CatsToPet.Count) + (PettedGhostCat ? 1 : 0); } }
     public enum GameState { TitleScreen, InGame, Loading, GameOver }
     public GameState State { get; private set; } = GameState.Loading;
     [SerializeField] private Texture2D loadingTexture;
@@ -22,7 +23,7 @@ public class GameManager : MonoBehaviour
     public int TimesBonkedGranny { get; set; }
     [HideInInspector] public bool FoundSecretRoom = false;
     [HideInInspector] public double ElapsedTime;
-
+    [HideInInspector] public bool PettedGhostCat;
     [HideInInspector] public int SecretCandlesLit;
 
     void Awake()
@@ -87,6 +88,9 @@ public class GameManager : MonoBehaviour
         CatsToPet.Remove(cat);
         OnCatPetted?.Invoke();
 
+        if(cat.IsGhostCat)
+        { PettedGhostCat = true; }
+
         if (CatsToPet.Count == 0)
         { OnAllCatsPetted?.Invoke(); }
     }
@@ -102,6 +106,8 @@ public class GameManager : MonoBehaviour
         PlayerWasSpotted = false;
         InteractablesClicked = 0;
         TimesBonkedGranny = 0;
+        SecretCandlesLit = 0;
+        PettedGhostCat = false;
     }
 
     public void RegisterCat(Cat cat)
@@ -145,7 +151,7 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         Enemy.instance.enabled = false;
-        PlayerWasShot = FirstPersonController.instance.WasShot;
+        PlayerWasInjured = FirstPersonController.instance.WasInjured;
         PlayerUI.instance.StatsScreen.gameObject.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;

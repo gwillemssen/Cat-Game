@@ -42,12 +42,11 @@ public class StatsScreen : MonoBehaviour
 
     void SetGrade()
     {
-        float z;
-        float total;
-        z = GameManager.instance.TotalCats - GameManager.instance.CatsToPet.Count;
-        total = z / GameManager.instance.TotalCats;
+        float catsPercentage;
+        catsPercentage = (float)GameManager.instance.CatsPet / (float)GameManager.instance.TotalCats;
         //Format- Grade, New Line, Funny Message
-        switch (total)
+        Debug.Log("Cats Percentage: " + catsPercentage);
+        switch (catsPercentage)
         {
             //no cats pet
             case 0:
@@ -103,13 +102,16 @@ public class StatsScreen : MonoBehaviour
         //add the other extras that are in! I think they are really cute!
 
         //Ghost Cat Work:
-        string GhostCatPetText;
+        string GhostCatPetText = "";
         //if(GhostCat == Pet) {PetSecretCat = true; GhostCatPetText = "You get the feeling there's still" + "\n" + "some unfinished buisness before you leave..." }
         //else { PetSecretCat = false; "GhostCatPetText = "You finally let him rest after Granny has been" + "\n" + "trying to bring him back. His spirit thanks you!"}
-        GhostCatPetText = "You get the feeling there's still some unfinished buisness as you leave the house...";
-        secretText.text = GhostCatPetText;
+        if (!GameManager.instance.PettedGhostCat)
+        {
+            GhostCatPetText = "You get the feeling there's still some unfinished buisness as you leave the house...";
+            secretText.text = GhostCatPetText;
 
-        Invoke("StartFadeIn", 3f);
+            Invoke("StartFadeIn", 3f);
+        }
     }
 
     private void StartFadeIn()
@@ -119,7 +121,7 @@ public class StatsScreen : MonoBehaviour
     void SetObjectives()
     {
         objectivesText.text = "";
-        objectivesText.text += $"Cats: {GameManager.instance.TotalCats - GameManager.instance.CatsToPet.Count} / {GameManager.instance.TotalCats}";
+        objectivesText.text += $"Cats: {GameManager.instance.CatsPet} / {GameManager.instance.TotalCats}";
         objectivesText.text += "\n\n\n";
         int minutes = (int)GameManager.instance.ElapsedTime / 60;
         int seconds = (int)GameManager.instance.ElapsedTime % 60;

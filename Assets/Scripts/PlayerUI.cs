@@ -122,7 +122,7 @@ public class PlayerUI : MonoBehaviour
     private void Update()
     {
         catOutput = "";
-        catOutput += "Cats Pet:" + "\n" +  $"{GameManager.instance.TotalCats - GameManager.instance.CatsToPet.Count} / {GameManager.instance.TotalCats}";
+        catOutput += "Cats Pet:" + "\n" +  $"{GameManager.instance.CatsPet} / {GameManager.instance.TotalCats}";
         catText.text = catOutput;
 
         Color targetColor = Color.white;
@@ -215,7 +215,7 @@ public class PlayerUI : MonoBehaviour
         spottedGradient_Left.SetActive(Enemy.instance.SeesPlayer && EnemyOnScreen || Enemy.instance.SeesPlayer && !onRightSide);
         spottedGradient_Right.SetActive(Enemy.instance.SeesPlayer && EnemyOnScreen || Enemy.instance.SeesPlayer && onRightSide);
 
-        bloodOverlay.enabled = FirstPersonController.instance.WasShot;
+        bloodOverlay.enabled = FirstPersonController.instance.WasInjured;
     }
 
     public void SetInfoText(string text) { SetInfoText(text, 64, true); }

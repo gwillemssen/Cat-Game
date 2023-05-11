@@ -105,7 +105,7 @@ public class FirstPersonController : MonoBehaviour
     public bool DisableCamera = false;
     [HideInInspector]
     public bool Hiding = false;
-    public bool WasShot { get; private set; }
+    public bool WasInjured { get; private set; }
     
     //Private References
     private CharacterController controller;
@@ -310,11 +310,11 @@ public class FirstPersonController : MonoBehaviour
 
     public void Shoot()
     {
-        if(WasShot)
+        if(WasInjured)
         {
             GameManager.instance.PlayerShot();
         }
-        WasShot = true;
+        WasInjured = true;
     }
 
     private static float ClampAngle(float lfAngle, float lfMin, float lfMax)

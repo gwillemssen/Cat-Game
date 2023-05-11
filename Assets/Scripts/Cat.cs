@@ -49,6 +49,7 @@ public class CatMeow : MonoBehaviour
 public class Cat : Interactable
 {
     //inspector
+    public bool IsGhostCat = false;
     public enum CatStartState { Pettable, Unpettable }
     public CatStartState StartState;
     public int PetsRequired = 12;
@@ -110,7 +111,8 @@ public class Cat : Interactable
         catOriginalScale = transform.localScale;
         GameObject g = new GameObject("CatMeowObject", typeof(CatMeow)); //create an external object to do the meowing sounds.
 
-        GameManager.instance.RegisterCat(this);
+        if (!IsGhostCat)
+        { GameManager.instance.RegisterCat(this); }
 
     }
 
@@ -129,9 +131,6 @@ public class Cat : Interactable
     //}
     private void Update()
     {
-
-        
-
         if (state == CatState.PettingMinigame || state == CatState.DonePetting)
         {
             MoveCat();
