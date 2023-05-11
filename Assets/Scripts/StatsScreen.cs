@@ -99,6 +99,11 @@ public class StatsScreen : MonoBehaviour
             extrasText.text += "AGGRESSIVE" + "\n" + "(You bonked granny a lot. Oof!)" + "\n\n";
         }
 
+        if(GameManager.instance.PettedGhostCat)
+        {
+            extrasText.text += "REVIVAL" + "\n" + "You summoned the ghost cat\n\n";
+        }
+
         //add the other extras that are in! I think they are really cute!
 
         //Ghost Cat Work:
