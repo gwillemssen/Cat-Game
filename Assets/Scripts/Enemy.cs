@@ -337,7 +337,7 @@ public class AggroState : EnemyState
                 GameManager.instance.PlayerWasInjured = true;
                 shootTimer = 0f;
                 enemy.PlaySound(enemy.ShotgunSound_Fire);
-                enemy.PlayVoiceline(enemy.ShootRandomSound.Random());
+                enemy.PlaySound(enemy.ShootRandomSound.Random());
             }
         }
         else
@@ -401,7 +401,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private LayerMask everythingBesidesEnemy;
     public AudioClip[] WhiteToYellowSounds, YellowToRedSounds, RedToYellowSounds, YellowToWhiteSounds, HurtSounds, IdleSounds, HuntingSounds, ShootSounds;
     public AudioClip BonkSound, ShotgunSound_Reload, ShotgunSound_Fire; 
-    [HideInInspector] public AudioSource AudioSource;
+    public AudioSource AudioSource1, AudioSource2, AudioSource3;
     public GameObject GunRackLocked, GunRackUnlocked;
     [HideInInspector] public EnemyState State { get; private set; }
     public bool Moving { get; private set; }
@@ -462,7 +462,6 @@ public class Enemy : MonoBehaviour
     {
         PlayerTransform = FirstPersonController.instance.transform;
         DebugObject.gameObject.SetActive(DebugMode);
-        AudioSource = GetComponent<AudioSource>();
         WhiteToYellowRandomSound = new NonRepeatingSound(WhiteToYellowSounds);
         YellowToRedRandomSound = new NonRepeatingSound(YellowToRedSounds);
         RedToYellowRandomSound = new NonRepeatingSound(RedToYellowSounds);
@@ -622,8 +621,7 @@ public class Enemy : MonoBehaviour
             voicelineQueue.Enqueue(sound);
             return null;
         }
-         AudioSource.clip = sound;
-         AudioSource.Play();
+         PlaySound(sound);
         //print("Playing voiceline " + sound.name);
         voiceLineDuration = sound.length;
 
@@ -634,9 +632,22 @@ public class Enemy : MonoBehaviour
 
     public void PlaySound(AudioClip sound)
     {
-        AudioSource.clip = sound;
-        AudioSource.Play();
-        AudioSource.clip = null;
+        if (!AudioSource1.isPlaying)
+        {
+            AudioSource1.clip = sound;
+            AudioSource1.Play();
+        }
+        else if (!AudioSource2.isPlaying)
+        {
+            AudioSource2.clip = sound;
+            AudioSource2.Play();
+        }
+        else if (!AudioSource3.isPlaying)
+        {
+            AudioSource3.clip = sound;
+            AudioSource3.Play();
+        }
+        else { print("too many sounds augh"); }
     }
 
     private void PlayQueuedVoicelines()
