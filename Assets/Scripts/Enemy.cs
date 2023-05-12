@@ -617,7 +617,7 @@ public class Enemy : MonoBehaviour
     {
         if (Time.time - lastTimePlayedVoiceline < voiceLineDuration) //make sure we dont overlap voicelines
         {
-            print("Queueing voiceline " + sound.name);
+            //print("Queueing voiceline " + sound.name);
             voicelineQueue.Enqueue(sound);
             return null;
         }
