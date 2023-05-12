@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3812692897594597436}
   - component: {fileID: 3812692897594597437}
   - component: {fileID: 3812692897594597414}
-  - component: {fileID: 3812692897594597415}
   - component: {fileID: 8829319772889451359}
   - component: {fileID: 2059721970266732522}
   - component: {fileID: 2872647223110323714}
@@ -30,9 +29,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3812692897594597438}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.668, y: 0.97, z: 19.655}
-  m_LocalScale: {x: 0.2177566, y: 0.2177566, z: 0.2177566}
+  m_LocalScale: {x: 0.21775658, y: 0.21775658, z: 0.21775658}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -70,12 +69,21 @@ MonoBehaviour:
   Disabled: 0
   CanInteract: 1
   Cooldown: 0
+  VisiblyLockedOnView: 0
+  Open: 0
+  RequiredItemToViewInteraction: 
+  player: {fileID: 3812692897594597414}
   OnInteract:
     m_PersistentCalls:
       m_Calls: []
   AlwaysMakeImpact: 0
   ImpactVelocity: 0.5
-  ImpactSound: {fileID: 11400000, guid: 7febcf39c7efa1e4c88f6a2c2ddfc82c, type: 2}
+  PickupSounds: []
+  ImpactSounds: []
+  onImpact:
+    m_PersistentCalls:
+      m_Calls: []
+  FrozenOnAwake: 0
 --- !u!82 &3812692897594597414
 AudioSource:
   m_ObjectHideFlags: 0
@@ -172,18 +180,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &3812692897594597415
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3812692897594597438}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03d6b8fc5abf6674b9fb3d7bef260517, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!33 &8829319772889451359
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -245,5 +241,5 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2.9265285, y: 0.3268631, z: 2.9166706}
-  m_Center: {x: -0.00006890297, y: -0.3131056, z: 0.000000834465}
+  m_Size: {x: 2.9265282, y: 0.32686308, z: 2.9166703}
+  m_Center: {x: -0.00006890296, y: -0.3131051, z: 0.0000046491623}

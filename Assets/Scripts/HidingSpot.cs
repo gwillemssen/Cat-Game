@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(AudioPlayer))]
 public class HidingSpot : Interactable, IGrannyInteractable
 {
     public Transform HidingPosition;

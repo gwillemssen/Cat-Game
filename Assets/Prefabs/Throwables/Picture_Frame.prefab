@@ -93,10 +93,9 @@ GameObject:
   m_Component:
   - component: {fileID: 7024399345083934310}
   - component: {fileID: 7024399345083934330}
+  - component: {fileID: 8236937948754462788}
   - component: {fileID: 7024399345083934331}
   - component: {fileID: 7024399345083934304}
-  - component: {fileID: 7024399345083934305}
-  - component: {fileID: 8236937948754462788}
   m_Layer: 11
   m_Name: Picture_Frame
   m_TagString: Untagged
@@ -136,6 +135,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!65 &8236937948754462788
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7024399345083934328}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.24909133, y: 0.17983752, z: 0.09008703}
+  m_Center: {x: -0.0016921759, y: 0.01376608, z: 0.001507666}
 --- !u!114 &7024399345083934331
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,13 +163,22 @@ MonoBehaviour:
   LookingAt: 0
   Disabled: 0
   CanInteract: 1
-  NoiseCrosshair: 0
   Cooldown: 0
+  VisiblyLockedOnView: 0
+  Open: 0
+  RequiredItemToViewInteraction: 
+  player: {fileID: 7024399345083934304}
   OnInteract:
     m_PersistentCalls:
       m_Calls: []
+  AlwaysMakeImpact: 0
   ImpactVelocity: 0.5
-  ImpactSound: {fileID: 11400000, guid: 7febcf39c7efa1e4c88f6a2c2ddfc82c, type: 2}
+  PickupSounds: []
+  ImpactSounds: []
+  onImpact:
+    m_PersistentCalls:
+      m_Calls: []
+  FrozenOnAwake: 0
 --- !u!82 &7024399345083934304
 AudioSource:
   m_ObjectHideFlags: 0
@@ -254,28 +275,3 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &7024399345083934305
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7024399345083934328}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03d6b8fc5abf6674b9fb3d7bef260517, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!65 &8236937948754462788
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7024399345083934328}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.24909133, y: 0.18077269, z: 0.09008703}
-  m_Center: {x: -0.0016921721, y: 0.013298497, z: 0.0015076678}

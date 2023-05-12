@@ -5,6 +5,7 @@ using UnityEngine;
 public class Phone : InteractablePickup
 {
     [SerializeField] private AudioClip DialTone;
+    [SerializeField] private AudioSource VoicemailSource;
     [SerializeField] private List<AudioClip> Voicemails = new List<AudioClip>();
     private List<AudioClip> AnsweringMachine;
     // Start is called before the first frame update
@@ -22,14 +23,18 @@ public class Phone : InteractablePickup
     public override void Interact(FirstPersonController controller)
     {
         PlaySound(DialTone);
+
     }
 
     public override void Click()
     {
-        if (!player.isPlaying && AnsweringMachine.Count > 0) 
+
+        if (!VoicemailSource.isPlaying && AnsweringMachine.Count > 0) 
         {
+            player.Stop();
             int index = Random.Range(0, AnsweringMachine.Count - 1);
-            PlaySound(AnsweringMachine[index]);
+            VoicemailSource.clip = AnsweringMachine[index];
+            VoicemailSource.Play();
             AnsweringMachine.RemoveAt(index);
         }
         //will re-add all voicemails to the answering machine if we want them to be repeatable

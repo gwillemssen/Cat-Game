@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3592544667398718614}
   - component: {fileID: 3592544667398718615}
   - component: {fileID: 3592544667398718604}
-  - component: {fileID: 3592544667398718605}
   - component: {fileID: 9203708541052465141}
   - component: {fileID: 1848645811652612928}
   - component: {fileID: 4137175541541388050}
@@ -74,7 +73,7 @@ MonoBehaviour:
   VisiblyLockedOnView: 0
   Open: 0
   RequiredItemToViewInteraction: 
-  player: {fileID: 0}
+  player: {fileID: 3592544667398718604}
   OnInteract:
     m_PersistentCalls:
       m_Calls: []
@@ -98,7 +97,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  FrozenOnAwake: 0
+  FrozenOnAwake: 1
 --- !u!82 &3592544667398718604
 AudioSource:
   m_ObjectHideFlags: 0
@@ -195,18 +194,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &3592544667398718605
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3592544667398718612}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03d6b8fc5abf6674b9fb3d7bef260517, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!33 &9203708541052465141
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -350,6 +337,11 @@ PrefabInstance:
     - target: {fileID: 5944414127050539937, guid: ea2c89ae0a09b784f81e1475052222a7,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7800351374874874772, guid: ea2c89ae0a09b784f81e1475052222a7,
+        type: 3}
+      propertyPath: playOnAwake
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

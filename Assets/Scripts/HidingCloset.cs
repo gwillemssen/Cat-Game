@@ -5,8 +5,7 @@ using UnityEngine;
 public class HidingCloset : HidingSpot
 {
     public Animation anim;
-    public Sound DoorOpenSound;
-    public Sound DoorCloseSound;
+    public AudioClip DoorOpenSound, DoorCloseSound;
     private AudioPlayer audioPlayer;
 
     private void Start()

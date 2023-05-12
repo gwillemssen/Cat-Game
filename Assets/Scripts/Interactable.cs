@@ -68,11 +68,14 @@ public class Interactable : MonoBehaviour
     {
     }
 
-    public virtual void OpenHinge(GameObject Hinge, Vector3 startingLocation, Vector3 endingLocation, float openTime, float closeTime)
+    public virtual void OpenHinge(GameObject Hinge, Vector3 startingLocation, Vector3 endingLocation, float openTime, float closeTime, List<AudioClip> OpenSounds, List<AudioClip> CloseSounds)
     {
         Open = !Open;
         ToggleChildColliders(Hinge, false);
         LeanTween.rotateLocal(Hinge,Open?startingLocation:endingLocation,Open?openTime:closeTime).setEaseInOutExpo().setOnComplete(()=>ToggleChildColliders(Hinge,true));
+        if (Open) { PlayRandomSound(OpenSounds); }
+        else { PlayRandomSound(CloseSounds);}
+
     }
 
     public virtual void PlaySound(AudioClip sound)

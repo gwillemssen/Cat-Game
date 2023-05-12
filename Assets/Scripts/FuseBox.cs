@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using UnityEngine;
 
-public class FuseBox : Interactable
+public class FuseBox : GenericHinge
 {
-    public GameObject Hinge;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,6 +20,6 @@ public class FuseBox : Interactable
     public override void Interact(FirstPersonController controller)
     {
 
-        base.OpenHinge(Hinge, new Vector3(0, 60, 0), new Vector3(0, -90, 0), 1f, 1f); 
+        OpenHinge(Hinge, new Vector3(0, 60, 0), new Vector3(0, -90, 0), 1f, 1f, OpenSounds, ClosedSounds); 
     }
 }
