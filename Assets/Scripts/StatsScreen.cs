@@ -44,7 +44,6 @@ public class StatsScreen : MonoBehaviour
         float catsPercentage;
         catsPercentage = (float)GameManager.instance.CatsPet / (float)GameManager.instance.TotalCats;
         //Format- Grade, New Line, Funny Message
-        Debug.Log("Cats Percentage: " + catsPercentage);
         switch (catsPercentage)
         {
             //no cats pet
@@ -110,7 +109,7 @@ public class StatsScreen : MonoBehaviour
         }
         else
         {
-            GhostCatPetText = "You finally let him rest after Granny has been" + "\n" + "trying to bring him back.His spirit thanks you!"; 
+            GhostCatPetText = "The ghost cat is at peace..."; 
         }
         secretText.text = GhostCatPetText;
         Invoke("StartFadeIn", 3f);

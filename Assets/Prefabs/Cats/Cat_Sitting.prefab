@@ -15166,6 +15166,7 @@ GameObject:
   - component: {fileID: 4683446390675418620}
   - component: {fileID: 6857564928647273250}
   - component: {fileID: 461238427157166943}
+  - component: {fileID: 5688704594406098448}
   - component: {fileID: 2335870077852741820}
   - component: {fileID: 9142339231285799031}
   - component: {fileID: 5456157240789961753}
@@ -15210,7 +15211,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 3740dbbe100fa4f4290632f533c96986, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 7f3f83aab7ed8fd489ea32f048efd7aa, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -15220,8 +15221,8 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 12
+  MinDistance: 2
+  MaxDistance: 14
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -15317,7 +15318,7 @@ AudioSource:
   Priority: 100
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 12
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -15352,7 +15353,103 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
       value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!82 &5688704594406098448
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5455302812654860102}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 8ca4bb7943a55214583397778a912824, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 2
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -15411,7 +15508,7 @@ MonoBehaviour:
   VisiblyLockedOnView: 0
   Open: 0
   RequiredItemToViewInteraction: 
-  player: {fileID: 5456157240789961753}
+  player: {fileID: 6857564928647273250}
   OnInteract:
     m_PersistentCalls:
       m_Calls: []
@@ -15424,26 +15521,27 @@ MonoBehaviour:
   LightningAmount: 50
   MusicAudioSource: {fileID: 461238427157166943}
   MeowAudioSource: {fileID: 6857564928647273250}
+  PurrLoopAudioSource: {fileID: 5688704594406098448}
   music1: {fileID: 8300000, guid: 25d0ad45af468154e974c15be5a85030, type: 3}
   music2: {fileID: 8300000, guid: dd73f869c3af4794bbd999e97611320e, type: 3}
   MeowAudioSources:
-  - {fileID: 8300000, guid: 084123e9fc89ebd438fea8b248241c61, type: 3}
-  - {fileID: 8300000, guid: b6af4c7328573134b9bc9cc73061ea5c, type: 3}
-  - {fileID: 8300000, guid: 89ef131ca3d5b1445af307daf18e2d6b, type: 3}
-  - {fileID: 8300000, guid: 8efb6390c3eee314f8f944aa65433cd2, type: 3}
-  - {fileID: 8300000, guid: 87bd9e2488f4c854b995fdfc7c0bc104, type: 3}
   - {fileID: 8300000, guid: 7f3f83aab7ed8fd489ea32f048efd7aa, type: 3}
   - {fileID: 8300000, guid: d5006c015d2beef41b4d792ca7d17b99, type: 3}
   - {fileID: 8300000, guid: 3d2a65bbb831da74f9273ea989103cac, type: 3}
   - {fileID: 8300000, guid: d8848a0a90ea3ff49b2cc805947b4ce6, type: 3}
   - {fileID: 8300000, guid: 901b700a867222d41b8a2bfb4eeba19a, type: 3}
-  - {fileID: 8300000, guid: ef6bfc8c61d32564f8b4f836bb65cc30, type: 3}
   - {fileID: 8300000, guid: 7a00ad3bd3f72a04ba2706deb6bb67a2, type: 3}
   - {fileID: 8300000, guid: b328f4df9dfd96c498e6b4d2d9931bb6, type: 3}
-  - {fileID: 8300000, guid: 55a918cdbcb4348449f502fc1cc2745a, type: 3}
   - {fileID: 8300000, guid: e9387918233ea6e4687c7a89378d8e1d, type: 3}
   - {fileID: 8300000, guid: c0fa703e70b9a0e4580e7b39199f4b48, type: 3}
   - {fileID: 8300000, guid: 17e8ea44fb36db344838fda507c90662, type: 3}
+  InteractionMeows:
+  - {fileID: 8300000, guid: f86e17b57bb87dc4b84927cb69a87c51, type: 3}
+  - {fileID: 8300000, guid: 0eaf908b1b2f5d444a23e3eb91094975, type: 3}
+  - {fileID: 8300000, guid: 6653743d01b9ec54d982889aa091ac0c, type: 3}
+  Purrs:
+  - {fileID: 8300000, guid: 8ca4bb7943a55214583397778a912824, type: 3}
+  - {fileID: 8300000, guid: f28198142c56cb84ebf11b83ecfd20cc, type: 3}
   musicStartPositions:
   - 1.8
   - 17.5

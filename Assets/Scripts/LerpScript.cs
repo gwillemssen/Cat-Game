@@ -68,11 +68,7 @@ public class LerpScript : MonoBehaviour
 
     void Count()
     {
-        if (typeOfLerp == null)
-        {
-            Debug.Log("YOU FORGOT TO SET LERP TYPE IDIOT");
-        }
-        
+
         if (typeOfLerp == LerpType.Float && Math.Abs(floatTarget - floatVal) > 0.01f)
         {
             float delta = floatTarget - floatVal;

@@ -6,24 +6,23 @@ public class HidingCloset : HidingSpot
 {
     public Animation anim;
     public AudioClip DoorOpenSound, DoorCloseSound;
-    private AudioPlayer audioPlayer;
 
     private void Start()
     {
         anim = GetComponentInChildren<Animation>();
-        audioPlayer = GetComponent<AudioPlayer>();
+
     }
 
     public override void OnEnterHidingSpot()
     {
-        audioPlayer.Play(DoorOpenSound);
+        PlaySound(DoorOpenSound);
         anim.Stop();
         anim.Play();
     }
 
     public override void OnExitHidingSpot()
     {
-        audioPlayer.Play(DoorCloseSound);
+        PlaySound(DoorCloseSound);
         anim.Stop();
         anim.Play();
     }

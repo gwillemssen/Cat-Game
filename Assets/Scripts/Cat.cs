@@ -58,12 +58,12 @@ public class Cat : Interactable
     public float PettingDecayDelay = 0.5f;
     private float maxVolume = 0.75f;
     public float LightningAmount = 10f;
-    public AudioSource MusicAudioSource, MeowAudioSource;
-    [SerializeField] private AudioClip music1;
-    [SerializeField] private AudioClip music2;
+    public AudioSource MusicAudioSource, MeowAudioSource, PurrLoopAudioSource;
+    [SerializeField] private AudioClip music1, music2;
     public List<AudioClip> MeowAudioSources = new List<AudioClip>();
-    [SerializeField] private float[] musicStartPositions;
-    [SerializeField] private float[] music2StartPositions;
+    public List<AudioClip> InteractionMeows = new List<AudioClip>();
+    public List<AudioClip> Purrs = new List<AudioClip>();
+    [SerializeField] private float[] musicStartPositions, music2StartPositions;
 
     //general
     private enum CatState { Pettable, Unpettable, PettingMinigame, DonePetting };
@@ -170,6 +170,7 @@ public class Cat : Interactable
             catHoldingPos = controller.CatHoldingPosition.position;
             catHoldingRot = controller.CatHoldingPosition.rotation;
             playerController = controller;
+            PlayRandomSound(InteractionMeows);
             StartMinigame();
         }
     }
@@ -333,8 +334,11 @@ public class Cat : Interactable
 
         if (pettingAmount == 1f) //win
         {
-            EndMinigame();
             base.CanInteract = false;
+            PurrLoopAudioSource.clip = Purrs[Random.Range(0, Purrs.Count - 1)];
+            PurrLoopAudioSource.Play();
+            EndMinigame();
+            donePettingObject.SetActive(true);
             GameManager.instance.CatPetted(this);
         }
     }
@@ -343,8 +347,6 @@ public class Cat : Interactable
     {
         flameParticles.Pause();
         flameParticles.Clear();
-        donePettingObject.SetActive(true);
-
         transform.localScale = catOriginalScale;
         state = CatState.DonePetting;
         timeStartedMovingCat = Time.time;

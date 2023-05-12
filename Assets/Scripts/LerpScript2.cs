@@ -66,20 +66,17 @@ public class LerpScript2 : MonoBehaviour
         { 
             if (doFloats)
             {
-                if (floatValues[0] != null && floatTargets[0] != null)
+                for (int i = 0; i < floatValues.Count; i++)
                 {
-                    for (int i = 0; i < floatValues.Count; i++)
+                    if (floatValues[i] != floatTargets[i])
                     {
-                        if (floatValues[i] != floatTargets[i])
-                        {
-                            float delta = floatTargets[i] - floatValues[i];
-                            delta *= Time.deltaTime * lerpSpeed;
-                            floatValues[i] += delta;
-                        }
-                        if (Mathf.Abs(floatTargets[i] - floatValues[i]) < 0.01f)
-                        {
-                            floatValues[i] = floatTargets[i];
-                        }
+                        float delta = floatTargets[i] - floatValues[i];
+                        delta *= Time.deltaTime * lerpSpeed;
+                        floatValues[i] += delta;
+                    }
+                    if (Mathf.Abs(floatTargets[i] - floatValues[i]) < 0.01f)
+                    {
+                        floatValues[i] = floatTargets[i];
                     }
                 }
             }
