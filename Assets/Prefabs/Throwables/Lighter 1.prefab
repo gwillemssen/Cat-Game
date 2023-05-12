@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 4518733538141266985}
   - component: {fileID: 550169449027342334}
   - component: {fileID: 4518733538141266995}
-  - component: {fileID: 4518733538141266994}
   - component: {fileID: 8130308250041225034}
   - component: {fileID: 1641907256546751487}
   - component: {fileID: 3278922511026932247}
@@ -30,9 +29,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4518733538141266987}
-  m_LocalRotation: {x: -0.62864333, y: -0.32374, z: -0.32373992, w: 0.62864333}
+  m_LocalRotation: {x: -0.6286442, y: -0.3237383, z: -0.3237383, w: 0.6286442}
   m_LocalPosition: {x: -21.42918, y: -1.0064, z: 3.8881001}
-  m_LocalScale: {x: 1.6276, y: 1.6276, z: 1.6276}
+  m_LocalScale: {x: 2.807284, y: 2.807284, z: 2.8072844}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4019714509904264508}
@@ -74,7 +73,7 @@ MonoBehaviour:
   VisiblyLockedOnView: 0
   Open: 0
   RequiredItemToViewInteraction: 
-  player: {fileID: 4518733538141266994}
+  player: {fileID: 4518733538141266995}
   OnInteract:
     m_PersistentCalls:
       m_Calls: []
@@ -182,18 +181,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &4518733538141266994
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4518733538141266987}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03d6b8fc5abf6674b9fb3d7bef260517, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!33 &8130308250041225034
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -277,27 +264,27 @@ PrefabInstance:
     - target: {fileID: 5151325025720850585, guid: 533a0a9ea92db5c4cbef60a0497e0817,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.30649772
+      value: 0.8060654
       objectReference: {fileID: 0}
     - target: {fileID: 5151325025720850585, guid: 533a0a9ea92db5c4cbef60a0497e0817,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.30649772
+      value: 0.8060654
       objectReference: {fileID: 0}
     - target: {fileID: 5151325025720850585, guid: 533a0a9ea92db5c4cbef60a0497e0817,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.30649772
+      value: 0.8060654
       objectReference: {fileID: 0}
     - target: {fileID: 5151325025720850585, guid: 533a0a9ea92db5c4cbef60a0497e0817,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.0007
+      value: 0.0063
       objectReference: {fileID: 0}
     - target: {fileID: 5151325025720850585, guid: 533a0a9ea92db5c4cbef60a0497e0817,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.0276
+      value: 0.029
       objectReference: {fileID: 0}
     - target: {fileID: 5151325025720850585, guid: 533a0a9ea92db5c4cbef60a0497e0817,
         type: 3}

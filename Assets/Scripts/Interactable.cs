@@ -24,6 +24,12 @@ public class Interactable : MonoBehaviour
     /// Called every frame as you hold left mouse on the object
     /// </summary>
     /// <param name="controller">Reference to the player controller</param>
+    /// 
+
+    private void Awake()
+    {
+        if(player == null) { player = GetComponent<AudioSource>();  }
+    }
     public virtual void InteractHold(FirstPersonController controller)
     {
 

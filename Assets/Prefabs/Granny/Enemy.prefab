@@ -254,7 +254,6 @@ GameObject:
   - component: {fileID: 5937857633305082709}
   - component: {fileID: 6234930927336056517}
   - component: {fileID: 820578986273975116}
-  - component: {fileID: 4149229492679475760}
   - component: {fileID: -1981050854719233473}
   m_Layer: 12
   m_Name: Enemy
@@ -352,7 +351,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 1
+  m_Speed: 2
   m_Acceleration: 4
   avoidancePriority: 50
   m_AngularSpeed: 250
@@ -376,9 +375,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9414aabddf48aa14ea1ad77e2da5cb37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DebugMode: 1
+  DebugMode: 0
   EyePosition: {fileID: 8272336163191410661}
   Waypoints:
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -477,11 +478,12 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 468526588e2f3ae44b35f73d91cba3ee, type: 3}
   - {fileID: 8300000, guid: a79d23c07bee2cf4488f401855edef47, type: 3}
   - {fileID: 8300000, guid: 3858b6423052c8e42afeb4de70ea52ff, type: 3}
-  BonkSound: {fileID: 11400000, guid: 2ad9fa2c36d6e07488e7aeeb04be8e31, type: 2}
-  ShotgunSound_Reload: {fileID: 11400000, guid: f0d0b671a1abd4e4b8e3c5db5faaa6d1,
-    type: 2}
-  ShotgunSound_Fire: {fileID: 11400000, guid: 311425cf03cf0104286a7042e38a4c8a, type: 2}
-  AudioPlayer: {fileID: 0}
+  BonkSound: {fileID: 8300000, guid: 3965c79efce8d004b86ff5a1cee1d7f4, type: 3}
+  ShotgunSound_Reload: {fileID: 8300000, guid: 07253bc9ea24ea646adb3426c2710bde, type: 3}
+  ShotgunSound_Fire: {fileID: 8300000, guid: 00735e55f026a4340a3042d1473b917b, type: 3}
+  AudioSource: {fileID: 0}
+  GunRackLocked: {fileID: 0}
+  GunRackUnlocked: {fileID: 0}
 --- !u!82 &820578986273975116
 AudioSource:
   m_ObjectHideFlags: 0
@@ -493,7 +495,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -502,8 +504,8 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 2.4766896
-  MaxDistance: 500
+  MinDistance: 2
+  MaxDistance: 12
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -578,18 +580,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &4149229492679475760
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6234930927336056523}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03d6b8fc5abf6674b9fb3d7bef260517, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!95 &-1981050854719233473
 Animator:
   serializedVersion: 4
@@ -706,67 +696,67 @@ PrefabInstance:
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.00042818775
+      value: 0.0005
       objectReference: {fileID: 0}
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.00042818775
+      value: 0.0005
       objectReference: {fileID: 0}
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.00042818775
+      value: 0.0005
       objectReference: {fileID: 0}
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.031
+      value: -0.009
       objectReference: {fileID: 0}
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.183
+      value: 0.091
       objectReference: {fileID: 0}
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.008
+      value: 0.058
       objectReference: {fileID: 0}
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.013925097
+      value: 0.18765105
       objectReference: {fileID: 0}
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.2543813
+      value: -0.18313214
       objectReference: {fileID: 0}
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.7309484
+      value: 0.7677357
       objectReference: {fileID: 0}
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.6330963
+      value: -0.5846637
       objectReference: {fileID: 0}
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 68.845
+      value: 55.997
       objectReference: {fileID: 0}
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 123.272
+      value: 116.086
       objectReference: {fileID: 0}
     - target: {fileID: 2559990228958322776, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -78.984
+      value: -63.531
       objectReference: {fileID: 0}
     - target: {fileID: 2940068942874966754, guid: 510a8a84264944611adce8dc0783ff63,
         type: 3}

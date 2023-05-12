@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 1300559353982823532}
   - component: {fileID: 1300559353982823533}
   - component: {fileID: 1300559353982823542}
-  - component: {fileID: 1300559353982823543}
   - component: {fileID: 6660242927288731407}
   - component: {fileID: 4211004267573689274}
   - component: {fileID: 87913960110686802}
@@ -70,12 +69,21 @@ MonoBehaviour:
   Disabled: 0
   CanInteract: 1
   Cooldown: 0
+  VisiblyLockedOnView: 0
+  Open: 0
+  RequiredItemToViewInteraction: 
+  player: {fileID: 1300559353982823542}
   OnInteract:
     m_PersistentCalls:
       m_Calls: []
   AlwaysMakeImpact: 0
   ImpactVelocity: 0.5
-  ImpactSound: {fileID: 11400000, guid: 7febcf39c7efa1e4c88f6a2c2ddfc82c, type: 2}
+  PickupSounds: []
+  ImpactSounds: []
+  onImpact:
+    m_PersistentCalls:
+      m_Calls: []
+  FrozenOnAwake: 0
 --- !u!82 &1300559353982823542
 AudioSource:
   m_ObjectHideFlags: 0
@@ -172,18 +180,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &1300559353982823543
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1300559353982823534}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03d6b8fc5abf6674b9fb3d7bef260517, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!33 &6660242927288731407
 MeshFilter:
   m_ObjectHideFlags: 0

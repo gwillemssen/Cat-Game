@@ -30,12 +30,12 @@ PrefabInstance:
     - target: {fileID: 762439783231874695, guid: 21b518de5e58bfb4f82ff072c239d7d7,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.68499994
+      value: 0.43499994
       objectReference: {fileID: 0}
     - target: {fileID: 762439783231874695, guid: 21b518de5e58bfb4f82ff072c239d7d7,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -7.26
+      value: -7.328013
       objectReference: {fileID: 0}
     - target: {fileID: 762439783231874695, guid: 21b518de5e58bfb4f82ff072c239d7d7,
         type: 3}
@@ -80,13 +80,18 @@ PrefabInstance:
     - target: {fileID: 762439783231874713, guid: 21b518de5e58bfb4f82ff072c239d7d7,
         type: 3}
       propertyPath: m_Name
-      value: Cup Variant
+      value: Cup
       objectReference: {fileID: 0}
     - target: {fileID: 762439783231874713, guid: 21b518de5e58bfb4f82ff072c239d7d7,
         type: 3}
       propertyPath: m_Layer
       value: 11
       objectReference: {fileID: 0}
+    - target: {fileID: 762439783231874714, guid: 21b518de5e58bfb4f82ff072c239d7d7,
+        type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 3638582476503619580}
     - target: {fileID: 762439783231874714, guid: 21b518de5e58bfb4f82ff072c239d7d7,
         type: 3}
       propertyPath: ImpactSounds.Array.size
@@ -130,6 +135,7 @@ PrefabInstance:
         type: 3}
     m_RemovedComponents:
     - {fileID: 1846595015089735845, guid: 21b518de5e58bfb4f82ff072c239d7d7, type: 3}
+    - {fileID: 762439783231874688, guid: 21b518de5e58bfb4f82ff072c239d7d7, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 21b518de5e58bfb4f82ff072c239d7d7, type: 3}
 --- !u!1 &3638582476503619556 stripped
 GameObject:
@@ -150,3 +156,9 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.28491086, y: 0.50410414, z: 0.2849109}
   m_Center: {x: 0.000000022351742, y: -0.011691399, z: -0.000000014901161}
+--- !u!82 &3638582476503619580 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 762439783231874689, guid: 21b518de5e58bfb4f82ff072c239d7d7,
+    type: 3}
+  m_PrefabInstance: {fileID: 4101210852426576253}
+  m_PrefabAsset: {fileID: 0}

@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 2172325528018299240}
   - component: {fileID: 2172325528018299241}
   - component: {fileID: 2172325528018299250}
-  - component: {fileID: 2172325528018299251}
   - component: {fileID: 5783971014587466251}
   - component: {fileID: 3916261731224796862}
   - component: {fileID: 941657073367385942}
@@ -73,7 +72,7 @@ MonoBehaviour:
   VisiblyLockedOnView: 0
   Open: 0
   RequiredItemToViewInteraction: 
-  player: {fileID: 0}
+  player: {fileID: 2172325528018299250}
   OnInteract:
     m_PersistentCalls:
       m_Calls: []
@@ -181,18 +180,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &2172325528018299251
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2172325528018299242}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03d6b8fc5abf6674b9fb3d7bef260517, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!33 &5783971014587466251
 MeshFilter:
   m_ObjectHideFlags: 0

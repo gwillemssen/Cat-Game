@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3424703294415912804}
   - component: {fileID: 3424703294415912805}
   - component: {fileID: 3424703294415912830}
-  - component: {fileID: 3424703294415912831}
   - component: {fileID: 4373605539213611354}
   m_Layer: 11
   m_Name: Phone_Handheld_Interactable
@@ -72,7 +71,7 @@ MonoBehaviour:
   VisiblyLockedOnView: 0
   Open: 0
   RequiredItemToViewInteraction: 
-  player: {fileID: 0}
+  player: {fileID: 3424703294415912830}
   OnInteract:
     m_PersistentCalls:
       m_Calls: []
@@ -80,6 +79,9 @@ MonoBehaviour:
   ImpactVelocity: 0.5
   PickupSounds: []
   ImpactSounds: []
+  onImpact:
+    m_PersistentCalls:
+      m_Calls: []
   FrozenOnAwake: 1
 --- !u!82 &3424703294415912830
 AudioSource:
@@ -177,18 +179,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &3424703294415912831
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3424703294415912806}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03d6b8fc5abf6674b9fb3d7bef260517, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!65 &4373605539213611354
 BoxCollider:
   m_ObjectHideFlags: 0

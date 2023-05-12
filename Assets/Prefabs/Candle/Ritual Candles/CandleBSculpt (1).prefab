@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 389852957564851248}
   - component: {fileID: 4955028418092550364}
   - component: {fileID: 4955028418092550354}
-  - component: {fileID: 4955028418092550355}
   - component: {fileID: 4955028418092550365}
   m_Layer: 0
   m_Name: CandleBSculpt (1)
@@ -29,7 +28,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2191552362825807333}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.65, y: 0.0009999946, z: 2.247}
   m_LocalScale: {x: 0.05888923, y: 0.05888923, z: 0.05888923}
   m_ConstrainProportionsScale: 0
@@ -197,18 +196,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &4955028418092550355
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2191552362825807333}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03d6b8fc5abf6674b9fb3d7bef260517, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4955028418092550365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -228,10 +215,13 @@ MonoBehaviour:
   VisiblyLockedOnView: 0
   Open: 0
   RequiredItemToViewInteraction: Lighter
-  player: {fileID: 4955028418092550355}
+  player: {fileID: 4955028418092550354}
   OnInteract:
     m_PersistentCalls:
       m_Calls: []
+  FireSFX: {fileID: 8300000, guid: 702a057012c58c6479ecaff6827e83e6, type: 3}
+  SummonSFX: {fileID: 8300000, guid: eb3af279e2ddb854ebb188d02d2ef76c, type: 3}
+  GhostCat: {fileID: 0}
 --- !u!1001 &4955028417661600156
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -307,32 +297,3 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 4955028417661600156}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &5307412326409101077 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 965031957615042185, guid: 533a0a9ea92db5c4cbef60a0497e0817,
-    type: 3}
-  m_PrefabInstance: {fileID: 4955028417661600156}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &4955028417829545653
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5307412326409101077}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7feb1630157a5545a79cabb78172502, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  LookingAt: 0
-  Disabled: 0
-  CanInteract: 1
-  Cooldown: 0
-  VisiblyLockedOnView: 0
-  Open: 0
-  RequiredItemToViewInteraction: 
-  player: {fileID: 0}
-  OnInteract:
-    m_PersistentCalls:
-      m_Calls: []

@@ -360,7 +360,6 @@ public class AggroState : EnemyState
 }
 
 [RequireComponent(typeof(NavMeshAgent))]
-[RequireComponent(typeof(AudioPlayer))]
 public class Enemy : MonoBehaviour
 {
     public static Enemy instance; //singleton because multiple Enemies are not in the scope of this project
@@ -400,18 +399,8 @@ public class Enemy : MonoBehaviour
     public float VisibilityThreshold = 0.5f;
     public float ReloadTime = 1.5f;
     [SerializeField] private LayerMask everythingBesidesEnemy;
-    public AudioClip[] WhiteToYellowSounds;
-    public AudioClip[] YellowToRedSounds;
-    public AudioClip[] RedToYellowSounds;
-    public AudioClip[] YellowToWhiteSounds;
-    public AudioClip[] HurtSounds;
-    public AudioClip[] IdleSounds;
-    public AudioClip[] HuntingSounds;
-    public AudioClip[] ShootSounds;
-    public Sound BonkSound;
-    public Sound ShotgunSound_Reload;
-    public Sound ShotgunSound_Fire;
-    [HideInInspector] public AudioPlayer AudioPlayer;
+    public AudioClip[] WhiteToYellowSounds, YellowToRedSounds, RedToYellowSounds, YellowToWhiteSounds, HurtSounds, IdleSounds, HuntingSounds, ShootSounds;
+    public AudioClip BonkSound, ShotgunSound_Reload, ShotgunSound_Fire; 
     [HideInInspector] public AudioSource AudioSource;
     public GameObject GunRackLocked, GunRackUnlocked;
     [HideInInspector] public EnemyState State { get; private set; }
@@ -473,7 +462,6 @@ public class Enemy : MonoBehaviour
     {
         PlayerTransform = FirstPersonController.instance.transform;
         DebugObject.gameObject.SetActive(DebugMode);
-        AudioPlayer = GetComponent<AudioPlayer>();
         AudioSource = GetComponent<AudioSource>();
         WhiteToYellowRandomSound = new NonRepeatingSound(WhiteToYellowSounds);
         YellowToRedRandomSound = new NonRepeatingSound(YellowToRedSounds);
@@ -649,11 +637,6 @@ public class Enemy : MonoBehaviour
         AudioSource.clip = sound;
         AudioSource.Play();
         AudioSource.clip = null;
-    }
-    public void PlaySound(Sound sound)
-    {
-        AudioPlayer.Play(sound);
-  
     }
 
     private void PlayQueuedVoicelines()

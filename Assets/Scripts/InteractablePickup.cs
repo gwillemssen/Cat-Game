@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody))]
-[RequireComponent(typeof(AudioPlayer))]
+
 //a better name for this would be 'Throwable' but I dont want to change it and risk losing references on a bunch of prefabs
 public class InteractablePickup : Interactable
 {
@@ -18,7 +18,6 @@ public class InteractablePickup : Interactable
     public List<AudioClip> ImpactSounds;
 
     [SerializeField] private UnityEvent onImpact;
-    private AudioPlayer audioPlayer;
     private float sqrImpactVelocity;
     private bool canImpact = false;
 
@@ -27,7 +26,6 @@ public class InteractablePickup : Interactable
     private void Awake()
     {
         Rigidbody = GetComponent<Rigidbody>();
-        audioPlayer = GetComponent<AudioPlayer>();
         sqrImpactVelocity = ImpactVelocity * ImpactVelocity;
         originalConstraints = Rigidbody.constraints;
         if (FrozenOnAwake) Freeze();
@@ -49,7 +47,7 @@ public class InteractablePickup : Interactable
         if(Rigidbody.velocity.sqrMagnitude > sqrImpactVelocity)
         {
             if(ImpactSounds.Count > 0)
-            { audioPlayer.Play(ImpactSounds[Random.Range(0, ImpactSounds.Count)]); }
+            { base.PlayRandomInteractionSound(ImpactSounds); }
             Enemy.instance.Distract(transform.position);
             onImpact?.Invoke();
             Impacted();
@@ -71,7 +69,7 @@ public class InteractablePickup : Interactable
         PlayerUI.instance.SetInfoText("Press Right Click to Throw");
         Rigidbody.constraints = originalConstraints;
         if (PickupSounds.Count > 0)
-        { audioPlayer.Play(PickupSounds[Random.Range(0, PickupSounds.Count)]); }
+        { base.PlayRandomInteractionSound(PickupSounds); }
         canImpact = true;
     }
 
