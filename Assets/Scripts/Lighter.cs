@@ -13,29 +13,29 @@ public class Lighter : InteractablePickup
         transform.GetChild(0).gameObject.SetActive(false);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
 
+    public override void Interact(FirstPersonController controller)
+    {
+        transform.GetChild(0).gameObject.SetActive(true);
     }
 
-    public override void Click()
-    {
-        print("Click!");
-        if (Lit == false)
-        {
-            Lit = true;
-            transform.GetChild(0).gameObject.SetActive(true);
-            //PlayInteractionSound(Put a lighter lighting sound here);
-            Debug.Log("lit");
-        }
-        else 
-        {
-            Lit = false;
-            transform.GetChild(0).gameObject.SetActive(false);
-            //PlayInteractionSound(Lighter De-Lighting Sound);
-            Debug.Log("Unlit");
-        }
-    }
+    //public override void Click()
+    //{
+    //    print("Click!");
+    //    if (Lit == false)
+    //    {
+    //        Lit = true;
+    //        transform.GetChild(0).gameObject.SetActive(true);
+    //        //PlayInteractionSound(Put a lighter lighting sound here);
+    //        Debug.Log("lit");
+    //    }
+    //    else 
+    //    {
+    //        Lit = false;
+    //        transform.GetChild(0).gameObject.SetActive(false);
+    //        //PlayInteractionSound(Lighter De-Lighting Sound);
+    //        Debug.Log("Unlit");
+    //    }
+    //}
 }
 

@@ -6,13 +6,11 @@ public class SummoningCandle : Interactable
 {
     [SerializeField] private AudioClip FireSFX, SummonSFX;
     [SerializeField] private GameObject GhostCat;
-    private AudioSource SFXPlayer;
 
     // Start is called before the first frame update
     void Start()
     {
         transform.GetChild(0).gameObject.SetActive(false);
-        SFXPlayer= GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -29,18 +27,14 @@ public class SummoningCandle : Interactable
             CanInteract = false;
             transform.GetChild(0).gameObject.SetActive(true);
             GameManager.instance.SecretCandlesLit++;
-            SFXPlayer.pitch = Random.Range(.9f, 1.1f);
-            SFXPlayer.clip = FireSFX;
-            SFXPlayer.Play();
+            PlaySound(FireSFX);
         }
         if(GameManager.instance.SecretCandlesLit == 5)
         {
             //Spawn Ghost Cat
-            SFXPlayer.pitch = 1;
-            SFXPlayer.clip = SummonSFX;
-            SFXPlayer.Play();
+            PlaySound(SummonSFX);
             GhostCat.SetActive(true);
-            GhostCat.transform.LeanMoveLocalY(transform.position.y + .1f, 8f);
+            GhostCat.transform.LeanMoveLocalY(transform.position.y + .1f, 8f).setOnComplete(() => player.volume = 0);
         }
     }
 }

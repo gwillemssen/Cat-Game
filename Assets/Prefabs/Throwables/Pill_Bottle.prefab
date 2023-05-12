@@ -79,9 +79,10 @@ MonoBehaviour:
       m_Calls: []
   AlwaysMakeImpact: 0
   ImpactVelocity: 0.5
-  PickupSounds: []
+  PickupSounds:
+  - {fileID: 8300000, guid: b83394593fb6e4743af36e7f8d0f3e15, type: 3}
   ImpactSounds:
-  - {fileID: 8300000, guid: 755a927779a612b44a5822d8af5433f7, type: 3}
+  - {fileID: 8300000, guid: 68c8c28fe3c7c5f47a7ee0f45559202d, type: 3}
   onImpact:
     m_PersistentCalls:
       m_Calls:
@@ -119,7 +120,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 3
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0

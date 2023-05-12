@@ -17,7 +17,8 @@ public class Bookshelf : Interactable
         if (withInteractable.name == RequiredItemToViewInteraction) 
         {
             DoAudioChanges();
-            LeanTween.moveLocalZ(BookshelfL, 2.5f, 2.5f).setEaseLinear();
+            PlaySound(player.clip);
+            LeanTween.moveLocalZ(BookshelfL, 2.5f, 2.5f).setEaseLinear().setOnComplete(() => player.Stop());
             LeanTween.moveLocalZ(BookshelfR, -7f, 2.5f).setEaseLinear();
             transform.GetChild(0).gameObject.SetActive(false);
             transform.GetChild(1).gameObject.SetActive(true);
