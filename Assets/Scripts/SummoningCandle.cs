@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class SummoningCandle : Interactable
 {
-    [SerializeField] private Sound FireSFX, SummonSFX;
+    [SerializeField] private AudioClip FireSFX, SummonSFX;
     [SerializeField] private GameObject GhostCat;
+    private AudioSource SFXPlayer;
 
     // Start is called before the first frame update
     void Start()
     {
         transform.GetChild(0).gameObject.SetActive(false);
+        SFXPlayer= GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -27,14 +29,16 @@ public class SummoningCandle : Interactable
             CanInteract = false;
             transform.GetChild(0).gameObject.SetActive(true);
             GameManager.instance.SecretCandlesLit++;
-            FireSFX.Pitch = Random.Range(.95f, 1.05f);
-            player.Play(FireSFX);
+            SFXPlayer.pitch = Random.Range(.9f, 1.1f);
+            SFXPlayer.clip = FireSFX;
+            SFXPlayer.Play();
         }
         if(GameManager.instance.SecretCandlesLit == 5)
         {
             //Spawn Ghost Cat
-            Debug.Log("Ooga Booga!! Scary cat!!!!");
-            player.Play(SummonSFX);
+            SFXPlayer.pitch = 1;
+            SFXPlayer.clip = SummonSFX;
+            SFXPlayer.Play();
             GhostCat.SetActive(true);
             GhostCat.transform.LeanMoveLocalY(transform.position.y + .1f, 8f);
         }

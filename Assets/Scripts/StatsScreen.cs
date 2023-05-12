@@ -7,14 +7,13 @@ public class StatsScreen : MonoBehaviour
 {
     [SerializeField] private Text outcomeText, objectivesText, extrasText, secretText;
     
-    private AudioSource audio;
+    private AudioSource audioS;
     private float lastTimePrintedText = -420f;
-    private bool PetSecretCat;
     private string Grade;
 
     private void Awake()
     {
-        audio = GetComponent<AudioSource>();
+        audioS = GetComponent<AudioSource>();
     }
 
     private void Start()
@@ -31,11 +30,11 @@ public class StatsScreen : MonoBehaviour
     {
         if(Time.time - lastTimePrintedText < 0.25f)
         {
-            if(!audio.isPlaying)
-            { audio.Play(); }
+            if(!audioS.isPlaying)
+            { audioS.Play(); }
         }
         else
-        { audio.Stop(); }
+        { audioS.Stop(); }
 
         Cursor.lockState = CursorLockMode.None;
     }
@@ -101,23 +100,21 @@ public class StatsScreen : MonoBehaviour
 
         if(GameManager.instance.PettedGhostCat)
         {
-            extrasText.text += "REVIVAL" + "\n" + "You summoned the ghost cat\n\n";
+            extrasText.text += "REVIVAL" + "\n" + "(You summoned the spirit of development's past!)\n\n";
         }
 
-        //add the other extras that are in! I think they are really cute!
-
-        //Ghost Cat Work:
-        string GhostCatPetText = "";
-        //if(GhostCat == Pet) {PetSecretCat = true; GhostCatPetText = "You get the feeling there's still" + "\n" + "some unfinished buisness before you leave..." }
-        //else { PetSecretCat = false; "GhostCatPetText = "You finally let him rest after Granny has been" + "\n" + "trying to bring him back. His spirit thanks you!"}
-        if (!GameManager.instance.PettedGhostCat)
+        string GhostCatPetText;
+        if (!GameManager.instance.PettedGhostCat) 
+        { 
+            GhostCatPetText = "You get the feeling there's still" + "\n" + "some unfinished buisness before you leave...";
+        }
+        else
         {
-            GhostCatPetText = "You get the feeling there's still some unfinished buisness as you leave the house...";
-            secretText.text = GhostCatPetText;
-
-            Invoke("StartFadeIn", 3f);
+            GhostCatPetText = "You finally let him rest after Granny has been" + "\n" + "trying to bring him back.His spirit thanks you!"; 
         }
-    }
+        secretText.text = GhostCatPetText;
+        Invoke("StartFadeIn", 3f);
+}
 
     private void StartFadeIn()
     {

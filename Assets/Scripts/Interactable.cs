@@ -13,7 +13,7 @@ public class Interactable : MonoBehaviour
     public bool Open;
     public string RequiredItemToViewInteraction = "";
 
-    public AudioPlayer player;
+    public AudioSource player;
 
     [Tooltip("Called when we click on the object")]
     public UnityEvent OnInteract;
@@ -69,14 +69,16 @@ public class Interactable : MonoBehaviour
         LeanTween.rotateLocal(Hinge,Open?startingLocation:endingLocation,Open?openTime:closeTime).setEaseInOutExpo().setOnComplete(()=>ToggleChildColliders(Hinge,true));
     }
 
-    public virtual void PlayInteractionSound(Sound sound)
+    public virtual void PlayInteractionSound(AudioClip sound)
     {
-        player.Play(sound);
+        player.clip = sound;
+        player.Play();
     }
 
-    public virtual void PlayRandomInteractionSound(List<Sound> sounds)
+    public virtual void PlayRandomInteractionSound(List<AudioClip> sounds)
     {
-        player.Play(sounds[Random.Range(0, sounds.Count)]);
+        player.clip = sounds[Random.Range(0, sounds.Count)];
+        player.Play();
     }
 
     public void PlayAnimation()

@@ -9,7 +9,7 @@ public class Car : Interactable
 
     [SerializeField] private Vector3 OpenPos, ClosedPos;
 
-    public List<Sound> UnlockSounds;
+    public List<AudioClip> UnlockSounds;
 
     public GameObject Hinge;
 

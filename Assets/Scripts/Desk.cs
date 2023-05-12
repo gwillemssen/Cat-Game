@@ -28,9 +28,9 @@ public class Desk : Interactable
     {
        
         if(!base.Open)
-        { LeanTween.moveLocalZ(Hinge, 3, .5f).setEaseInOutSine(); base.Open = true; player.Play(OpenDrawer); }
+        { LeanTween.moveLocalZ(Hinge, 3, .5f).setEaseInOutSine(); base.Open = true; player.clip = OpenDrawer;  player.Play(); }
         else
-        { LeanTween.moveLocalZ(Hinge, .3f, .5f).setEaseInOutSine(); base.Open = false; player.Play(CloseDrawer); }
+        { LeanTween.moveLocalZ(Hinge, .3f, .5f).setEaseInOutSine(); base.Open = false; player.clip = CloseDrawer; player.Play(); }
 
 
         if (objectInsideDrawer.GetComponent<Rigidbody>().constraints != RigidbodyConstraints.FreezeAll)
