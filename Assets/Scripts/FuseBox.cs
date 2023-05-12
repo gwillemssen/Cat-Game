@@ -19,7 +19,6 @@ public class FuseBox : GenericHinge
 
     public override void Interact(FirstPersonController controller)
     {
-
-        OpenHinge(Hinge, new Vector3(0, 60, 0), new Vector3(0, -90, 0), 1f, 1f, OpenSounds, ClosedSounds); 
+        OpenHinge(Hinge, DefaultPos, TransformPos, OpeningDuration, ClosingDuration, OpenSounds, ClosedSounds);
     }
 }

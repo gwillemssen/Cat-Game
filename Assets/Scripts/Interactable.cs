@@ -10,7 +10,7 @@ public class Interactable : MonoBehaviour
     public bool CanInteract = true;
     public float Cooldown;
     public bool VisiblyLockedOnView = false;
-    public bool Open;
+    public bool Open = false;
     public string RequiredItemToViewInteraction = "";
 
     public AudioSource player;
@@ -72,9 +72,9 @@ public class Interactable : MonoBehaviour
     {
         Open = !Open;
         ToggleChildColliders(Hinge, false);
-        LeanTween.rotateLocal(Hinge,Open?startingLocation:endingLocation,Open?openTime:closeTime).setEaseInOutExpo().setOnComplete(()=>ToggleChildColliders(Hinge,true));
-        if (Open) { PlayRandomSound(OpenSounds); }
-        else { PlayRandomSound(CloseSounds);}
+        LeanTween.rotateLocal(Hinge,!Open?startingLocation:endingLocation,!Open?openTime:closeTime).setEaseInOutExpo().setOnComplete(()=>ToggleChildColliders(Hinge,true));
+        if (Open && OpenSounds.Count > 0) { PlayRandomSound(OpenSounds); }
+        else if(!Open && CloseSounds.Count >0) { PlayRandomSound(CloseSounds);}
 
     }
 
