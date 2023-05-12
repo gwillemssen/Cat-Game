@@ -47,7 +47,7 @@ public class InteractablePickup : Interactable
         if(Rigidbody.velocity.sqrMagnitude > sqrImpactVelocity)
         {
             if(ImpactSounds.Count > 0)
-            { base.PlayRandomInteractionSound(ImpactSounds); }
+            { base.PlayRandomSound(ImpactSounds); }
             Enemy.instance.Distract(transform.position);
             onImpact?.Invoke();
             Impacted();
@@ -69,7 +69,7 @@ public class InteractablePickup : Interactable
         PlayerUI.instance.SetInfoText("Press Right Click to Throw");
         Rigidbody.constraints = originalConstraints;
         if (PickupSounds.Count > 0)
-        { base.PlayRandomInteractionSound(PickupSounds); }
+        { base.PlayRandomSound(PickupSounds); }
         canImpact = true;
     }
 

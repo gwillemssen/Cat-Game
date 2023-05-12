@@ -75,13 +75,13 @@ public class Interactable : MonoBehaviour
         LeanTween.rotateLocal(Hinge,Open?startingLocation:endingLocation,Open?openTime:closeTime).setEaseInOutExpo().setOnComplete(()=>ToggleChildColliders(Hinge,true));
     }
 
-    public virtual void PlayInteractionSound(AudioClip sound)
+    public virtual void PlaySound(AudioClip sound)
     {
         player.clip = sound;
         player.Play();
     }
 
-    public virtual void PlayRandomInteractionSound(List<AudioClip> sounds)
+    public virtual void PlayRandomSound(List<AudioClip> sounds)
     {
         player.clip = sounds[Random.Range(0, sounds.Count)];
         player.Play();

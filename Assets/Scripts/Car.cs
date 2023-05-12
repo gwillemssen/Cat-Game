@@ -28,7 +28,7 @@ public class Car : Interactable
             if (withInteractable.name == keyName)
             {
                 locked = false;
-                base.PlayRandomInteractionSound(UnlockSounds);
+                base.PlayRandomSound(UnlockSounds);
                 VisiblyLockedOnView = false;
             }
         }
