@@ -49,6 +49,7 @@ public class CatMeow : MonoBehaviour
 public class Cat : Interactable
 {
     //inspector
+    public GameObject donePettingObject;
     public bool IsGhostCat = false;
     public enum CatStartState { Pettable, Unpettable }
     public CatStartState StartState;
@@ -342,7 +343,8 @@ public class Cat : Interactable
     {
         flameParticles.Pause();
         flameParticles.Clear();
-        
+        donePettingObject.SetActive(true);
+
         transform.localScale = catOriginalScale;
         state = CatState.DonePetting;
         timeStartedMovingCat = Time.time;
